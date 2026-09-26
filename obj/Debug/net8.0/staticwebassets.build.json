@@ -1,0 +1,77 @@
+{
+  "Version": 1,
+  "Hash": "GIu8bF2LkBNer5POBzdP6wlSRApTsn6ENA4pASwngxQ=",
+  "Source": "Society360",
+  "BasePath": "_content/Society360",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Society360\\wwwroot",
+      "Source": "Society360",
+      "ContentRoot": "C:\\Users\\Delta\\Society360\\wwwroot\\",
+      "BasePath": "_content/Society360",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Delta\\Society360\\wwwroot\\css\\site.css",
+      "SourceId": "Society360",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Delta\\Society360\\wwwroot\\",
+      "BasePath": "_content/Society360",
+      "RelativePath": "css/site.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "C:\\Users\\Delta\\Society360\\wwwroot\\index.html",
+      "SourceId": "Society360",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Delta\\Society360\\wwwroot\\",
+      "BasePath": "_content/Society360",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\Delta\\Society360\\wwwroot\\js\\app.js",
+      "SourceId": "Society360",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Delta\\Society360\\wwwroot\\",
+      "BasePath": "_content/Society360",
+      "RelativePath": "js/app.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\app.js"
+    }
+  ]
+}
