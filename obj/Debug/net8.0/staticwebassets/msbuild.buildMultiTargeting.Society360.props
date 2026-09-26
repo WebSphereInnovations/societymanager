@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\Society360.props" />
-</Project>
