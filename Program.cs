@@ -6,6 +6,7 @@ using Society360.Modules.Migration;
 using Society360.Modules.SocietyAdmin;
 using Society360.Modules.Customer;
 using Society360.Modules.Cashier;
+using Society360.Modules.Platform;
 using Society360.Security;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +54,8 @@ app.UseStaticFiles();
 app.MapSocietyAdminEndpoints();
 app.MapCustomerEndpoints();
 app.MapCashierEndpoints();
+app.MapPaymentEndpoints();
+app.MapPlatformEndpoints();
 
 app.MapGet("/api/health", (SocietyDb db) => Results.Ok(new
 {    application = "Society360",
@@ -274,6 +277,26 @@ if (args.Contains("--provision-society-admin-demo", StringComparer.OrdinalIgnore
         Console.WriteLine("DEMO_TOKEN="+reader.GetString(0));
     }
     return;
+}
+
+if (args.Contains("--apply-module-catalog", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","Modules","009_full_module_catalog.sql"));
+    await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Full module catalog applied."); return;
+}
+
+if (args.Contains("--apply-platform-demo", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","Modules","010_platform_subscription_demo.sql"));
+    await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Platform subscription demo applied."); return;
 }
 
 app.Run();
