@@ -11,8 +11,16 @@ async function init(){
   const society=me.societies.find(x=>x.societyId===session.societyId)||me.societies[0];
   $('#societyName').textContent=society?.societyName||'Society';
   $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');
-  loadDashboard();wire();
+  loadDashboard();loadSubscription();wire();
  }catch(e){location.href='/login'}
+}
+async function loadSubscription(){
+ try{
+  const x=await get('/api/subscription/current');
+  $('#subscriptionText').textContent=x.planName+' · ₹'+Number(x.amount).toLocaleString('en-IN')+' · '+x.paymentStatus+' · '+x.daysRemaining+' days remaining';
+  $('#recordSubscriptionPayment').disabled=x.paymentStatus==='Paid';
+  $('#recordSubscriptionPayment').dataset.subscriptionId=x.subscriptionId;
+ }catch(e){$('#subscriptionText').textContent='No active subscription found.';$('#recordSubscriptionPayment').disabled=true}
 }
 async function loadDashboard(){const x=await get('/api/society-admin/dashboard');$('#totalFlats').textContent=x.totalFlats;$('#occupiedFlats').textContent=x.occupiedFlats;$('#collected').textContent=money(x.collected);$('#outstanding').textContent=money(x.outstanding);$('#openComplaints').textContent=x.openComplaints;$('#insideVisitors').textContent=x.insideVisitors}
 function show(view,label){
@@ -29,6 +37,12 @@ function wire(){
  document.querySelectorAll('.side nav details').forEach(x=>x.open=true);
  $('[data-view]').forEach(x=>x.addEventListener('click',()=>show(x.dataset.view,x.querySelector('span')?.textContent||x.textContent.trim())));
  $('#logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST'});location.href='/login'};
+ $('#recordSubscriptionPayment').onclick=async()=>{
+  const b=$('#recordSubscriptionPayment');const subscriptionId=Number(b.dataset.subscriptionId||0);if(!subscriptionId)return;
+  const x=await get('/api/subscription/current');if(!confirm('Record payment of ₹'+Number(x.amount).toLocaleString('en-IN')+' as '+$('#paymentMode').value+'?'))return;
+  const r=await fetch('/api/subscription/payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subscriptionId,amount:x.amount,paymentMode:$('#paymentMode').value,referenceNo:$('#paymentReference').value})});
+  const d=await r.json();if(!r.ok){alert(d.message||'Payment failed');return}alert('Subscription payment recorded successfully.');loadSubscription();
+ };
  $('#customerSearch').oninput=debounce(e=>loadCustomers(e.target.value));$('#flatSearch').oninput=debounce(e=>loadFlats(e.target.value));
  $('#billSearch').oninput=debounce(e=>loadBills(e.target.value));$('#complaintSearch').oninput=debounce(e=>loadComplaints(e.target.value));
  $('#visitorSearch').oninput=debounce(e=>loadVisitors(e.target.value));$('#parkingSearch').oninput=debounce(e=>loadParking(e.target.value));

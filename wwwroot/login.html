@@ -82,8 +82,12 @@ Society360I18n.init();applyLoginText();
 document.querySelector('#language-select').addEventListener('change',e=>{Society360I18n.setLanguage(e.target.value);applyLoginText();});
 document.querySelector('#login-form').addEventListener('submit',async e=>{
  e.preventDefault();const error=document.querySelector('#error');error.textContent='';
- const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:login.value,password:password.value})});
- if(res.ok){const data=await res.json();location.href=data.route||'/login.html';return;} error.textContent=res.status===401?'Invalid login name or password.':'Database setup is not ready. Please complete database setup.';
+ try{
+  const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:login.value.trim(),password:password.value})});
+  const data=await res.json().catch(()=>({}));
+  if(res.ok){location.href=data.route||'/login.html';return;}
+  error.textContent=res.status===401?'Invalid login name or password.':(data.message||'Login could not be completed.');
+ }catch{error.textContent='Server is not reachable. Please try again.';}
 });
 
 const signup=document.querySelector('#signup');
@@ -110,11 +114,8 @@ document.querySelector('#signup-form').addEventListener('submit',async e=>{
   const res=await fetch('/api/public/create-society',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const data=await res.json();
   if(!res.ok){msg.textContent=data.message||'Society creation failed.';return;}
-  signup.classList.remove('open');
-  document.querySelector('#login').value=body.loginName;
-  document.querySelector('#password').value='';
-  document.querySelector('#error').textContent='Society created. Subscription is Pending Payment. Please sign in with your new Society Admin account.';
-  document.querySelector('#error').style.color='#269e80';
+  msg.textContent='Society created. Redirecting to your Society Admin workspace…';
+  location.href=data.route||'/modules/society-admin/index.html';
  }catch{msg.textContent='Unable to reach the server. Please try again.';}
 });
 </script>

@@ -3,9 +3,9 @@ SET search_path TO society_manager, public;
 CREATE OR REPLACE FUNCTION fn_subscription_plans()
 RETURNS TABLE(plan_code varchar,plan_name varchar,duration_days integer,price numeric,max_flats integer,max_users integer,features jsonb)
 LANGUAGE sql AS $$
-SELECT plan_code,plan_name,duration_days,price,max_flats,max_users,features
-FROM m_subscription_plan
-WHERE is_active
+SELECT sp.plan_code,sp.plan_name,sp.duration_days,sp.price,sp.max_flats,sp.max_users,sp.features
+FROM m_subscription_plan sp
+WHERE sp.is_active
 ORDER BY price;
 $$;
 
@@ -29,13 +29,13 @@ BEGIN
  IF length(coalesce(p_password,''))<10 THEN RAISE EXCEPTION 'Password must contain at least 10 characters'; END IF;
  IF EXISTS(SELECT 1 FROM m_user WHERE lower(login_name)=lower(trim(p_login_name))) THEN RAISE EXCEPTION 'Login name already exists'; END IF;
 
- SELECT * INTO v_plan FROM m_subscription_plan WHERE upper(plan_code)=upper(trim(p_plan_code)) AND is_active;
+ SELECT * INTO v_plan FROM m_subscription_plan sp WHERE upper(sp.plan_code)=upper(trim(p_plan_code)) AND sp.is_active;
  IF NOT FOUND THEN RAISE EXCEPTION 'Subscription plan not found'; END IF;
 
  v_base:=left(regexp_replace(upper(trim(p_society_name)),'[^A-Z0-9]+','','g'),30);
  IF v_base='' THEN v_base:='SOCIETY'; END IF;
  v_code:=v_base;
- WHILE EXISTS(SELECT 1 FROM m_society WHERE society_code=v_code) LOOP
+ WHILE EXISTS(SELECT 1 FROM m_society s WHERE s.society_code=v_code) LOOP
    v_suffix:=v_suffix+1;
    v_code:=left(v_base,30-length(v_suffix::text)-1)||'-'||v_suffix::text;
  END LOOP;
@@ -57,9 +57,9 @@ BEGIN
  ON CONFLICT DO NOTHING;
  INSERT INTO m_user_society(user_id,society_id,is_default)
  VALUES(v_user_id,v_society_id,true)
- ON CONFLICT(user_id,society_id) DO UPDATE SET is_default=true;
+ ON CONFLICT ON CONSTRAINT m_user_society_pkey DO UPDATE SET is_default=true;
 
- UPDATE m_society_subscription SET is_active=false WHERE society_id=v_society_id;
+ UPDATE m_society_subscription ss SET is_active=false WHERE ss.society_id=v_society_id;
  INSERT INTO m_society_subscription(society_id,subscription_plan_id,start_date,end_date,amount,payment_status,is_active)
  VALUES(v_society_id,v_plan.subscription_plan_id,current_date,current_date+v_plan.duration_days-1,v_plan.price,'Pending',true);
 
@@ -72,7 +72,7 @@ BEGIN
    ('PARK','Parking','Fixed'),
    ('REPAIR','Repair Fund','Fixed')
  ) x(code,name,method)
- ON CONFLICT(society_id,charge_code) DO NOTHING;
+ ON CONFLICT DO NOTHING;
 
  INSERT INTO m_rate_plan(society_id,plan_name,effective_from)
  VALUES(v_society_id,'Standard Plan',current_date)

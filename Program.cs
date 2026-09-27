@@ -201,7 +201,7 @@ app.MapGet("/api/public/subscription-plans", async (SocietyDb db, CancellationTo
     return Results.Ok(plans);
 });
 
-app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, SocietyDb db, CancellationToken ct) =>
+app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, SocietyDb db, AuthService auth, HttpResponse response, HttpContext httpContext, CancellationToken ct) =>
 {
     if (!db.IsConfigured) return Results.Problem("Database is not configured.",statusCode:503);
     if (string.IsNullOrWhiteSpace(request.SocietyName) || string.IsNullOrWhiteSpace(request.AdminName) ||
@@ -223,10 +223,25 @@ app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, S
         cmd.Parameters.AddWithValue("plan_code",request.PlanCode.Trim());
         await using var reader=await cmd.ExecuteReaderAsync(ct);
         if(!await reader.ReadAsync(ct)) return Results.BadRequest(new { message="Society creation failed." });
+        var createdSocietyId=reader.GetInt64(0);
+        var createdUserId=reader.GetInt64(1);
+        var token=await auth.CreateSessionAsync(createdUserId,createdSocietyId,ct);
+        AuthGuard.ClearCookie(response);
+        var identity=new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier,createdUserId.ToString()),
+            new Claim(ClaimTypes.Name,request.LoginName.Trim()),
+            new Claim(ClaimTypes.Role,"SOCIETY_ADMIN"),
+            new Claim("society360_session_token",token),
+            new Claim("society360_society_id",createdSocietyId.ToString())
+        },CookieAuthenticationDefaults.AuthenticationScheme);
+        await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(identity),
+            new AuthenticationProperties { IsPersistent=true,ExpiresUtc=DateTimeOffset.UtcNow.AddHours(8) });
         return Results.Ok(new {
-            societyId=reader.GetInt64(0),userId=reader.GetInt64(1),societyCode=reader.GetString(2),
+            societyId=createdSocietyId,userId=createdUserId,societyCode=reader.GetString(2),
             planCode=reader.GetString(3),planName=reader.GetString(4),amount=reader.GetDecimal(5),endDate=reader.GetDateTime(6).ToString("yyyy-MM-dd"),
-            paymentStatus="Pending"
+            paymentStatus="Pending",route="/modules/society-admin/index.html"
         });
     }
     catch(PostgresException ex)
@@ -234,6 +249,53 @@ app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, S
         return Results.BadRequest(new { message=ex.MessageText });
     }
 }).RequireRateLimiting("public-auth");
+
+app.MapGet("/api/subscription/current", async (AuthService auth, HttpContext http, CancellationToken ct) =>
+{
+    var session=await AuthGuard.Get(http,auth,ct);
+    if(session is null) return Results.Unauthorized();
+    if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || session.SocietyId is null) return Results.Forbid();
+    await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+    await cn.OpenAsync(ct);
+    await using var cmd=new NpgsqlCommand("select * from society_manager.fn_current_society_subscription(@society)",cn);
+    cmd.Parameters.AddWithValue("society",session.SocietyId.Value);
+    await using var r=await cmd.ExecuteReaderAsync(ct);
+    if(!await r.ReadAsync(ct)) return Results.NotFound(new { message="No active subscription found." });
+    return Results.Ok(new {
+        subscriptionId=r.GetInt64(0),planCode=r.GetString(1),planName=r.GetString(2),
+        startDate=r.GetDateTime(3).ToString("yyyy-MM-dd"),endDate=r.GetDateTime(4).ToString("yyyy-MM-dd"),
+        amount=r.GetDecimal(5),paymentStatus=r.GetString(6),paymentReference=r.IsDBNull(7)?null:r.GetString(7),
+        daysRemaining=r.GetInt32(8)
+    });
+});
+
+app.MapPost("/api/subscription/payment", async (SubscriptionPaymentRequest request, AuthService auth, HttpContext http, CancellationToken ct) =>
+{
+    var session=await AuthGuard.Get(http,auth,ct);
+    if(session is null) return Results.Unauthorized();
+    if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || session.SocietyId is null) return Results.Forbid();
+    if(request.Amount<=0 || string.IsNullOrWhiteSpace(request.PaymentMode))
+        return Results.BadRequest(new { message="Payment amount and payment method are required." });
+    try
+    {
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_record_subscription_payment(@society,@subscription,@amount,@mode,@reference,@user)",cn);
+        cmd.Parameters.AddWithValue("society",session.SocietyId.Value);
+        cmd.Parameters.AddWithValue("subscription",request.SubscriptionId);
+        cmd.Parameters.AddWithValue("amount",request.Amount);
+        cmd.Parameters.AddWithValue("mode",request.PaymentMode.Trim());
+        cmd.Parameters.AddWithValue("reference",(object?)request.ReferenceNo?.Trim()??DBNull.Value);
+        cmd.Parameters.AddWithValue("user",session.UserId);
+        await using var r=await cmd.ExecuteReaderAsync(ct);
+        if(!await r.ReadAsync(ct)) return Results.BadRequest(new { message="Payment could not be recorded." });
+        return Results.Ok(new { paymentId=r.GetInt64(0),subscriptionId=r.GetInt64(1),status=r.GetString(2) });
+    }
+    catch(PostgresException ex)
+    {
+        return Results.BadRequest(new { message=ex.MessageText });
+    }
+});
 
 app.MapPost("/api/auth/change-login", async (ChangeLoginRequest request, AuthService auth, HttpContext http, CancellationToken ct) =>
 {
@@ -341,6 +403,8 @@ app.MapPost("/api/migration/import", async (HttpRequest request, MigrationServic
 });
 
 app.MapGet("/login", () => Results.Redirect("/login.html"));
+app.MapGet("/api/subscription/payment", () => Results.StatusCode(StatusCodes.Status405MethodNotAllowed));
+app.Map("/api/{**path}", () => Results.NotFound(new { message="API endpoint not found." }));
 app.MapFallbackToFile("index.html");
 
 if (args.Contains("--apply-migration-schema", StringComparer.OrdinalIgnoreCase))
@@ -439,7 +503,7 @@ if (args.Contains("--apply-society-signup-schema", StringComparer.OrdinalIgnoreC
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
     if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
     await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
-    foreach(var file in new[]{"013_society_signup_and_plans.sql","014_society_admin_provision.sql"})
+    foreach(var file in new[]{"013_society_signup_and_plans.sql","014_society_admin_provision.sql","015_subscription_payment.sql"})
     {
         var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database",file));
         await using var command=new NpgsqlCommand(sql,connection);
@@ -475,4 +539,5 @@ public sealed record CreateSocietyRequest(
     string SocietyName,string AdminName,string LoginName,string Password,string PlanCode,
     string? Email,string? Phone,string? Address);
 public sealed record ChangePasswordRequest(string CurrentPassword,string NewPassword);
+public sealed record SubscriptionPaymentRequest(long SubscriptionId,decimal Amount,string PaymentMode,string? ReferenceNo);
 public sealed record ConnectionRequest(string Value);
