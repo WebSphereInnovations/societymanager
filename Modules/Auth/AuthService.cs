@@ -1,5 +1,3 @@
-[Reading 142 lines from start (total: 142 lines, 0 remaining)]
-
 using System.Security.Cryptography;
 using Npgsql;
 
@@ -142,5 +140,3 @@ public sealed record AuthUser(long UserId,string LoginName,string DisplayName,st
 public sealed record SocietyOption(long SocietyId,string SocietyCode,string SocietyName,bool IsDefault);
 public sealed record PermissionItem(string ModuleCode,string ActionCode);
 public sealed record SessionContext(Guid SessionId,long UserId,long? SocietyId,string LoginName,string DisplayName,string RoleCode);
-
-[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
