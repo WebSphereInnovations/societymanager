@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.DataProtection;
 using Npgsql;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.HttpOverrides;
 using Society360.Data;
 using Society360.Modules.Migration;
 using Society360.Modules.SocietyAdmin;
@@ -29,6 +30,11 @@ builder.Services.AddSingleton<MigrationService>();
 builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 
 var app = builder.Build();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.Use(async (context,next) =>
 {
