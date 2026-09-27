@@ -35,6 +35,7 @@ try {
         '002_core_functions.sql',
         '003_multilingual.sql',
         '005_complete_demo.sql',
+        '006_migration_import.sql',
         '004_security_auth.sql'
     )) {
         & $Psql -h $HostName -p $Port -U $Username -d $Database -v ON_ERROR_STOP=1 -f (Join-Path $ProjectRoot ('Database\' + $file))
