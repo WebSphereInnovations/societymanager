@@ -41,6 +41,8 @@ public static class SocietyAdminEndpoints
             await Query(auth,http,ct,"fn_society_admin_parking",q??"",7));
         app.MapGet("/api/society-admin/customer/{customerId:long}", async (long customerId, AuthService auth, HttpContext http, CancellationToken ct) =>
             await Customer(auth,http,ct,customerId));
+        app.MapGet("/api/society-admin/config/charges", async (AuthService auth,HttpContext http,CancellationToken ct)=>await Config(auth,http,ct,"fn_society_charge_rules",9));
+        app.MapGet("/api/society-admin/config/interest", async (AuthService auth,HttpContext http,CancellationToken ct)=>await Config(auth,http,ct,"fn_society_interest_rules",10));
     }
 
     static async Task<IResult> Query(AuthService auth,HttpContext http,CancellationToken ct,string fn,string q,int columns)
@@ -87,6 +89,15 @@ public static class SocietyAdminEndpoints
         await using var cmd=new NpgsqlCommand("select * from society_manager.fn_society_admin_customer_360(@society_id,@customer_id)",cn);
         cmd.Parameters.AddWithValue("society_id",session.SocietyId!.Value); cmd.Parameters.AddWithValue("customer_id",customerId);
         var rows=await ReadRows(cmd,17,ct); return Results.Ok(rows.FirstOrDefault());
+    }
+
+    static async Task<IResult> Config(AuthService auth,HttpContext http,CancellationToken ct,string fn,int columns)
+    {
+        var session=await AuthGuard.Get(http,auth,ct); if(session is null)return Results.Unauthorized();
+        if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || session.SocietyId is null)return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION")); await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand($"select * from society_manager.{fn}(@society_id)",cn); cmd.Parameters.AddWithValue("society_id",session.SocietyId.Value);
+        return Results.Ok(await ReadRows(cmd,columns,ct));
     }
 
     static async Task<List<Dictionary<string,object?>>> ReadRows(NpgsqlCommand cmd,int columns,CancellationToken ct)
