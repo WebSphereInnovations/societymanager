@@ -1,0 +1,57 @@
+[Reading 53 lines from start (total: 53 lines, 0 remaining)]
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Society360 — Society Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/modules/society-admin/admin.css">
+</head>
+<body>
+<div class="ambient a"></div><div class="ambient b"></div>
+<aside class="side">
+ <div class="logo"><b>3</b><div><strong>Society<span>360</span></strong><small>Society Admin</small></div></div>
+ <div class="society"><small>ACTIVE SOCIETY</small><strong id="societyName">Loading...</strong></div>
+ <nav>
+  <button class="active" data-view="home">⌂ <span>Dashboard</span></button>
+  <button data-view="customers">◎ <span>Customer 360</span></button>
+  <button data-view="flats">▦ <span>Flats & Residents</span></button>
+  <button data-view="bills">₹ <span>Billing</span></button>
+  <button data-view="collection">◈ <span>Collection</span></button>
+  <button data-view="complaints">♧ <span>Complaints</span></button>
+  <button data-view="visitors">◉ <span>Visitors</span></button>
+  <button data-view="parking">◆ <span>Parking</span></button>
+ </nav>
+ <div class="user"><div id="avatar">SA</div><div><b id="userName">Society Admin</b><small>Society Admin</small></div></div>
+</aside>
+<main>
+<header><div><small class="crumb">SOCIETY360 / SOCIETY ADMIN</small><h1 id="heading">Good morning</h1><p>Manage your society operations from one connected workspace.</p></div>
+<div class="head-actions"><select id="language-select"><option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option><option value="gu">ગુજરાતી</option><option value="kn">ಕನ್ನಡ</option><option value="ta">தமிழ்</option></select><button id="logout">Logout</button></div></header>
+<section id="home" class="view active">
+ <div class="hero"><div><span class="eyebrow">SOCIETY CONTROL CENTER</span><h2>Everything your society team needs, in one place.</h2><p>Billing, residents, collection, complaints, visitors and parking are connected to live PostgreSQL procedures.</p></div><div class="hero-mark">360</div></div>
+ <div class="cards">
+  <article><small>Total flats</small><strong id="totalFlats">—</strong><span>Registered units</span></article>
+  <article><small>Occupied</small><strong id="occupiedFlats">—</strong><span>Current occupancy</span></article>
+  <article><small>Collected</small><strong id="collected">—</strong><span>This month</span></article>
+  <article><small>Outstanding</small><strong id="outstanding">—</strong><span>Across open bills</span></article>
+  <article><small>Complaints</small><strong id="openComplaints">—</strong><span>Need attention</span></article>
+  <article><small>Visitors inside</small><strong id="insideVisitors">—</strong><span>Live security view</span></article>
+ </div>
+ <div class="quick"><button data-view="customers">Customer Search →</button><button data-view="flats">Flat Search →</button><button data-view="bills">Billing Grid →</button><button data-view="collection">Collection Grid →</button></div>
+</section><section id="customers" class="view"><div class="section-head"><div><span class="eyebrow">CRM</span><h2>Customer 360</h2><p>Start typing the first two letters of a customer name, phone or code.</p></div><input id="customerSearch" class="search" placeholder="Search customer..."></div><div id="customerTable"></div><div id="customer360" class="drawer hidden"></div></section>
+<section id="flats" class="view"><div class="section-head"><div><span class="eyebrow">MASTER DATA</span><h2>Flats & Residents</h2><p>Search by flat, wing or resident-linked unit.</p></div><input id="flatSearch" class="search" placeholder="Search flat / wing..."></div><div id="flatTable"></div></section>
+<section id="bills" class="view"><div class="section-head"><div><span class="eyebrow">BILLING</span><h2>Billing</h2><p>Live bills for the selected society.</p></div><input id="billSearch" class="search" placeholder="Bill / flat / customer..."></div><div id="billTable"></div></section>
+<section id="collection" class="view"><div class="section-head"><div><span class="eyebrow">COLLECTION</span><h2>Collection & Receipts</h2><p>Recent collection transactions returned by the database procedure.</p></div></div><div id="collectionTable"></div></section>
+<section id="complaints" class="view"><div class="section-head"><div><span class="eyebrow">CRM</span><h2>Complaints</h2><p>Track service issues and their current status.</p></div><input id="complaintSearch" class="search" placeholder="Complaint / flat / title..."></div><div id="complaintTable"></div></section>
+<section id="visitors" class="view"><div class="section-head"><div><span class="eyebrow">SECURITY</span><h2>Visitors</h2><p>Live visitor entries for this society.</p></div><input id="visitorSearch" class="search" placeholder="Visitor / flat / phone..."></div><div id="visitorTable"></div></section>
+<section id="parking" class="view"><div class="section-head"><div><span class="eyebrow">PARKING</span><h2>Parking</h2><p>Slot availability and current assignment.</p></div><input id="parkingSearch" class="search" placeholder="Slot / flat..."></div><div id="parkingTable"></div></section>
+<footer><span>Society360 · Society Admin workspace</span><span id="clock"></span></footer>
+</main>
+<script src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js"></script>
+<script src="/js/i18n.js"></script><script src="/modules/society-admin/admin.js"></script>
+</body></html>
+
+[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
