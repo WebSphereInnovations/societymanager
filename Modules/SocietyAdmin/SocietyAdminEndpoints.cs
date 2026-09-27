@@ -1,5 +1,3 @@
-[Reading 98 lines from start (total: 98 lines, 0 remaining)]
-
 using Npgsql;
 using Society360.Data;
 using Society360.Security;
@@ -98,5 +96,3 @@ public static class SocietyAdminEndpoints
         return rows;
     }
 }
-
-[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
