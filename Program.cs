@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Antiforgery;
 using Society360.Data;
 using Society360.Modules.Migration;
 using Society360.Modules.SocietyAdmin;
+using Society360.Modules.Customer;
+using Society360.Modules.Cashier;
 using Society360.Security;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,9 +28,31 @@ builder.Services.AddSingleton<MigrationService>();
 builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 
 var app = builder.Build();
+
+app.Use(async (context,next) =>
+{
+    var path=context.Request.Path.Value ?? "";
+    var protectedArea = path.StartsWith("/modules/society-admin",StringComparison.OrdinalIgnoreCase)
+        || path.StartsWith("/modules/cashier",StringComparison.OrdinalIgnoreCase)
+        || path.StartsWith("/modules/customer",StringComparison.OrdinalIgnoreCase);
+    if(!protectedArea){await next();return;}
+    var auth=context.RequestServices.GetRequiredService<AuthService>();
+    var session=await AuthGuard.Get(context,auth,context.RequestAborted);
+    if(session is null){context.Response.Redirect("/login.html");return;}
+    var target=path.StartsWith("/modules/society-admin",StringComparison.OrdinalIgnoreCase) ? "/modules/society-admin/index.html"
+        : path.StartsWith("/modules/cashier",StringComparison.OrdinalIgnoreCase) ? "/modules/cashier/index.html"
+        : "/modules/customer/index.html";
+    var allowed=(target.Contains("society-admin") && session.RoleCode is "SUPER_ADMIN" or "SOCIETY_ADMIN")
+        || (target.Contains("cashier") && session.RoleCode is "BILLING_ADMIN" or "COLLECTOR")
+        || (target.Contains("customer") && session.RoleCode=="RESIDENT");
+    if(!allowed){var route=await auth.GetLoginRouteAsync(session.UserId,context.RequestAborted);context.Response.Redirect(route?.RoutePath ?? "/login.html");return;}
+    await next();
+});
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapSocietyAdminEndpoints();
+app.MapCustomerEndpoints();
+app.MapCashierEndpoints();
 
 app.MapGet("/api/health", (SocietyDb db) => Results.Ok(new
 {    application = "Society360",
@@ -55,9 +79,11 @@ app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, Ht
     var token = await auth.CreateSessionAsync(user.UserId,selected,ct);
     AuthGuard.SetCookie(response,token);
     var permissions = await auth.GetPermissionsAsync(user.UserId,ct);
+    var route=await auth.GetLoginRouteAsync(user.UserId,ct);
     return Results.Ok(new {
         user = new { user.UserId,user.LoginName,user.DisplayName,user.RoleCode,user.PreferredLanguage },
-        societies, selectedSocietyId=selected, permissions
+        societies, selectedSocietyId=selected, permissions,
+        route = route?.RoutePath ?? "/login.html"
     });
 });
 
@@ -192,6 +218,31 @@ if (args.Contains("--apply-migration-schema", StringComparer.OrdinalIgnoreCase))
     await using var command=new NpgsqlCommand(sql,connection);
     await command.ExecuteNonQueryAsync();
     Console.WriteLine("Migration schema applied.");
+    return;
+}
+
+if (args.Contains("--apply-auth-routing-schema", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","Auth","006_login_routing_and_customer_portal.sql"));
+    await using var command=new NpgsqlCommand(sql,connection);
+    await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Auth routing and customer portal schema applied.");
+    return;
+}
+
+if (args.Contains("--provision-demo-accounts", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    await using var command=new NpgsqlCommand("select society_manager.fn_provision_demo_accounts()",connection);
+    await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Demo accounts provisioned.");
     return;
 }
 
