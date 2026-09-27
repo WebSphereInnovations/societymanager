@@ -40,6 +40,18 @@ public sealed class AuthService(IConfiguration configuration)
         return result;
     }
 
+    public async Task<(string RoleCode,string RoutePath,long? SocietyId,long? CustomerId)?> GetLoginRouteAsync(long userId,CancellationToken ct)
+    {
+        if (!IsConfigured) return null;
+        await using var cn=new NpgsqlConnection(_connectionString);
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select role_code,route_path,society_id,customer_id from society_manager.fn_login_route(@user_id)",cn);
+        cmd.Parameters.AddWithValue("user_id",userId);
+        await using var r=await cmd.ExecuteReaderAsync(ct);
+        if(!await r.ReadAsync(ct)) return null;
+        return (r.GetString(0),r.GetString(1),r.IsDBNull(2)?null:r.GetInt64(2),r.IsDBNull(3)?null:r.GetInt64(3));
+    }
+
     public async Task<IReadOnlyList<PermissionItem>> GetPermissionsAsync(long userId, CancellationToken ct)
     {
         var result = new List<PermissionItem>();
