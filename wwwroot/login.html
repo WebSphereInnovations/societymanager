@@ -48,7 +48,7 @@ document.querySelector('#language-select').addEventListener('change',e=>{Society
 document.querySelector('#login-form').addEventListener('submit',async e=>{
  e.preventDefault();const error=document.querySelector('#error');error.textContent='';
  const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:login.value,password:password.value})});
- if(res.ok){const data=await res.json();location.href=data.user?.roleCode==='SOCIETY_ADMIN'?'/modules/society-admin/index.html':'/';return;} error.textContent=res.status===401?'Invalid login name or password.':'Database setup is not ready. Please complete database setup.';
+ if(res.ok){const data=await res.json();location.href=data.route||'/login.html';return;} error.textContent=res.status===401?'Invalid login name or password.':'Database setup is not ready. Please complete database setup.';
 });
 </script>
 </body></html>
