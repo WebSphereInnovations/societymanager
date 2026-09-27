@@ -35,15 +35,19 @@ app.Use(async (context,next) =>
     var path=context.Request.Path.Value ?? "";
     var protectedArea = path.StartsWith("/modules/society-admin",StringComparison.OrdinalIgnoreCase)
         || path.StartsWith("/modules/cashier",StringComparison.OrdinalIgnoreCase)
-        || path.StartsWith("/modules/customer",StringComparison.OrdinalIgnoreCase);
+        || path.StartsWith("/modules/customer",StringComparison.OrdinalIgnoreCase)
+        || path.Equals("/",StringComparison.OrdinalIgnoreCase)
+        || path.Equals("/index.html",StringComparison.OrdinalIgnoreCase);
     if(!protectedArea){await next();return;}
     var auth=context.RequestServices.GetRequiredService<AuthService>();
     var session=await AuthGuard.Get(context,auth,context.RequestAborted);
     if(session is null){context.Response.Redirect("/login.html");return;}
-    var target=path.StartsWith("/modules/society-admin",StringComparison.OrdinalIgnoreCase) ? "/modules/society-admin/index.html"
+    var target=(path.Equals("/",StringComparison.OrdinalIgnoreCase) || path.Equals("/index.html",StringComparison.OrdinalIgnoreCase)) ? "/"
+        : path.StartsWith("/modules/society-admin",StringComparison.OrdinalIgnoreCase) ? "/modules/society-admin/index.html"
         : path.StartsWith("/modules/cashier",StringComparison.OrdinalIgnoreCase) ? "/modules/cashier/index.html"
         : "/modules/customer/index.html";
-    var allowed=(target.Contains("society-admin") && session.RoleCode is "SUPER_ADMIN" or "SOCIETY_ADMIN")
+    var allowed=(target=="/" && session.RoleCode=="SUPER_ADMIN")
+        || (target.Contains("society-admin") && session.RoleCode is "SUPER_ADMIN" or "SOCIETY_ADMIN")
         || (target.Contains("cashier") && session.RoleCode is "BILLING_ADMIN" or "COLLECTOR")
         || (target.Contains("customer") && session.RoleCode=="RESIDENT");
     if(!allowed){var route=await auth.GetLoginRouteAsync(session.UserId,context.RequestAborted);context.Response.Redirect(route?.RoutePath ?? "/login.html");return;}
