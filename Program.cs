@@ -284,9 +284,12 @@ if (args.Contains("--apply-module-catalog", StringComparer.OrdinalIgnoreCase))
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
     if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
     await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
-    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","Modules","009_full_module_catalog.sql"));
-    await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
-    Console.WriteLine("Full module catalog applied."); return;
+    foreach(var file in new[]{"009_full_module_catalog.sql","010_platform_subscription_demo.sql","011_cashier_customer_search_v2.sql","012_customer_flats.sql"})
+    {
+        var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","Modules",file));
+        await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
+    }
+    Console.WriteLine("Full module and role workspace schema applied."); return;
 }
 
 if (args.Contains("--apply-platform-demo", StringComparer.OrdinalIgnoreCase))
