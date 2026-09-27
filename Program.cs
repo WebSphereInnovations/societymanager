@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
@@ -31,6 +33,17 @@ builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<ConnectionStringProtector>();
 builder.Services.AddSingleton<MigrationService>();
 builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("public-auth",o =>
+    {
+        o.PermitLimit=10;
+        o.Window=TimeSpan.FromMinutes(1);
+        o.QueueLimit=0;
+        o.AutoReplenishment=true;
+    });
+});
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -56,6 +69,8 @@ forwardedHeaders.KnownNetworks.Clear();
 forwardedHeaders.KnownProxies.Clear();
 app.UseForwardedHeaders(forwardedHeaders);
 app.UseAuthentication();
+app.UseRouting();
+app.UseRateLimiter();
 
 app.Use(async (context,next) =>
 {
@@ -145,7 +160,7 @@ app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, Ht
         societies, selectedSocietyId=selected, permissions,
         route = safeRoute
     });
-});
+}).RequireRateLimiting("public-auth");
 
 app.MapGet("/api/auth/me", async (AuthService auth, HttpContext http, CancellationToken ct) =>
 {
@@ -160,10 +175,65 @@ app.MapPost("/api/auth/select-society", async (SocietySelectRequest request, Aut
 {
     var session = await AuthGuard.Get(http,auth,ct);
     if (session is null) return Results.Unauthorized();
-    if (!await auth.SelectSocietyAsync(http.Request.Cookies["society360_session"]!,request.SocietyId,ct))
+    var token = http.User.FindFirstValue("society360_session_token");
+    if (string.IsNullOrWhiteSpace(token) && http.Request.Cookies.TryGetValue("society360_session",out var legacyToken))
+        token=legacyToken;
+    if (string.IsNullOrWhiteSpace(token)) return Results.Unauthorized();
+    if (!await auth.SelectSocietyAsync(token,request.SocietyId,ct))
         return Results.Forbid();
     return Results.Ok(new { societyId=request.SocietyId });
 });
+
+app.MapGet("/api/public/subscription-plans", async (SocietyDb db, CancellationToken ct) =>
+{
+    if (!db.IsConfigured) return Results.Problem("Database is not configured.",statusCode:503);
+    await using var cn = db.CreateConnection();
+    await cn.OpenAsync(ct);
+    await using var cmd = new NpgsqlCommand("select * from society_manager.fn_subscription_plans()",cn);
+    await using var reader = await cmd.ExecuteReaderAsync(ct);
+    var plans = new List<object>();
+    while (await reader.ReadAsync(ct))
+        plans.Add(new {
+            planCode=reader.GetString(0),planName=reader.GetString(1),durationDays=reader.GetInt32(2),
+            price=reader.GetDecimal(3),maxFlats=reader.IsDBNull(4)?(int?)null:reader.GetInt32(4),
+            maxUsers=reader.IsDBNull(5)?(int?)null:reader.GetInt32(5),features=reader.GetFieldValue<System.Text.Json.JsonDocument>(6).RootElement
+        });
+    return Results.Ok(plans);
+});
+
+app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, SocietyDb db, CancellationToken ct) =>
+{
+    if (!db.IsConfigured) return Results.Problem("Database is not configured.",statusCode:503);
+    if (string.IsNullOrWhiteSpace(request.SocietyName) || string.IsNullOrWhiteSpace(request.AdminName) ||
+        string.IsNullOrWhiteSpace(request.LoginName) || string.IsNullOrWhiteSpace(request.Password) ||
+        string.IsNullOrWhiteSpace(request.PlanCode))
+        return Results.BadRequest(new { message="Society name, administrator, login, password and plan are required." });
+    try
+    {
+        await using var cn = db.CreateConnection();
+        await cn.OpenAsync(ct);
+        await using var cmd = new NpgsqlCommand("select * from society_manager.fn_create_society_signup(@society_name,@email,@phone,@address,@admin_name,@login_name,@password,@plan_code)",cn);
+        cmd.Parameters.AddWithValue("society_name",request.SocietyName.Trim());
+        cmd.Parameters.AddWithValue("email",(object?)request.Email?.Trim()??DBNull.Value);
+        cmd.Parameters.AddWithValue("phone",(object?)request.Phone?.Trim()??DBNull.Value);
+        cmd.Parameters.AddWithValue("address",(object?)request.Address?.Trim()??DBNull.Value);
+        cmd.Parameters.AddWithValue("admin_name",request.AdminName.Trim());
+        cmd.Parameters.AddWithValue("login_name",request.LoginName.Trim());
+        cmd.Parameters.AddWithValue("password",request.Password);
+        cmd.Parameters.AddWithValue("plan_code",request.PlanCode.Trim());
+        await using var reader=await cmd.ExecuteReaderAsync(ct);
+        if(!await reader.ReadAsync(ct)) return Results.BadRequest(new { message="Society creation failed." });
+        return Results.Ok(new {
+            societyId=reader.GetInt64(0),userId=reader.GetInt64(1),societyCode=reader.GetString(2),
+            planCode=reader.GetString(3),planName=reader.GetString(4),amount=reader.GetDecimal(5),endDate=reader.GetDateTime(6).ToString("yyyy-MM-dd"),
+            paymentStatus="Pending"
+        });
+    }
+    catch(PostgresException ex)
+    {
+        return Results.BadRequest(new { message=ex.MessageText });
+    }
+}).RequireRateLimiting("public-auth");
 
 app.MapPost("/api/auth/change-login", async (ChangeLoginRequest request, AuthService auth, HttpContext http, CancellationToken ct) =>
 {
@@ -364,10 +434,45 @@ if (args.Contains("--apply-platform-demo", StringComparer.OrdinalIgnoreCase))
     Console.WriteLine("Platform subscription demo applied."); return;
 }
 
+if (args.Contains("--apply-society-signup-schema", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
+    foreach(var file in new[]{"013_society_signup_and_plans.sql","014_society_admin_provision.sql"})
+    {
+        var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database",file));
+        await using var command=new NpgsqlCommand(sql,connection);
+        await command.ExecuteNonQueryAsync();
+    }
+    Console.WriteLine("Society signup, subscription plans and admin provisioning schema applied."); return;
+}
+
+if (args.Contains("--provision-new-society-admin", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
+    await using var command=new NpgsqlCommand("select login_name,generated_password,society_name from society_manager.fn_provision_new_society_admin(@society_code,@login_base)",connection);
+    command.Parameters.AddWithValue("society_code","LAKEVIEW");
+    command.Parameters.AddWithValue("login_base","societyadmin360");
+    await using var reader=await command.ExecuteReaderAsync();
+    if(await reader.ReadAsync())
+    {
+        Console.WriteLine("SOCIETY_ADMIN_LOGIN="+reader.GetString(0));
+        Console.WriteLine("SOCIETY_ADMIN_PASSWORD="+reader.GetString(1));
+        Console.WriteLine("SOCIETY_ADMIN_SOCIETY="+reader.GetString(2));
+    }
+    return;
+}
+
 app.Run();
 
 public sealed record LoginRequest(string Login,string Password);
 public sealed record ChangeLoginRequest(string CurrentPassword,string NewLogin);
 public sealed record SocietySelectRequest(long SocietyId);
+public sealed record CreateSocietyRequest(
+    string SocietyName,string AdminName,string LoginName,string Password,string PlanCode,
+    string? Email,string? Phone,string? Address);
 public sealed record ChangePasswordRequest(string CurrentPassword,string NewPassword);
 public sealed record ConnectionRequest(string Value);

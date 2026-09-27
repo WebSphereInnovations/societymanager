@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Society360 — Super Admin Security</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6fb;color:#18233f;font-family:"DM Sans",sans-serif}.wrap{max-width:1050px;margin:35px auto;padding:0 22px}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.brand{font:800 21px Manrope}.brand span{color:#735fe8}.back{border:1px solid #e1e6ef;background:#fff;border-radius:9px;padding:9px 13px;text-decoration:none;color:#59657a;font-size:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:#fff;border:1px solid #e4e8f0;border-radius:18px;padding:22px;box-shadow:0 15px 40px rgba(31,41,76,.07)}h1{font:800 25px Manrope;margin:0}h2{font:700 14px Manrope;margin:0 0 6px}.sub{font-size:10px;color:#8792a5;margin:0 0 18px}.wide{grid-column:1/-1}label{display:block;font-size:10px;font-weight:700;color:#59657a;margin:12px 0 6px}input,textarea{width:100%;border:1px solid #dfe4ed;border-radius:9px;padding:10px;font:11px "DM Sans"}textarea{min-height:100px;resize:vertical}button{border:0;border-radius:9px;background:#6f5ce4;color:#fff;padding:10px 14px;font-size:10px;font-weight:700;cursor:pointer;margin-top:12px}.msg{font-size:10px;color:#299879;min-height:16px;margin-top:9px}.err{color:#d85d6a}.note{font-size:9px;color:#909bad;line-height:1.6}.danger{color:#c05e68}.actions{display:flex;gap:8px}.actions button{flex:1}.topline{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}.role{font-size:9px;color:#6c5bd4;background:#efedff;border-radius:20px;padding:7px 10px}@media(max-width:760px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}}
+</style></head>
+<body><div class="wrap">
+<div class="head"><div class="brand">Society<span>360</span> · Security</div><a class="back" href="/">← Dashboard</a></div>
+<div class="topline"><div><h1>Super Admin Security</h1><p class="sub">Manage the Super Admin login and protected connection-string utility.</p></div><span class="role">SUPER ADMIN ONLY</span></div>
+<div class="grid">
+<section class="card"><h2>Login name</h2><p class="sub">Change the Super Admin login without changing the current session.</p>
+<label>Current password</label><input id="loginCurrent" type="password">
+<label>New login name</label><input id="newLogin" value="Rahul">
+<button id="changeLogin">Change login name</button><div id="loginMsg" class="msg"></div></section>
+<section class="card"><h2>Password</h2><p class="sub">Password is stored in PostgreSQL as a salted one-way hash.</p>
+<label>Current password</label><input id="passCurrent" type="password">
+<label>New password</label><input id="newPass" type="password">
+<label>Confirm new password</label><input id="confirmPass" type="password">
+<button id="changePass">Change password</button><div id="passMsg" class="msg"></div></section>
+<section class="card wide"><h2>Connection String Protector</h2><p class="sub">Encrypt or decrypt a connection string using the server-side ASP.NET Data Protection key ring. Access is restricted to Super Admin.</p>
+<label>Value</label><textarea id="connectionValue" placeholder="Paste plain connection string or encrypted value"></textarea>
+<div class="actions"><button id="protect">Encrypt</button><button id="unprotect">Decrypt</button></div>
+<div id="connMsg" class="msg"></div>
+<p class="note">The application key ring is stored under the Windows user's local Society360 key directory. Do not copy encrypted values or key files to untrusted machines.</p></section>
+<section class="card wide"><h2>Security rules</h2><p class="note">Login passwords are never decryptable. Each password change creates a new salted hash. Session tokens are random values in the browser and only their SHA-256 hashes are stored in the database. Society access is validated server-side before a society-scoped operation is served.</p></section>
+</div></div>
+<script>async function me(){const r=await fetch('/api/auth/me');if(!r.ok){location.href='/login';return null}const x=await r.json();if(x.session.roleCode!=='SUPER_ADMIN'){location.href='/';return null}return x}
+const msg=(id,text,err=false)=>{const e=document.querySelector(id);e.textContent=text;e.className='msg'+(err?' err':'')};
+document.querySelector('#changeLogin').onclick=async()=>{const current=loginCurrent.value,n=newLogin.value.trim();if(!current||!n)return msg('#loginMsg','Enter both values.',true);const r=await fetch('/api/auth/change-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({currentPassword:current,newLogin:n})});const x=await r.json();msg('#loginMsg',x.message||'Updated.',!r.ok)};
+document.querySelector('#changePass').onclick=async()=>{const current=passCurrent.value,n=newPass.value,c=confirmPass.value;if(n!==c)return msg('#passMsg','New passwords do not match.',true);const r=await fetch('/api/auth/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({currentPassword:current,newPassword:n})});const x=await r.json();msg('#passMsg',x.message||'Updated.',!r.ok)};
+async function crypt(path){const value=connectionValue.value;if(!value)return msg('#connMsg','Enter a value.',true);const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({value})});const x=await r.json();if(r.ok){connectionValue.value=x.value;msg('#connMsg','Completed successfully.')}else msg('#connMsg',x.message||'Operation failed.',true)}
+document.querySelector('#protect').onclick=()=>crypt('/api/security/protect-connection');
+document.querySelector('#unprotect').onclick=()=>crypt('/api/security/unprotect-connection');
+me();
+</script></body></html>

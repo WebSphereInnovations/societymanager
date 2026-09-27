@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Society360 — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#111b3a;--violet:#735fe8;--ink:#18233f;--muted:#78839a;--line:#e6eaf2}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:"DM Sans",sans-serif;background:#f4f6fb;color:var(--ink);display:grid;place-items:center;overflow:hidden}
+.bg{position:fixed;inset:0;background:radial-gradient(circle at 78% 20%,#dcd7ff 0,transparent 28%),radial-gradient(circle at 20% 80%,#d5f5ef 0,transparent 26%)}
+.shell{position:relative;width:min(980px,92vw);min-height:590px;background:#fff;border:1px solid #e5e9f1;border-radius:30px;box-shadow:0 35px 90px rgba(31,41,76,.15);display:grid;grid-template-columns:1.05fr .95fr;overflow:hidden}
+.visual{background:linear-gradient(145deg,#17244b,#35366e);color:#fff;padding:50px;position:relative;overflow:hidden}.visual:after{content:"";position:absolute;width:440px;height:440px;border-radius:50%;right:-190px;bottom:-190px;background:rgba(122,107,247,.28)}
+.brand{display:flex;gap:12px;align-items:center}.mark{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#9b8cff,#5140c7);display:grid;place-items:center;font:800 23px Manrope}.brand b{font:800 22px Manrope}.brand b span{color:#9b8cff}.brand small{display:block;color:#9da9c7;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.visual h1{font:800 37px Manrope;line-height:1.1;margin:110px 0 15px;max-width:390px}.visual p{color:#b7c2dd;font-size:13px;line-height:1.7;max-width:390px}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}.chip{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);border-radius:30px;padding:8px 11px;font-size:9px;color:#dce4fb}
+.form{padding:48px 52px;display:flex;flex-direction:column;justify-content:center}.form-top{display:flex;justify-content:space-between;align-items:center}.form h2{font:800 25px Manrope;margin:0}.form p{color:var(--muted);font-size:11px;margin:8px 0 30px}.lang select{border:1px solid var(--line);border-radius:9px;padding:8px;background:#fff;color:#667187}
+label{display:block;font-size:10px;font-weight:700;color:#59657c;margin:14px 0 7px}input{width:100%;border:1px solid #dfe4ee;border-radius:11px;padding:12px 13px;font:500 12px "DM Sans";outline:none}input:focus{border-color:#8171eb;box-shadow:0 0 0 4px rgba(115,95,232,.08)}button{width:100%;border:0;border-radius:11px;padding:13px;background:linear-gradient(100deg,#7561e8,#5c50c9);color:#fff;font-weight:700;cursor:pointer;margin-top:22px;box-shadow:0 12px 25px rgba(103,86,220,.2)}.hint{font-size:9px;color:#929caf;text-align:center;margin-top:18px}.error{min-height:17px;color:#d85e6a;font-size:10px;margin-top:12px}.security{font-size:9px;color:#9aa4b5;text-align:center;margin-top:auto;padding-top:25px}
+.signup-link{display:block;text-align:center;margin-top:16px;color:#6654d5;font-size:11px;font-weight:700;text-decoration:none;cursor:pointer}
+.signup{display:none;position:fixed;inset:0;z-index:10;background:rgba(17,27,58,.48);backdrop-filter:blur(8px);padding:24px;overflow:auto}
+.signup.open{display:grid;place-items:center}
+.signup-card{width:min(1050px,96vw);background:white;border-radius:24px;padding:28px;box-shadow:0 30px 90px rgba(0,0,0,.22)}
+.signup-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}.signup-head h2{font:800 24px Manrope;margin:0}.signup-head p{font-size:11px;color:var(--muted);margin:6px 0 0}
+.close{width:38px!important;height:38px;padding:0!important;margin:0!important;background:#f2f4f8!important;color:#536078!important;box-shadow:none!important}
+.signup-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px}.signup-form label{margin-top:10px}.signup-form input{margin-bottom:2px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.plan{border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;background:#fff;transition:.18s}.plan:hover,.plan.selected{border-color:#7a68e8;box-shadow:0 0 0 3px #7865e710}.plan b{font:800 16px Manrope}.plan strong{display:block;font:800 22px Manrope;margin:9px 0 2px}.plan small{color:#8791a4;font-size:9px}.plan ul{padding-left:16px;color:#667187;font-size:9px;line-height:1.8}.signup-submit{margin-top:16px}.signup-message{min-height:18px;font-size:10px;color:#d45d6a;margin-top:9px}
+@media(max-width:760px){.shell{grid-template-columns:1fr}.visual{display:none}.form{padding:40px 28px}.signup-grid{grid-template-columns:1fr}.plans{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="shell">
+<section class="visual">
+<div class="brand"><div class="mark">3</div><div><b>Society<span>360</span></b><small>Smart Community OS</small></div></div>
+<h1 data-i18n="loginTitle">One secure place for every society.</h1>
+<p data-i18n="loginText">Manage multiple societies, roles, billing, residents and operations from one professional platform.</p>
+<div class="chips"><span class="chip">Multi-Society</span><span class="chip">Dynamic Rights</span><span class="chip">Billing</span><span class="chip">6 Languages</span></div></section>
+<section class="form">
+<div class="form-top"><h2 data-i18n="signIn">Sign in</h2><div class="lang"><select id="language-select"><option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option><option value="gu">ગુજરાતી</option><option value="kn">ಕನ್ನಡ</option><option value="ta">தமிழ்</option></select></div></div>
+<p data-i18n="welcomeBack">Welcome back. Enter your account details to continue.</p>
+<form id="login-form">
+<label data-i18n="loginName">Login name</label><input id="login" autocomplete="username" required>
+<label data-i18n="password">Password</label><input id="password" type="password" autocomplete="current-password" required>
+<div id="error" class="error"></div>
+<button type="submit" data-i18n="signIn">Sign in</button>
+</form>
+<a class="signup-link" id="open-signup">Create a new society account</a>
+<div class="hint" data-i18n="secureHint">Your password is stored as a salted hash. It is never stored as plain text.</div>
+<div class="security">Society360 · Secure access</div>
+</section>
+</div>
+
+<div class="signup" id="signup">
+ <div class="signup-card">
+  <div class="signup-head"><div><h2>Create your Society360 society</h2><p>Create the society, first Society Admin account and subscription together. Payment is kept as Pending until your payment method is connected.</p></div><button class="close" id="close-signup" type="button">×</button></div>
+  <div class="signup-grid">
+   <form class="signup-form" id="signup-form">
+    <label>Society name</label><input id="s-name" required minlength="3" placeholder="Example: Green Valley Residency">
+    <label>Administrator name</label><input id="s-admin" required minlength="2" placeholder="Full name">
+    <label>Admin login name</label><input id="s-login" required minlength="4" autocomplete="username" placeholder="societyadmin">
+    <label>Password</label><input id="s-password" required minlength="10" type="password" autocomplete="new-password" placeholder="Minimum 10 characters">
+    <label>Email</label><input id="s-email" type="email" placeholder="admin@example.com">
+    <label>Phone</label><input id="s-phone" placeholder="+91">
+    <label>Address</label><input id="s-address" placeholder="Society address">
+    <input id="s-plan" type="hidden" value="PRO">
+    <div class="signup-message" id="signup-message"></div>
+    <button class="signup-submit" type="submit">Create Society & Admin Account</button>
+   </form>
+   <div>
+    <h3 style="font:800 16px Manrope;margin:0 0 12px">Choose subscription</h3>
+    <div class="plans" id="plans"><div class="plan"><b>Loading plans…</b></div></div>
+    <p style="font-size:9px;color:#8791a4;line-height:1.7;margin-top:14px">Plans are annual. Subscription is created immediately with Pending Payment status. No payment gateway is called yet.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script src="/js/i18n.js"></script>
+<script>
+const loginText={en:{loginTitle:'One secure place for every society.',loginText:'Manage multiple societies, roles, billing, residents and operations from one professional platform.',signIn:'Sign in',welcomeBack:'Welcome back. Enter your account details to continue.',loginName:'Login name',password:'Password',secureHint:'Your password is stored as a salted hash. It is never stored as plain text.'},hi:{loginTitle:'हर सोसायटी के लिए एक सुरक्षित प्लेटफॉर्म।',loginText:'मल्टीपल सोसायटी, रोल, बिलिंग, निवासी और संचालन एक ही प्रोफेशनल प्लेटफॉर्म से मैनेज करें।',signIn:'साइन इन',welcomeBack:'वापसी पर स्वागत है। आगे बढ़ने के लिए अपनी जानकारी दर्ज करें।',loginName:'लॉगिन नाम',password:'पासवर्ड',secureHint:'आपका पासवर्ड salted hash के रूप में सेव होता है।'},mr:{loginTitle:'प्रत्येक सोसायटीसाठी एक सुरक्षित प्लॅटफॉर्म.',loginText:'अनेक सोसायटी, भूमिका, बिलिंग, रहिवासी आणि कामकाज एकाच प्लॅटफॉर्मवर व्यवस्थापित करा.',signIn:'साइन इन',welcomeBack:'पुन्हा स्वागत आहे. पुढे जाण्यासाठी माहिती भरा.',loginName:'लॉगिन नाव',password:'पासवर्ड',secureHint:'तुमचा पासवर्ड salted hash स्वरूपात सेव्ह होतो.'}};
+function applyLoginText(){const lang=Society360I18n.current;const d=loginText[lang]||loginText.en;document.querySelectorAll('[data-i18n]').forEach(e=>{if(d[e.dataset.i18n])e.textContent=d[e.dataset.i18n]});}
+Society360I18n.init();applyLoginText();
+document.querySelector('#language-select').addEventListener('change',e=>{Society360I18n.setLanguage(e.target.value);applyLoginText();});
+document.querySelector('#login-form').addEventListener('submit',async e=>{
+ e.preventDefault();const error=document.querySelector('#error');error.textContent='';
+ const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:login.value,password:password.value})});
+ if(res.ok){const data=await res.json();location.href=data.route||'/login.html';return;} error.textContent=res.status===401?'Invalid login name or password.':'Database setup is not ready. Please complete database setup.';
+});
+
+const signup=document.querySelector('#signup');
+document.querySelector('#open-signup').addEventListener('click',()=>{signup.classList.add('open');loadPlans();});
+document.querySelector('#close-signup').addEventListener('click',()=>signup.classList.remove('open'));
+signup.addEventListener('click',e=>{if(e.target===signup)signup.classList.remove('open');});
+
+async function loadPlans(){
+ const box=document.querySelector('#plans');
+ try{
+  const res=await fetch('/api/public/subscription-plans',{cache:'no-store'});
+  if(!res.ok)throw new Error();
+  const plans=await res.json();
+  box.innerHTML=plans.map((p,i)=>'<div class="plan '+(i===1?'selected':'')+'" data-plan="'+p.planCode+'"><b>'+p.planName+'</b><strong>₹'+Number(p.price).toLocaleString('en-IN')+'</strong><small>'+p.durationDays+' days · up to '+(p.maxFlats||'—')+' flats · '+(p.maxUsers||'—')+' users</small><ul>'+Object.keys(p.features||{}).slice(0,5).map(x=>'<li>'+x.replaceAll('_',' ')+'</li>').join('')+'</ul></div>').join('');
+  document.querySelectorAll('.plan').forEach(x=>x.addEventListener('click',()=>{document.querySelectorAll('.plan').forEach(y=>y.classList.remove('selected'));x.classList.add('selected');document.querySelector('#s-plan').value=x.dataset.plan;}));
+ }catch{box.innerHTML='<div class="plan"><b>Plans unavailable</b><small>Please try again after database setup.</small></div>';}
+}
+
+document.querySelector('#signup-form').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const msg=document.querySelector('#signup-message');msg.textContent='Creating society…';
+ const body={societyName:document.querySelector('#s-name').value,adminName:document.querySelector('#s-admin').value,loginName:document.querySelector('#s-login').value,password:document.querySelector('#s-password').value,planCode:document.querySelector('#s-plan').value,email:document.querySelector('#s-email').value,phone:document.querySelector('#s-phone').value,address:document.querySelector('#s-address').value};
+ try{
+  const res=await fetch('/api/public/create-society',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const data=await res.json();
+  if(!res.ok){msg.textContent=data.message||'Society creation failed.';return;}
+  signup.classList.remove('open');
+  document.querySelector('#login').value=body.loginName;
+  document.querySelector('#password').value='';
+  document.querySelector('#error').textContent='Society created. Subscription is Pending Payment. Please sign in with your new Society Admin account.';
+  document.querySelector('#error').style.color='#269e80';
+ }catch{msg.textContent='Unable to reach the server. Please try again.';}
+});
+</script>
+</body></html>
