@@ -15,9 +15,18 @@ async function init(){
  }catch(e){location.href='/login'}
 }
 async function loadDashboard(){const x=await get('/api/society-admin/dashboard');$('#totalFlats').textContent=x.totalFlats;$('#occupiedFlats').textContent=x.occupiedFlats;$('#collected').textContent=money(x.collected);$('#outstanding').textContent=money(x.outstanding);$('#openComplaints').textContent=x.openComplaints;$('#insideVisitors').textContent=x.insideVisitors}
-function show(view){$$('.view').forEach(x=>x.classList.toggle('active',x.id===view));$$('.side nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===view));if(view==='customers')loadCustomers('');if(view==='flats')loadFlats('');if(view==='bills')loadBills('');if(view==='collection')loadCollection();if(view==='complaints')loadComplaints('');if(view==='visitors')loadVisitors('');if(view==='parking')loadParking('')}
+function show(view,label){
+ const target=document.getElementById(view)?view:'module-workspace';
+ $('.view').forEach(x=>x.classList.toggle('active',x.id===target));
+ $('.side nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===view));
+ if(target==='module-workspace'){
+   $('#moduleTitle').textContent=label||view;
+   $('#moduleCode').textContent=(label||view).toUpperCase();
+   $('#moduleInfo').textContent='This menu item is part of the Society360 module catalog and is society-scoped. Use the linked operational workspace below for the supported workflow.';
+ }
+ if(view==='customers')loadCustomers('');if(view==='flats')loadFlats('');if(view==='bills')loadBills('');if(view==='collection')loadCollection();if(view==='complaints')loadComplaints('');if(view==='visitors')loadVisitors('');if(view==='parking')loadParking('')}
 function wire(){
- $$('[data-view]').forEach(x=>x.addEventListener('click',()=>show(x.dataset.view)));
+ $('[data-view]').forEach(x=>x.addEventListener('click',()=>show(x.dataset.view,x.querySelector('span')?.textContent||x.textContent.trim())));
  $('#logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST'});location.href='/login'};
  $('#customerSearch').oninput=debounce(e=>loadCustomers(e.target.value));$('#flatSearch').oninput=debounce(e=>loadFlats(e.target.value));
  $('#billSearch').oninput=debounce(e=>loadBills(e.target.value));$('#complaintSearch').oninput=debounce(e=>loadComplaints(e.target.value));
