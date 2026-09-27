@@ -1,5 +1,3 @@
-[Reading 38 lines from start (total: 38 lines, 0 remaining)]
-
 const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
 let session=null;
 const money=v=>'₹'+Number(v||0).toLocaleString('en-IN',{maximumFractionDigits:2});
@@ -38,5 +36,3 @@ async function loadParking(q){const rows=await get('/api/society-admin/parking?q
 const translations={en:{dash:'Dashboard',cust:'Customer 360',flat:'Flats & Residents',bill:'Billing',col:'Collection',comp:'Complaints',vis:'Visitors',park:'Parking'},hi:{dash:'डैशबोर्ड',cust:'ग्राहक 360',flat:'फ्लैट और निवासी',bill:'बिलिंग',col:'कलेक्शन',comp:'शिकायतें',vis:'विज़िटर',park:'पार्किंग'},mr:{dash:'डॅशबोर्ड',cust:'ग्राहक 360',flat:'फ्लॅट आणि रहिवासी',bill:'बिलिंग',col:'कलेक्शन',comp:'तक्रारी',vis:'अभ्यागत',park:'पार्किंग'},gu:{dash:'ડેશબોર્ડ',cust:'ગ્રાહક 360',flat:'ફ્લેટ અને રહેવાસી',bill:'બિલિંગ',col:'કલેક્શન',comp:'ફરિયાદો',vis:'મુલાકાતીઓ',park:'પાર્કિંગ'},kn:{dash:'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',cust:'ಗ್ರಾಹಕ 360',flat:'ಫ್ಲಾಟ್ ಮತ್ತು ನಿವಾಸಿಗಳು',bill:'ಬಿಲ್ಲಿಂಗ್',col:'ಸಂಗ್ರಹ',comp:'ದೂರುಗಳು',vis:'ಭೇಟಿದಾರರು',park:'ಪಾರ್ಕಿಂಗ್'},ta:{dash:'டாஷ்போர்டு',cust:'வாடிக்கையாளர் 360',flat:'ஃப்ளாட்கள் மற்றும் குடியிருப்போர்',bill:'பில்லிங்',col:'வசூல்',comp:'புகார்கள்',vis:'வருகையாளர்கள்',park:'பார்க்கிங்'}};
 function applyLanguage(lang){const d=translations[lang]||translations.en;const map=[['home',d.dash],['customers',d.cust],['flats',d.flat],['bills',d.bill],['collection',d.col],['complaints',d.comp],['visitors',d.vis],['parking',d.park]];map.forEach(([v,t])=>{const b=document.querySelector('[data-view="'+v+'"] span');if(b)b.textContent=t})}
 init();
-
-[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
