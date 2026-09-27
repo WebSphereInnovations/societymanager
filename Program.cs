@@ -1,8 +1,11 @@
+[Reading 234 lines from start (total: 234 lines, 0 remaining)]
+
 using Microsoft.AspNetCore.DataProtection;
 using Npgsql;
 using Microsoft.AspNetCore.Antiforgery;
 using Society360.Data;
 using Society360.Modules.Migration;
+using Society360.Modules.SocietyAdmin;
 using Society360.Security;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +30,7 @@ builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.MapSocietyAdminEndpoints();
 
 app.MapGet("/api/health", (SocietyDb db) => Results.Ok(new
 {    application = "Society360",
@@ -193,6 +197,36 @@ if (args.Contains("--apply-migration-schema", StringComparer.OrdinalIgnoreCase))
     return;
 }
 
+if (args.Contains("--apply-society-admin-schema", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","SocietyAdmin","001_society_admin_procedures.sql"));
+    await using var command=new NpgsqlCommand(sql,connection);
+    await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Society Admin procedure schema applied.");
+    return;
+}
+
+if (args.Contains("--provision-society-admin-demo", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","SocietyAdmin","002_demo_account.sql"));
+    await using var command=new NpgsqlCommand(sql,connection);
+    await using var reader=await command.ExecuteReaderAsync();
+    if(await reader.ReadAsync())
+    {
+        Console.WriteLine("DEMO_LOGIN=lakeadmin");
+        Console.WriteLine("DEMO_TOKEN="+reader.GetString(0));
+    }
+    return;
+}
+
 app.Run();
 
 public sealed record LoginRequest(string Login,string Password);
@@ -200,3 +234,5 @@ public sealed record ChangeLoginRequest(string CurrentPassword,string NewLogin);
 public sealed record SocietySelectRequest(long SocietyId);
 public sealed record ChangePasswordRequest(string CurrentPassword,string NewPassword);
 public sealed record ConnectionRequest(string Value);
+
+[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
