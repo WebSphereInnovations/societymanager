@@ -15,7 +15,7 @@ public static class AuthGuard
     {
         response.Cookies.Append("society360_session",token,new CookieOptions
         {
-            HttpOnly=true,Secure=response.HttpContext.Request.IsHttps,SameSite=SameSiteMode.Strict,
+            HttpOnly=true,Secure=response.HttpContext.Request.IsHttps,SameSite=SameSiteMode.Lax,
             Expires=DateTimeOffset.UtcNow.AddHours(8),Path="/"
         });
     }
