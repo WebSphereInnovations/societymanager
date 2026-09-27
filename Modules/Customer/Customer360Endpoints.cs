@@ -5,6 +5,7 @@ public static class Customer360Endpoints
 {
  public static void MapCustomer360Endpoints(this WebApplication app)
  {
+  app.MapGet("/api/customer/flats",async(AuthService a,HttpContext h,CancellationToken c)=>await Many(a,h,c,"fn_customer_flats",11));
   app.MapGet("/api/customer/360",async(AuthService a,HttpContext h,CancellationToken c)=>await Fn(a,h,c,"fn_customer_360",21));
   app.MapGet("/api/customer/parking",async(AuthService a,HttpContext h,CancellationToken c)=>await Many(a,h,c,"fn_customer_parking",8));
   app.MapGet("/api/customer/payments",async(AuthService a,HttpContext h,CancellationToken c)=>await Many(a,h,c,"fn_customer_payments",8));
