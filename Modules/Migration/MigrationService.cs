@@ -54,19 +54,18 @@ public sealed class MigrationService(IConfiguration configuration)
     {
         await using var c=new NpgsqlConnection(_cs); await c.OpenAsync(ct); await using var tx=await c.BeginTransactionAsync(ct);
         var batchNo="MIG-"+DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-        await using var cmd=new NpgsqlCommand("select society_manager.fn_create_migration_batch(@society_id,@batch_no,@file,@user_id)",c,tx);
+        await using var cmd=new NpgsqlCommand("call society_manager.sp_create_migration_batch(@society_id,@batch_no,@file,@user_id,NULL)",c,tx);
         cmd.Parameters.AddWithValue("society_id",societyId); cmd.Parameters.AddWithValue("batch_no",batchNo); cmd.Parameters.AddWithValue("file",fileName); cmd.Parameters.AddWithValue("user_id",userId);
         var batchId=Convert.ToInt64(await cmd.ExecuteScalarAsync(ct));
         foreach(var r in rows)
         {
-            await using var ins=new NpgsqlCommand(@"insert into society_manager.t_migration_unit_staging
-                (migration_batch_id,society_id,source_row_number,wing_code,unit_no,owner_name,area_sqft,maintenance_amount,unit_type,raw_data)
-                values(@b,@s,@row,@wing,@unit,@owner,@area,@maint,@type,@raw)",c,tx);
-            ins.Parameters.AddWithValue("b",batchId); ins.Parameters.AddWithValue("s",societyId); ins.Parameters.AddWithValue("row",r.RowNumber);
+            await using var ins=new NpgsqlCommand("call society_manager.sp_migration_stage_row(@batch,@society,@row,@wing,@unit,@owner,@area,@maint,@type,@raw,@user)",c,tx);
+            ins.Parameters.AddWithValue("batch",batchId); ins.Parameters.AddWithValue("society",societyId); ins.Parameters.AddWithValue("row",r.RowNumber);
             ins.Parameters.AddWithValue("wing",(object?)r.Wing??DBNull.Value); ins.Parameters.AddWithValue("unit",r.UnitNo);
             ins.Parameters.AddWithValue("owner",(object?)r.Owner??DBNull.Value); ins.Parameters.AddWithValue("area",(object?)r.Area??DBNull.Value);
             ins.Parameters.AddWithValue("maint",(object?)r.Maintenance??DBNull.Value); ins.Parameters.AddWithValue("type",r.UnitType);
-            ins.Parameters.AddWithValue("raw",JsonSerializer.Serialize(new{r.RowNumber,r.Wing,r.UnitNo,r.Owner,r.Area,r.Maintenance,r.UnitType,r.SourceFile}));
+            ins.Parameters.AddWithValue("raw",NpgsqlTypes.NpgsqlDbType.Jsonb,JsonSerializer.Serialize(new{r.RowNumber,r.Wing,r.UnitNo,r.Owner,r.Area,r.Maintenance,r.UnitType,r.SourceFile}));
+            ins.Parameters.AddWithValue("user",userId);
             await ins.ExecuteNonQueryAsync(ct);
         }
         await tx.CommitAsync(ct); return batchId;

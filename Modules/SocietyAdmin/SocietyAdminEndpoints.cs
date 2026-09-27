@@ -41,6 +41,10 @@ public static class SocietyAdminEndpoints
             await Query(auth,http,ct,"fn_society_admin_parking",q??"",7));
         app.MapGet("/api/society-admin/customer/{customerId:long}", async (long customerId, AuthService auth, HttpContext http, CancellationToken ct) =>
             await Customer(auth,http,ct,customerId));
+        app.MapGet("/api/society-admin/customer/{customerId:long}/service-history", async (long customerId, AuthService auth, HttpContext http, CancellationToken ct) =>
+            await ServiceHistory(auth,http,ct,customerId));
+        app.MapGet("/api/society-admin/security/logins", async (AuthService auth, HttpContext http, CancellationToken ct) =>
+            await LoginSecurity(auth,http,ct));
         app.MapGet("/api/society-admin/config/charges", async (AuthService auth,HttpContext http,CancellationToken ct)=>await Config(auth,http,ct,"fn_society_charge_rules",9));
         app.MapGet("/api/society-admin/config/interest", async (AuthService auth,HttpContext http,CancellationToken ct)=>await Config(auth,http,ct,"fn_society_interest_rules",10));
         app.MapPost("/api/society-admin/config/charge", async (ChargeRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct)=>await SaveCharge(x,auth,http,ct));
@@ -93,8 +97,34 @@ public static class SocietyAdminEndpoints
         var rows=await ReadRows(cmd,17,ct); return Results.Ok(rows.FirstOrDefault());
     }
 
-    static async Task<IResult> SaveCharge(ChargeRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct){var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")||s.SocietyId is null)return Results.Forbid();await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);await using var cmd=new NpgsqlCommand("select society_manager.fn_society_save_charge_rule(@society,@code,@plan,@method,@rate,@from,@to,@scope,@value,@user)",cn);cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("code",x.ChargeCode);cmd.Parameters.AddWithValue("plan",x.PlanName);cmd.Parameters.AddWithValue("method",x.Method);cmd.Parameters.AddWithValue("rate",x.Rate);cmd.Parameters.AddWithValue("from",x.EffectiveFrom);cmd.Parameters.AddWithValue("to",(object?)x.EffectiveTo??DBNull.Value);cmd.Parameters.AddWithValue("scope",x.ScopeType);cmd.Parameters.AddWithValue("value",(object?)x.ScopeValue??DBNull.Value);cmd.Parameters.AddWithValue("user",s.UserId);return Results.Ok(new{success=true,id=await cmd.ExecuteScalarAsync(ct)});}
-    static async Task<IResult> SaveInterest(InterestRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct){var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")||s.SocietyId is null)return Results.Forbid();await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);await using var cmd=new NpgsqlCommand("select society_manager.fn_society_save_interest_rule(@society,@name,@type,@rate,@frequency,@compound,@grace,@cap,@from,@to,@user)",cn);cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("name",x.RuleName);cmd.Parameters.AddWithValue("type",x.CalculationType);cmd.Parameters.AddWithValue("rate",x.Rate);cmd.Parameters.AddWithValue("frequency",x.Frequency);cmd.Parameters.AddWithValue("compound",x.SimpleOrCompound);cmd.Parameters.AddWithValue("grace",x.GraceDays);cmd.Parameters.AddWithValue("cap",(object?)x.CapAmount??DBNull.Value);cmd.Parameters.AddWithValue("from",x.EffectiveFrom);cmd.Parameters.AddWithValue("to",(object?)x.EffectiveTo??DBNull.Value);cmd.Parameters.AddWithValue("user",s.UserId);return Results.Ok(new{success=true,id=await cmd.ExecuteScalarAsync(ct)});}
+    static async Task<IResult> ServiceHistory(AuthService auth,HttpContext http,CancellationToken ct,long customerId)
+    {
+        var session=await AuthGuard.Get(http,auth,ct);
+        if(session is null) return Results.Unauthorized();
+        if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || session.SocietyId is null) return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_customer_service_history(@society,@customer,NULL,@limit)",cn);
+        cmd.Parameters.AddWithValue("society",session.SocietyId.Value);
+        cmd.Parameters.AddWithValue("customer",customerId);
+        cmd.Parameters.AddWithValue("limit",500);
+        return Results.Ok(await ReadRows(cmd,17,ct));
+    }
+
+    static async Task<IResult> LoginSecurity(AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var session=await AuthGuard.Get(http,auth,ct);
+        if(session is null) return Results.Unauthorized();
+        if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || session.SocietyId is null) return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_login_security_overview(@society)",cn);
+        cmd.Parameters.AddWithValue("society",session.SocietyId.Value);
+        return Results.Ok(await ReadRows(cmd,9,ct));
+    }
+
+    static async Task<IResult> SaveCharge(ChargeRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct){var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")||s.SocietyId is null)return Results.Forbid();await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);await using var cmd=new NpgsqlCommand("call society_manager.sp_society_save_charge_rule(@society,@code,@plan,@method,@rate,@from,@to,@scope,@value,@user,NULL)",cn);cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("code",x.ChargeCode);cmd.Parameters.AddWithValue("plan",x.PlanName);cmd.Parameters.AddWithValue("method",x.Method);cmd.Parameters.AddWithValue("rate",x.Rate);cmd.Parameters.AddWithValue("from",x.EffectiveFrom);cmd.Parameters.AddWithValue("to",(object?)x.EffectiveTo??DBNull.Value);cmd.Parameters.AddWithValue("scope",x.ScopeType);cmd.Parameters.AddWithValue("value",(object?)x.ScopeValue??DBNull.Value);cmd.Parameters.AddWithValue("user",s.UserId);return Results.Ok(new{success=true,id=await cmd.ExecuteScalarAsync(ct)});}
+    static async Task<IResult> SaveInterest(InterestRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct){var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")||s.SocietyId is null)return Results.Forbid();await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);await using var cmd=new NpgsqlCommand("call society_manager.sp_society_save_interest_rule(@society,@name,@type,@rate,@frequency,@compound,@grace,@cap,@from,@to,@user,NULL)",cn);cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("name",x.RuleName);cmd.Parameters.AddWithValue("type",x.CalculationType);cmd.Parameters.AddWithValue("rate",x.Rate);cmd.Parameters.AddWithValue("frequency",x.Frequency);cmd.Parameters.AddWithValue("compound",x.SimpleOrCompound);cmd.Parameters.AddWithValue("grace",x.GraceDays);cmd.Parameters.AddWithValue("cap",(object?)x.CapAmount??DBNull.Value);cmd.Parameters.AddWithValue("from",x.EffectiveFrom);cmd.Parameters.AddWithValue("to",(object?)x.EffectiveTo??DBNull.Value);cmd.Parameters.AddWithValue("user",s.UserId);return Results.Ok(new{success=true,id=await cmd.ExecuteScalarAsync(ct)});}
 
     static async Task<IResult> Config(AuthService auth,HttpContext http,CancellationToken ct,string fn,int columns)
     {

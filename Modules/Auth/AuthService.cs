@@ -66,7 +66,7 @@ public sealed class AuthService(IConfiguration configuration)
         return result;
     }
 
-    public async Task<string> CreateSessionAsync(long userId, long? societyId, CancellationToken ct)
+    public async Task<(string RawToken, Guid SessionId)> CreateSessionAsync(long userId, long? societyId, CancellationToken ct)
     {
         if (!IsConfigured) throw new InvalidOperationException("Database is not configured.");
         var raw = Convert.ToBase64String(RandomNumberGenerator.GetBytes(48));
@@ -79,8 +79,53 @@ public sealed class AuthService(IConfiguration configuration)
         cmd.Parameters.AddWithValue("token_hash",hash);
         cmd.Parameters.AddWithValue("society_id",(object?)societyId ?? DBNull.Value);
         cmd.Parameters.AddWithValue("expires_at",DateTimeOffset.UtcNow.AddHours(8));
-        await cmd.ExecuteScalarAsync(ct);
-        return raw;
+        var value = await cmd.ExecuteScalarAsync(ct);
+        return (raw,(Guid)value!);
+    }
+
+    public async Task<(long UserId,long? SocietyId,string LoginName)?> FindUserByLoginAsync(string login, CancellationToken ct)
+    {
+        if (!IsConfigured) return null;
+        await using var cn = new NpgsqlConnection(_connectionString);
+        await cn.OpenAsync(ct);
+        await using var cmd = new NpgsqlCommand(
+            "select user_id,society_id,login_name from society_manager.fn_user_id_by_login(@login)",cn);
+        cmd.Parameters.AddWithValue("login",login);
+        await using var r = await cmd.ExecuteReaderAsync(ct);
+        if(!await r.ReadAsync(ct)) return null;
+        return (r.GetInt64(0),r.IsDBNull(1)?null:r.GetInt64(1),r.GetString(2));
+    }
+
+    public async Task RecordLoginSuccessAsync(long userId,long? societyId,string login,string ip,string userAgent,Guid sessionId,CancellationToken ct)
+    {
+        if (!IsConfigured) return;
+        await using var cn = new NpgsqlConnection(_connectionString);
+        await cn.OpenAsync(ct);
+        await using var cmd = new NpgsqlCommand(
+            "call society_manager.sp_record_login_success(@user_id,@society_id,@login,@ip,@user_agent,@session_id)",cn);
+        cmd.Parameters.AddWithValue("user_id",userId);
+        cmd.Parameters.AddWithValue("society_id",(object?)societyId??DBNull.Value);
+        cmd.Parameters.AddWithValue("login",login);
+        cmd.Parameters.AddWithValue("ip",ip);
+        cmd.Parameters.AddWithValue("user_agent",userAgent);
+        cmd.Parameters.AddWithValue("session_id",sessionId);
+        await cmd.ExecuteNonQueryAsync(ct);
+    }
+
+    public async Task RecordLoginFailureAsync(long? userId,long? societyId,string login,string ip,string userAgent,string reason,CancellationToken ct)
+    {
+        if (!IsConfigured) return;
+        await using var cn = new NpgsqlConnection(_connectionString);
+        await cn.OpenAsync(ct);
+        await using var cmd = new NpgsqlCommand(
+            "call society_manager.sp_record_login_failure(@user_id,@society_id,@login,@ip,@user_agent,@reason)",cn);
+        cmd.Parameters.AddWithValue("user_id",(object?)userId??DBNull.Value);
+        cmd.Parameters.AddWithValue("society_id",(object?)societyId??DBNull.Value);
+        cmd.Parameters.AddWithValue("login",login);
+        cmd.Parameters.AddWithValue("ip",ip);
+        cmd.Parameters.AddWithValue("user_agent",userAgent);
+        cmd.Parameters.AddWithValue("reason",reason);
+        await cmd.ExecuteNonQueryAsync(ct);
     }
     public async Task<SessionContext?> GetSessionAsync(string rawToken, CancellationToken ct)
     {

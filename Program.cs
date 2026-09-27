@@ -118,14 +118,22 @@ app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, Ht
     if (string.IsNullOrWhiteSpace(request.Login) || string.IsNullOrWhiteSpace(request.Password))
         return Results.BadRequest(new { message = "Login name and password are required." });
 
+    var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "";
+    var userAgent = httpContext.Request.Headers.UserAgent.ToString();
     var user = await auth.AuthenticateAsync(request.Login.Trim(),request.Password,ct);
     if (user is null)
+    {
+        var attempted = await auth.FindUserByLoginAsync(request.Login.Trim(),ct);
+        await auth.RecordLoginFailureAsync(attempted?.UserId,attempted?.SocietyId,request.Login.Trim(),ip,userAgent,"Invalid credentials",ct);
         return Results.Unauthorized();
+    }
 
     var societies = await auth.GetSocietiesAsync(user.UserId,ct);
     long? selected = societies.FirstOrDefault(x=>x.IsDefault)?.SocietyId;
     if (selected is null && societies.Count==1) selected=societies[0].SocietyId;
-    var token = await auth.CreateSessionAsync(user.UserId,selected,ct);
+    var sessionInfo = await auth.CreateSessionAsync(user.UserId,selected,ct);
+    var token = sessionInfo.RawToken;
+    await auth.RecordLoginSuccessAsync(user.UserId,selected,user.LoginName,ip,userAgent,sessionInfo.SessionId,ct);
     AuthGuard.ClearCookie(response);
     var claims = new List<Claim>
     {
@@ -212,7 +220,7 @@ app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, S
     {
         await using var cn = db.CreateConnection();
         await cn.OpenAsync(ct);
-        await using var cmd = new NpgsqlCommand("select * from society_manager.fn_create_society_signup(@society_name,@email,@phone,@address,@admin_name,@login_name,@password,@plan_code)",cn);
+        await using var cmd = new NpgsqlCommand("call society_manager.sp_create_society_signup(@society_name,@email,@phone,@address,@admin_name,@login_name,@password,@plan_code,NULL,NULL,NULL,NULL,NULL,NULL,NULL)",cn);
         cmd.Parameters.AddWithValue("society_name",request.SocietyName.Trim());
         cmd.Parameters.AddWithValue("email",(object?)request.Email?.Trim()??DBNull.Value);
         cmd.Parameters.AddWithValue("phone",(object?)request.Phone?.Trim()??DBNull.Value);
@@ -225,7 +233,9 @@ app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, S
         if(!await reader.ReadAsync(ct)) return Results.BadRequest(new { message="Society creation failed." });
         var createdSocietyId=reader.GetInt64(0);
         var createdUserId=reader.GetInt64(1);
-        var token=await auth.CreateSessionAsync(createdUserId,createdSocietyId,ct);
+        var sessionInfo=await auth.CreateSessionAsync(createdUserId,createdSocietyId,ct);
+        var token=sessionInfo.RawToken;
+        await auth.RecordLoginSuccessAsync(createdUserId,createdSocietyId,request.LoginName.Trim(),httpContext.Connection.RemoteIpAddress?.ToString()??"",httpContext.Request.Headers.UserAgent.ToString(),sessionInfo.SessionId,ct);
         AuthGuard.ClearCookie(response);
         var identity=new ClaimsIdentity(new[]
         {
@@ -280,7 +290,7 @@ app.MapPost("/api/subscription/payment", async (SubscriptionPaymentRequest reque
     {
         await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
         await cn.OpenAsync(ct);
-        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_record_subscription_payment(@society,@subscription,@amount,@mode,@reference,@user)",cn);
+        await using var cmd=new NpgsqlCommand("call society_manager.sp_record_subscription_payment(@society,@subscription,@amount,@mode,@reference,@user,NULL,NULL,NULL)",cn);
         cmd.Parameters.AddWithValue("society",session.SocietyId.Value);
         cmd.Parameters.AddWithValue("subscription",request.SubscriptionId);
         cmd.Parameters.AddWithValue("amount",request.Amount);
