@@ -1,5 +1,3 @@
-[Reading 123 lines from start (total: 123 lines, 0 remaining)]
-
 SET search_path TO society_manager, public;
 
 CREATE OR REPLACE FUNCTION fn_society_admin_dashboard(p_society_id bigint,p_month date)
@@ -123,5 +121,3 @@ BEGIN
  ON CONFLICT(user_id,society_id) DO UPDATE SET is_default=true;
  RETURN v_user;
 END; $$;
-
-[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
