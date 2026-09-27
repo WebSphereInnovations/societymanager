@@ -1,3 +1,5 @@
+[Reading 142 lines from start (total: 142 lines, 0 remaining)]
+
 using System.Security.Cryptography;
 using Npgsql;
 
@@ -114,33 +116,25 @@ public sealed class AuthService(IConfiguration configuration)
         if (!IsConfigured) return false;
         await using var cn = new NpgsqlConnection(_connectionString);
         await cn.OpenAsync(ct);
-        await using var cmd = new NpgsqlCommand("""
-            update society_manager.m_user set login_name=@new_login
-            where user_id=@user_id and password_hash=crypt(@current_password,password_hash) and is_active
-            """,cn);
+        await using var cmd = new NpgsqlCommand(
+            "select society_manager.fn_change_user_login(@user_id,@current_password,@new_login)",cn);
         cmd.Parameters.AddWithValue("user_id",userId);
         cmd.Parameters.AddWithValue("current_password",currentPassword);
         cmd.Parameters.AddWithValue("new_login",newLogin);
-        try { return await cmd.ExecuteNonQueryAsync(ct)==1; }
-        catch (PostgresException ex) when (ex.SqlState=="23505") { return false; }
+        return Convert.ToBoolean(await cmd.ExecuteScalarAsync(ct));
     }
 
-    public async Task<bool> ChangePasswordAsync(long userId, string currentPassword, string newPassword, CancellationToken ct)
+    public async Task<bool> ChangePasswordAsync(long userId,string currentPassword,string newPassword,CancellationToken ct)
     {
         if (!IsConfigured) return false;
         await using var cn = new NpgsqlConnection(_connectionString);
         await cn.OpenAsync(ct);
-        await using var cmd = new NpgsqlCommand("""
-            update society_manager.m_user
-            set password_hash=crypt(@new_password,gen_salt('bf',12))
-            where user_id=@user_id
-              and password_hash=crypt(@current_password,password_hash)
-              and is_active
-            """,cn);
+        await using var cmd = new NpgsqlCommand(
+            "select society_manager.fn_change_user_password(@user_id,@current_password,@new_password)",cn);
         cmd.Parameters.AddWithValue("user_id",userId);
         cmd.Parameters.AddWithValue("current_password",currentPassword);
         cmd.Parameters.AddWithValue("new_password",newPassword);
-        return await cmd.ExecuteNonQueryAsync(ct)==1;
+        return Convert.ToBoolean(await cmd.ExecuteScalarAsync(ct));
     }
 }
 
@@ -148,3 +142,5 @@ public sealed record AuthUser(long UserId,string LoginName,string DisplayName,st
 public sealed record SocietyOption(long SocietyId,string SocietyCode,string SocietyName,bool IsDefault);
 public sealed record PermissionItem(string ModuleCode,string ActionCode);
 public sealed record SessionContext(Guid SessionId,long UserId,long? SocietyId,string LoginName,string DisplayName,string RoleCode);
+
+[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
