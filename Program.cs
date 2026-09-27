@@ -31,10 +31,14 @@ builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 
 var app = builder.Build();
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+var forwardedHeaders = new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    ForwardLimit = 2
+};
+forwardedHeaders.KnownNetworks.Clear();
+forwardedHeaders.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeaders);
 
 app.Use(async (context,next) =>
 {
@@ -93,10 +97,18 @@ app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, Ht
     AuthGuard.SetCookie(response,token);
     var permissions = await auth.GetPermissionsAsync(user.UserId,ct);
     var route=await auth.GetLoginRouteAsync(user.UserId,ct);
+    var safeRoute = route?.RoutePath ?? user.RoleCode switch
+    {
+        "SUPER_ADMIN" => "/",
+        "SOCIETY_ADMIN" => "/modules/society-admin/index.html",
+        "BILLING_ADMIN" or "COLLECTOR" => "/modules/cashier/index.html",
+        "RESIDENT" => "/modules/customer/index.html",
+        _ => "/login.html"
+    };
     return Results.Ok(new {
         user = new { user.UserId,user.LoginName,user.DisplayName,user.RoleCode,user.PreferredLanguage },
         societies, selectedSocietyId=selected, permissions,
-        route = route?.RoutePath ?? "/login.html"
+        route = safeRoute
     });
 });
 
