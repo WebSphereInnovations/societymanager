@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Npgsql;
 using Microsoft.AspNetCore.Antiforgery;
@@ -28,6 +31,19 @@ builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<ConnectionStringProtector>();
 builder.Services.AddSingleton<MigrationService>();
 builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "society360_auth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.IsEssential = true;
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = false;
+        options.LoginPath = "/login.html";
+        options.AccessDeniedPath = "/login.html";
+    });
 
 var app = builder.Build();
 
@@ -39,6 +55,7 @@ var forwardedHeaders = new ForwardedHeadersOptions
 forwardedHeaders.KnownNetworks.Clear();
 forwardedHeaders.KnownProxies.Clear();
 app.UseForwardedHeaders(forwardedHeaders);
+app.UseAuthentication();
 
 app.Use(async (context,next) =>
 {
@@ -78,7 +95,7 @@ app.MapGet("/api/health", (SocietyDb db) => Results.Ok(new
     utc = DateTimeOffset.UtcNow
 }));
 
-app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, HttpResponse response, CancellationToken ct) =>
+app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, HttpResponse response, HttpContext httpContext, CancellationToken ct) =>
 {
     if (!auth.IsConfigured)
         return Results.Problem("Database is not configured.",statusCode:503);
@@ -94,7 +111,25 @@ app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, Ht
     long? selected = societies.FirstOrDefault(x=>x.IsDefault)?.SocietyId;
     if (selected is null && societies.Count==1) selected=societies[0].SocietyId;
     var token = await auth.CreateSessionAsync(user.UserId,selected,ct);
-    AuthGuard.SetCookie(response,token);
+    AuthGuard.ClearCookie(response);
+    var claims = new List<Claim>
+    {
+        new(ClaimTypes.NameIdentifier,user.UserId.ToString()),
+        new(ClaimTypes.Name,user.LoginName),
+        new(ClaimTypes.Role,user.RoleCode),
+        new("society360_display_name",user.DisplayName),
+        new("society360_session_token",token),
+        new("society360_society_id",selected?.ToString() ?? string.Empty)
+    };
+    var identity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
+    await httpContext.SignInAsync(
+        CookieAuthenticationDefaults.AuthenticationScheme,
+        new ClaimsPrincipal(identity),
+        new AuthenticationProperties
+        {
+            IsPersistent = true,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8)
+        });
     var permissions = await auth.GetPermissionsAsync(user.UserId,ct);
     var route=await auth.GetLoginRouteAsync(user.UserId,ct);
     var safeRoute = route?.RoutePath ?? user.RoleCode switch
@@ -125,7 +160,9 @@ app.MapPost("/api/auth/select-society", async (SocietySelectRequest request, Aut
 {
     var session = await AuthGuard.Get(http,auth,ct);
     if (session is null) return Results.Unauthorized();
-    if (!await auth.SelectSocietyAsync(http.Request.Cookies["society360_session"]!,request.SocietyId,ct))
+    var sessionToken=http.User.FindFirstValue("society360_session_token");
+    if (string.IsNullOrWhiteSpace(sessionToken) && http.Request.Cookies.TryGetValue("society360_session",out var legacyToken)) sessionToken=legacyToken;
+    if (string.IsNullOrWhiteSpace(sessionToken) || !await auth.SelectSocietyAsync(sessionToken,request.SocietyId,ct))
         return Results.Forbid();
     return Results.Ok(new { societyId=request.SocietyId });
 });
@@ -154,8 +191,10 @@ app.MapPost("/api/auth/change-password", async (ChangePasswordRequest request, A
 
 app.MapPost("/api/auth/logout", async (AuthService auth, HttpContext http, CancellationToken ct) =>
 {
-    if (http.Request.Cookies.TryGetValue("society360_session",out var token))
-        await auth.RevokeSessionAsync(token,ct);
+    var token=http.User.FindFirstValue("society360_session_token");
+    if (string.IsNullOrWhiteSpace(token) && http.Request.Cookies.TryGetValue("society360_session",out var legacyToken)) token=legacyToken;
+    if (!string.IsNullOrWhiteSpace(token)) await auth.RevokeSessionAsync(token,ct);
+    await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     AuthGuard.ClearCookie(http.Response);
     return Results.Ok(new { success=true });
 });
