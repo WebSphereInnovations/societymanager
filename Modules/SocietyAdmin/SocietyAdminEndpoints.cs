@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Npgsql;
+using NpgsqlTypes;
 using Society360.Data;
 using Society360.Security;
 
@@ -128,17 +129,24 @@ public static class SocietyAdminEndpoints
         var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
         if(s.SocietyId is null || !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","EDIT",ct))return Results.Forbid();
         if(x.UserId==0 && !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","ADD",ct))return Results.Forbid();
-        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
-        await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_save_account(@society,@user,@login,@name,@email,@phone,@type,@password,@from,@to,@rights,@by,@remark,NULL)",cn);
-        cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("user",(object?)x.UserId??DBNull.Value);
-        cmd.Parameters.AddWithValue("login",x.LoginName);cmd.Parameters.AddWithValue("name",x.DisplayName);
-        cmd.Parameters.AddWithValue("email",(object?)x.Email??DBNull.Value);cmd.Parameters.AddWithValue("phone",(object?)x.Phone??DBNull.Value);
-        cmd.Parameters.AddWithValue("type",x.AccountType);cmd.Parameters.AddWithValue("password",(object?)x.Password??DBNull.Value);
-        cmd.Parameters.AddWithValue("from",x.ValidFrom);cmd.Parameters.AddWithValue("to",(object?)x.ValidTo??DBNull.Value);
-        cmd.Parameters.AddWithValue("rights",JsonSerializer.SerializeToDocument(x.Rights??[]).RootElement);
-        cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");
-        await cmd.ExecuteNonQueryAsync(ct);
-        return Results.Ok(new {success=true});
+        try
+        {
+            await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+            await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_save_account(@society,@user,@login,@name,@email,@phone,@type,@password,@from,@to,@rights,@by,@remark,NULL)",cn);
+            cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("user",x.UserId);
+            cmd.Parameters.AddWithValue("login",x.LoginName);cmd.Parameters.AddWithValue("name",x.DisplayName);
+            cmd.Parameters.AddWithValue("email",(object?)x.Email??DBNull.Value);cmd.Parameters.AddWithValue("phone",(object?)x.Phone??DBNull.Value);
+            cmd.Parameters.AddWithValue("type",x.AccountType);cmd.Parameters.AddWithValue("password",(object?)x.Password??DBNull.Value);
+            cmd.Parameters.AddWithValue("from",x.ValidFrom);cmd.Parameters.AddWithValue("to",(object?)x.ValidTo??DBNull.Value);
+            var rights=cmd.Parameters.Add("rights",NpgsqlDbType.Jsonb);rights.Value=JsonSerializer.Serialize(x.Rights??[]);
+            cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");
+            await cmd.ExecuteNonQueryAsync(ct);
+            return Results.Ok(new {success=true});
+        }
+        catch(PostgresException ex)
+        {
+            return Results.BadRequest(new {message=ex.MessageText});
+        }
     }
 
     static async Task<IResult> SetAccountStatus(AdminAccountStatusRequest x,AuthService auth,HttpContext http,CancellationToken ct)

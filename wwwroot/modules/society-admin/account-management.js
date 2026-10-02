@@ -95,14 +95,17 @@ function resetAccountForm(){
  $('#accountUserId').value='';$('#accountLogin').value='';$('#accountName').value='';$('#accountEmail').value='';$('#accountPhone').value='';
  $('#accountPassword').value='';$('#accountValidFrom').value=new Date().toISOString().slice(0,10);$('#accountValidTo').value='';$('#accountRemark').value='';
  $('#accountFormTitle').textContent=Society360I18n.translateText('Create Account');
+ $('#accountFormMode').textContent='NEW';$('#passwordRequiredMark').textContent='*';
  loadAccountRights(0);
 }
 async function editAccount(d){
  $('#accountUserId').value=d.user_id;$('#accountLogin').value=d.login_name;$('#accountName').value=d.display_name;$('#accountEmail').value=d.email||'';
  $('#accountPhone').value=d.phone||'';$('#accountType').value=d.account_type_code;$('#accountPassword').value='';$('#accountValidFrom').value=d.valid_from||'';
- $('#accountValidTo').value=d.valid_to||'';$('#accountRemark').value='';$('#accountFormTitle').textContent='Edit Account';await loadAccountRights(d.user_id);show('accounts','Manage Accounts');
+ $('#accountValidTo').value=d.valid_to||'';$('#accountRemark').value='';$('#accountFormTitle').textContent='Edit Account';$('#accountFormMode').textContent='EDIT';$('#passwordRequiredMark').textContent='';await loadAccountRights(d.user_id);show('accounts','Manage Accounts');
 }
 async function saveAccount(){
+ const button=$('#saveAccount');
+ if(button.disabled)return;
  const payload={
   userId:Number($('#accountUserId').value||0),loginName:$('#accountLogin').value.trim(),displayName:$('#accountName').value.trim(),
   email:$('#accountEmail').value.trim()||null,phone:$('#accountPhone').value.trim()||null,accountType:$('#accountType').value,
@@ -111,9 +114,16 @@ async function saveAccount(){
  };
  if(!payload.loginName||!payload.displayName||!payload.accountType||!payload.validFrom){alert('Please complete the account details.');return}
  if(!payload.userId&&!payload.password){alert('Password is required for a new account.');return}
- const r=await fetch('/api/society-admin/accounts/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
- const d=await r.json();if(!r.ok){alert(d.message||'Account could not be saved.');return}
- alert('Account saved successfully.');resetAccountForm();loadAccounts($('#accountSearch').value);
+ if(payload.password&&payload.password.length<10){alert('Password must contain at least 10 characters.');return}
+ if(payload.validTo&&payload.validTo<payload.validFrom){alert('Valid To cannot be before Valid From.');return}
+ button.disabled=true;button.textContent='Saving...';
+ try{
+  const r=await fetch('/api/society-admin/accounts/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const raw=await r.text();let d={};try{d=JSON.parse(raw)}catch{}
+  if(!r.ok){alert(d.message||raw||'Account could not be saved.');return}
+  alert('Account saved successfully.');resetAccountForm();await loadAccounts($('#accountSearch').value);
+ }catch(e){alert('Account could not be saved. Please check the server connection and try again.');}
+ finally{button.disabled=false;button.textContent='Save Account';}
 }
 async function toggleAccount(d){
  const action=d.is_active?'block':'unblock';

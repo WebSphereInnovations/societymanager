@@ -1,1 +1,28 @@
-.account-layout{display:grid;grid-template-columns:minmax(420px,1fr) minmax(520px,1.45fr);gap:15px}.account-form-panel{min-width:0}.account-form-panel .form{grid-template-columns:repeat(2,minmax(150px,1fr))}.account-form-panel textarea{grid-column:1/-1;min-height:70px;border:1px solid var(--line);border-radius:10px;padding:10px;font:600 11px "DM Sans";resize:vertical}.rights-head{display:flex;align-items:center;gap:8px;margin:16px 0 10px}.rights-head h3{margin-right:auto}.rights-head button{border:1px solid var(--line);background:white;border-radius:9px;padding:7px 10px;font:700 10px "DM Sans";cursor:pointer}.rights-tree{max-height:470px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:8px;background:#fbfcff}.right-group{border-bottom:1px solid #eef0f5;padding:5px 0}.right-group:last-child{border-bottom:0}.right-parent{font-weight:800}.right-child{padding-left:25px}.right-row{display:flex;align-items:center;gap:8px;padding:7px 5px;font-size:10px}.right-row input{accent-color:#6655d7}.right-actions{display:flex;gap:9px;flex-wrap:wrap;margin-left:auto}.right-actions label{font-size:9px;color:#667085}.account-layout .tabulator{min-height:300px}@media(max-width:1200px){.account-layout{grid-template-columns:1fr}}@media(max-width:760px){.account-form-panel .form{grid-template-columns:1fr}}
+.account-layout{display:grid;grid-template-columns:minmax(560px,1fr) minmax(560px,1.18fr);gap:18px;align-items:start}
+.account-form-panel,.account-list-panel{min-width:0}
+.account-form-header,.account-list-header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px}
+.account-form-header h3,.account-list-header h3{margin:4px 0 4px;font:800 18px Manrope}
+.account-form-header p,.account-list-header p{margin:0;color:#667085;font-size:11px;line-height:1.5}
+.account-mode,.account-list-note{padding:6px 10px;border-radius:999px;background:#eef2ff;color:#4f46a5;font:800 10px "DM Sans";white-space:nowrap}
+.account-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{min-width:0}.field label{display:flex;align-items:center;gap:3px;margin:0 0 7px;color:#344054;font:800 11px "DM Sans"}
+.field label span{color:#d92d20}
+.field input,.field select,.field textarea{width:100%;box-sizing:border-box;border:1px solid #d9deea;background:#fff;border-radius:10px;min-height:42px;padding:10px 12px;color:#1d2939;font:600 12px "DM Sans";outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#7767e8;box-shadow:0 0 0 3px rgba(119,103,232,.10)}
+.field textarea{min-height:78px;resize:vertical}.field small{display:block;margin-top:5px;color:#98a2b3;font-size:9px}.field-wide{grid-column:1/-1}
+.rights-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:22px 0 10px;padding-top:18px;border-top:1px solid #eef0f5}
+.rights-head h3{margin:4px 0 3px;font:800 14px Manrope}.rights-head p{margin:0;color:#667085;font-size:10px}
+.rights-tools{display:flex;gap:7px;flex-shrink:0}.rights-tools button{border:1px solid #d9deea;background:#fff;color:#344054;border-radius:9px;padding:8px 11px;font:800 10px "DM Sans";cursor:pointer}
+.rights-tree{max-height:430px;overflow:auto;border:1px solid #dfe3ec;border-radius:12px;padding:10px;background:#fafbff}
+.right-group{border:1px solid #e9ecf3;border-radius:10px;background:#fff;margin-bottom:9px;padding:5px}.right-group:last-child{margin-bottom:0}
+.right-parent{padding:9px 10px!important;background:#f5f6fb;border-radius:8px;color:#344054;font-weight:800}.right-child{padding-left:18px!important}
+.right-row{display:flex;align-items:center;gap:12px;padding:9px 7px;font-size:11px;min-width:0}.right-row>span{font-weight:700;color:#344054;min-width:190px;line-height:1.3}
+.right-row input{accent-color:#6655d7}.right-actions{display:flex;gap:8px 12px;flex-wrap:wrap;margin-left:auto;justify-content:flex-end}
+.right-actions label{display:inline-flex;align-items:center;gap:4px;color:#667085;font-size:10px;white-space:nowrap}
+.account-form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:16px}.account-form-actions button{border:1px solid #d9deea;background:#fff;border-radius:9px;padding:10px 16px;font:800 11px "DM Sans";cursor:pointer}
+.account-form-actions .primary{border-color:transparent;background:#6655d7;color:#fff}.account-list-panel{overflow:hidden}.account-list-header{padding-bottom:14px;border-bottom:1px solid #eef0f5}
+.account-list-panel .tabulator{border:0;min-height:360px}.account-layout .tabulator .tabulator-cell{font-size:10px}.account-layout .tabulator .tabulator-col-title{font-size:10px;white-space:nowrap}
+.account-edit,.account-toggle{border:1px solid #d9deea;background:#fff;border-radius:7px;padding:5px 8px;font:800 9px "DM Sans";cursor:pointer}.account-edit{color:#4f46a5}.account-toggle{color:#b42318}
+.account-layout .tabulator-cell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:1350px){.account-layout{grid-template-columns:1fr}.account-list-panel{margin-top:0}}
+@media(max-width:760px){.account-fields{grid-template-columns:1fr}.field-wide{grid-column:auto}.rights-head{align-items:flex-start;flex-direction:column}.rights-tools{width:100%}.right-row{flex-direction:column;align-items:flex-start}.right-row>span{min-width:0}.right-actions{margin-left:0;justify-content:flex-start}.account-form-actions{justify-content:stretch}.account-form-actions button{flex:1}}
