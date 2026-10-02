@@ -36,13 +36,7 @@ builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddFixedWindowLimiter("public-auth",o =>
-    {
-        o.PermitLimit=10;
-        o.Window=TimeSpan.FromMinutes(1);
-        o.QueueLimit=0;
-        o.AutoReplenishment=true;
-    });
+    options.AddPolicy("public-auth",context => RateLimitPartition.GetFixedWindowLimiter(context.Connection.RemoteIpAddress?.ToString() ?? "unknown", _ => new FixedWindowRateLimiterOptions { PermitLimit=10, Window=TimeSpan.FromMinutes(1), QueueLimit=0, AutoReplenishment=true }));
 });
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -68,6 +62,7 @@ var forwardedHeaders = new ForwardedHeadersOptions
 forwardedHeaders.KnownNetworks.Clear();
 forwardedHeaders.KnownProxies.Clear();
 app.UseForwardedHeaders(forwardedHeaders);
+app.Use(async (context,next) => { context.Response.Headers["X-Content-Type-Options"]="nosniff"; context.Response.Headers["X-Frame-Options"]="DENY"; context.Response.Headers["Referrer-Policy"]="strict-origin-when-cross-origin"; context.Response.Headers["Permissions-Policy"]="camera=(), microphone=(), geolocation=()"; await next(); });
 app.UseAuthentication();
 app.UseRouting();
 app.UseRateLimiter();
