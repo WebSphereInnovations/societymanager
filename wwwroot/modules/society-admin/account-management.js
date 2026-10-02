@@ -1,6 +1,8 @@
+[Reading 119 lines from start (total: 119 lines, 0 remaining)]
+
 (function(){
 'use strict';
-const accountViewMap={APP_DASHBOARD:'home',ADMINISTRATOR:'accounts',ADM_ACCOUNTS:'accounts'};
+const accountViewMap={APP_DASHBOARD:'home',SA_DASHBOARD:'home',SA_SOCIETY_PROFILE:'configuration',SA_BUILDINGS:'flats',SA_WINGS:'flats',SA_FLATS:'flats',SA_RESIDENTS:'customers',SA_FAMILY:'customers',SA_BILLING_DASH:'bills',SA_BILL_GENERATION:'bills',SA_BILL_REGISTER:'bills',SA_BILL_ADJUSTMENT:'bills',SA_REBATE:'configuration',SA_DPC:'configuration',SA_CHARGE_CONFIG:'configuration',SA_RATE_PLANS:'configuration',SA_TAX_CONFIG:'configuration',SA_COLLECTION:'collection',SA_PAYMENT_ENTRY:'collection',SA_RECEIPTS:'collection',SA_REVERSAL:'collection',SA_PARKING:'parking',SA_VEHICLES:'parking',SA_PARKING_ASSIGN:'parking',SA_COMPLAINTS:'complaints',SA_VISITORS:'visitors',SA_SECURITY:'security',SA_DOCUMENTS:'documents',SA_NOTICES:'notices',SA_COMMUNICATION:'communication',SA_REPORTS:'reports',SA_MIGRATION:'migration',SA_AUDIT:'audit',ADM_ACCOUNTS:'accounts',ADMINISTRATOR:'accounts',CASH_DASHBOARD:'home',CASH_CUSTOMER:'customers',CASH_ACCEPT_PAYMENT:'collection',CASH_RECEIPTS:'collection',CASH_ALLOCATION:'collection',CASH_REVERSAL:'collection',CASH_ADJUSTMENT:'bills',CASH_BILL_LOOKUP:'bills'};
 const accountIcons={APP_DASHBOARD:'⌂',ADMINISTRATOR:'⚙'};
 function accountLabel(x){return Society360I18n.translateText(x.module_name||x.moduleName||x.module_code||x.moduleCode)}
 async function buildDatabaseMenu(){
@@ -117,3 +119,5 @@ function wireAdminTabs(){
 }
 window.buildDatabaseMenu=buildDatabaseMenu;window.openCustomer=()=>{};wireAdminTabs();loadAccountTypes();resetAccountForm();loadAccounts();buildDatabaseMenu();
 })();
+
+[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
