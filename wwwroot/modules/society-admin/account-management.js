@@ -1,4 +1,3 @@
-
 (function(){
 'use strict';
 const accountViewMap={APP_DASHBOARD:'home',SA_DASHBOARD:'home',SA_SOCIETY_PROFILE:'configuration',SA_BUILDINGS:'flats',SA_WINGS:'flats',SA_FLATS:'flats',SA_RESIDENTS:'customers',SA_FAMILY:'customers',SA_BILLING_DASH:'bills',SA_BILL_GENERATION:'bills',SA_BILL_REGISTER:'bills',SA_BILL_ADJUSTMENT:'bills',SA_REBATE:'configuration',SA_DPC:'configuration',SA_CHARGE_CONFIG:'configuration',SA_RATE_PLANS:'configuration',SA_TAX_CONFIG:'configuration',SA_COLLECTION:'collection',SA_PAYMENT_ENTRY:'collection',SA_RECEIPTS:'collection',SA_REVERSAL:'collection',SA_PARKING:'parking',SA_VEHICLES:'parking',SA_PARKING_ASSIGN:'parking',SA_COMPLAINTS:'complaints',SA_VISITORS:'visitors',SA_SECURITY:'security',SA_DOCUMENTS:'documents',SA_NOTICES:'notices',SA_COMMUNICATION:'communication',SA_REPORTS:'reports',SA_MIGRATION:'migration',SA_AUDIT:'audit',ADM_ACCOUNTS:'accounts',ADMINISTRATOR:'accounts',CASH_DASHBOARD:'home',CASH_CUSTOMER:'customers',CASH_ACCEPT_PAYMENT:'collection',CASH_RECEIPTS:'collection',CASH_ALLOCATION:'collection',CASH_REVERSAL:'collection',CASH_ADJUSTMENT:'bills',CASH_BILL_LOOKUP:'bills'};
@@ -65,7 +64,7 @@ function resetAccountForm(){
 }
 async function editAccount(d){
  $('#accountUserId').value=d.user_id;$('#accountLogin').value=d.login_name||'';$('#accountName').value=d.display_name||'';$('#accountEmail').value=d.email||'';$('#accountPhone').value=d.phone||'';
- $('#accountPassword').value='';$('#accountValidFrom').value=d.valid_from||new Date().toISOString().slice(0,10);$('#accountValidTo').value=d.valid_to||'';$('#accountRemark').value='';
+ $('#accountPassword').value='';$('#accountType').value=d.account_type_code||d.role_code||$('#accountType').value;$('#accountValidFrom').value=d.valid_from||new Date().toISOString().slice(0,10);$('#accountValidTo').value=d.valid_to||'';$('#accountRemark').value='';
  $('#accountFormTitle').textContent='Edit Existing Employee Account';$('#accountFormMode').textContent='EDIT';$('#passwordRequiredMark').textContent='';
  $('#accountFormHelp').textContent='Update this existing account. Leave Password blank to keep the current password.';await loadAccountRights(d.user_id);
  document.querySelector('[data-admin-tab="accounts"]').click();window.scrollTo({top:0,behavior:'smooth'});
@@ -116,5 +115,19 @@ function wireAdminTabs(){
  $('#newRole').onclick=clearRole;$('#clearRole').onclick=clearRole;$('#saveRole').onclick=saveRole;
  $('#newMenu').onclick=clearMenu;$('#clearMenu').onclick=clearMenu;$('#saveMenu').onclick=saveMenu;
 }
-window.buildDatabaseMenu=buildDatabaseMenu;window.openCustomer=()=>{};wireAdminTabs();loadAccountTypes();resetAccountForm();loadAccounts();buildDatabaseMenu();
+window.buildDatabaseMenu=buildDatabaseMenu;
+window.openAdminSection=function(section){
+ show('accounts');
+ const tabs=document.querySelector('.admin-tabs');
+ const panels={account:document.querySelector('#adminTab-accounts'),roles:document.querySelector('#adminTab-roles'),menus:document.querySelector('#adminTab-menus')};
+ if(tabs)tabs.style.display='none';
+ Object.values(panels).forEach(x=>x?.classList.remove('active'));
+ if(section==='create'){panels.account?.classList.add('active');resetAccountForm();return true}
+ if(section==='manage'){panels.account?.classList.add('active');return true}
+ if(section==='roles'){panels.roles?.classList.add('active');loadRoles();return true}
+ if(section==='menus'){panels.menus?.classList.add('active');loadMenus();return true}
+ return false;
+};
+window.openCustomer=()=>{};
+wireAdminTabs();loadAccountTypes();resetAccountForm();loadAccounts();buildDatabaseMenu();
 })();

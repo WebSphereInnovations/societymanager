@@ -1,4 +1,3 @@
-
 SET search_path TO society_manager, public;
 
 ALTER TABLE m_module ADD COLUMN IF NOT EXISTS visible boolean NOT NULL DEFAULT true;
@@ -559,3 +558,37 @@ BEGIN
  SELECT p_society_id,u.user_id,'COMPLAINT','New Consumer Complaint',p_title,'COMPLAINT',v_id FROM m_user u WHERE u.society_id=p_society_id AND u.role_code='SOCIETY_ADMIN' AND u.is_active;
  RETURN v_id;
 END; $$;
+
+
+-- Final requested navigation hierarchy: only requested menus remain visible.
+UPDATE m_module SET visible=false WHERE module_code IN (
+'DASHBOARD','SOCIETY','USERS','ROLES','CONFIGURATION','FLATS','RESIDENTS','BILLING','COLLECTION','PARKING','COMPLAINTS','VISITORS','DOCUMENTS','NOTICES','REPORTS','MIGRATION',
+'ADM_CONTRACTOR','ADM_EMPLOYEE','ADM_CUSTOMER_COUNTS','ADM_SMS_CONFIG','ADM_MASTER_DATA','ADM_COLLECTION_CONFIG','ADM_SEND_SMS','BO_HELPDESK','BO_CONSUMER_MIGRATION','BO_REPORTS','BO_DOCUMENTS','BO_NOTICES',
+'COLLECTION','SA_DASHBOARD','SA_SOCIETY_PROFILE','SA_BUILDINGS','SA_WINGS','SA_FLATS','SA_RESIDENTS','SA_FAMILY','SA_BILLING_DASH','SA_BILL_GENERATION','SA_BILL_REGISTER','SA_BILL_ADJUSTMENT','SA_REBATE','SA_DPC','SA_CHARGE_CONFIG','SA_RATE_PLANS','SA_TAX_CONFIG','SA_COLLECTION','SA_PAYMENT_ENTRY','SA_RECEIPTS','SA_REVERSAL','SA_PARKING','SA_VEHICLES','SA_PARKING_ASSIGN','SA_COMPLAINTS','SA_VISITORS','SA_SECURITY','SA_DOCUMENTS','SA_NOTICES','SA_COMMUNICATION','SA_REPORTS','SA_MIGRATION','SA_AUDIT','CASH_DASHBOARD','CASH_CUSTOMER','CASH_ACCEPT_PAYMENT','CASH_RECEIPTS','CASH_ALLOCATION','CASH_REVERSAL','CASH_ADJUSTMENT','CASH_BILL_LOOKUP'
+);
+INSERT INTO m_module(module_code,module_name,parent_module_code,display_order,visible,is_active) VALUES
+('ADMIN_CREATE_ACCOUNT','Create Account','ADM_ACCOUNTS',11,true,true),
+('ADMIN_MANAGE_ACCOUNT','Manage / Edit Account','ADM_ACCOUNTS',12,true,true),
+('SOC_CUSTOMER','Customer','SOCIETY_MANAGEMENT',30,true,true),
+('SOC_AREA_UPDATE','Area Update','SOCIETY_MANAGEMENT',31,true,true)
+ON CONFLICT(module_code) DO UPDATE SET module_name=excluded.module_name,parent_module_code=excluded.parent_module_code,display_order=excluded.display_order,visible=true,is_active=true;
+UPDATE m_module SET module_name='Manage Account',parent_module_code='ADMINISTRATOR',display_order=10,visible=true,is_active=true WHERE module_code='ADM_ACCOUNTS';
+UPDATE m_module SET visible=false WHERE module_code IN ('SOC_NEW_BUILDING','SOC_NEW_WING','SOC_CUSTOMER_MASTER');
+UPDATE m_module SET parent_module_code=NULL,display_order=90,visible=true,is_active=true,module_name='Notification Center' WHERE module_code='NOTIFICATION_CENTER';
+UPDATE m_module SET parent_module_code='BACK_OFFICE',module_name='Raise Ticket',display_order=21,visible=true,is_active=true WHERE module_code='BACKOFFICE_TICKET';
+UPDATE m_module SET module_name='Document Management System',display_order=23,visible=true,is_active=true WHERE module_code='BACKOFFICE_DOCUMENT';
+UPDATE m_module SET module_name='Update Service Attribute',display_order=24,visible=true,is_active=true WHERE module_code='BACKOFFICE_SERVICE';
+UPDATE m_module SET module_name='Master Data Migration',display_order=25,visible=true,is_active=true WHERE module_code='BACKOFFICE_MIGRATION';
+UPDATE m_module SET visible=true,is_active=true,parent_module_code='ADMINISTRATOR' WHERE module_code IN ('ADMIN_SUBSCRIPTION','ROLE_RIGHTS','MODULE_SUBMODULE');
+UPDATE m_module SET visible=true,is_active=true,parent_module_code='SOCIETY_MANAGEMENT' WHERE module_code IN ('SOC_NEW_FLAT','SOC_NEW_PARKING');
+UPDATE m_module SET visible=true,is_active=true,parent_module_code='COLLECTION_MANAGEMENT' WHERE module_code IN ('COL_ACCEPT_PAYMENT','COL_SERVICE_PAYMENT','COL_BANK_DETAILS','COL_DISHONORED');
+UPDATE m_module SET visible=true,is_active=true,parent_module_code='BACK_OFFICE' WHERE module_code IN ('BACKOFFICE_TICKET','BACKOFFICE_DOCUMENT','BACKOFFICE_SERVICE','BACKOFFICE_MIGRATION');
+UPDATE m_module SET visible=true,is_active=true,parent_module_code='CRM' WHERE module_code IN ('CRM_CUSTOMER_ACCOUNT','CRM_CUSTOMER_INTERACTION');
+UPDATE m_module SET visible=true,is_active=true,parent_module_code='MIS' WHERE module_code IN ('MIS_CONSUMER_MASTER','MIS_BILLING_DATA','MIS_COLLECTION_DETAILS','MIS_COMPLAINT_HISTORY');
+
+INSERT INTO m_permission(module_code,action_code,permission_name,is_active,visible)
+SELECT m.module_code,a.code,m.module_name||' - '||a.code,true,true FROM m_module m CROSS JOIN (VALUES('VIEW'),('ADD'),('EDIT'),('DELETE'),('APPROVE'),('POST'),('PRINT'),('EXPORT'),('ASSIGN'),('IMPORT'),('REFUND')) a(code)
+WHERE m.module_code IN ('ADMIN_CREATE_ACCOUNT','ADMIN_MANAGE_ACCOUNT','SOC_CUSTOMER','SOC_AREA_UPDATE') ON CONFLICT(module_code,action_code) DO UPDATE SET is_active=true,visible=true;
+INSERT INTO m_role_permission(role_id,permission_id)
+SELECT r.role_id,p.permission_id FROM m_role r JOIN m_permission p ON p.module_code IN ('ADMIN_CREATE_ACCOUNT','ADMIN_MANAGE_ACCOUNT','SOC_CUSTOMER','SOC_AREA_UPDATE')
+WHERE r.role_code IN ('SOCIETY_ADMIN','SUPER_ADMIN') AND p.is_active ON CONFLICT DO NOTHING;
