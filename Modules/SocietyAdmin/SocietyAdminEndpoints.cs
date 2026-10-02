@@ -13,7 +13,7 @@ public static class SocietyAdminEndpoints
         {
             var session=await AuthGuard.Get(http,auth,ct);
             if(session is null) return Results.Unauthorized();
-            if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")) return Results.Forbid();
+            if(!await auth.HasPermissionAsync(session.UserId,"APP_DASHBOARD","VIEW",ct)) return Results.Forbid();
             var societyId=session.SocietyId;
             if(societyId is null) return Results.BadRequest(new {message="Select a society first."});
             await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
@@ -64,14 +64,131 @@ public static class SocietyAdminEndpoints
             await SaveBillingConfig(x,auth,http,ct));
         app.MapPost("/api/society-admin/billing/generate", async (BillingGenerateRequest x,AuthService auth,HttpContext http,CancellationToken ct) =>
             await GenerateBills(x,auth,http,ct));
+
+        app.MapGet("/api/society-admin/accounts", async (string? q,AuthService auth,HttpContext http,CancellationToken ct) =>
+            await AccountList(q??"",auth,http,ct));
+        app.MapGet("/api/society-admin/accounts/types", async (AuthService auth,HttpContext http,CancellationToken ct) =>
+            await AccountTypes(auth,http,ct));
+        app.MapGet("/api/society-admin/accounts/rights", async (AuthService auth,HttpContext http,CancellationToken ct) =>
+            await AccountRights(auth,http,ct));
+        app.MapGet("/api/society-admin/accounts/{userId:long}/rights", async (long userId,AuthService auth,HttpContext http,CancellationToken ct) =>
+            await AccountUserRights(userId,auth,http,ct));
+        app.MapPost("/api/society-admin/accounts/save", async (AdminAccountRequest x,AuthService auth,HttpContext http,CancellationToken ct) =>
+            await SaveAccount(x,auth,http,ct));
+        app.MapPost("/api/society-admin/accounts/status", async (AdminAccountStatusRequest x,AuthService auth,HttpContext http,CancellationToken ct) =>
+            await SetAccountStatus(x,auth,http,ct));
+        app.MapPost("/api/society-admin/accounts/extend", async (AdminAccountExtendRequest x,AuthService auth,HttpContext http,CancellationToken ct) =>
+            await ExtendAccount(x,auth,http,ct));
+
+        app.MapGet("/api/society-admin/consumer-account/{customerId:long}", async (long customerId,AuthService auth,HttpContext http,CancellationToken ct) =>
+            await ConsumerAccount(auth,http,ct,customerId));
+    }
+
+    static async Task<IResult> AccountList(string q,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);
+        if(s is null)return Results.Unauthorized();
+        if(s.SocietyId is null || !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","VIEW",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_admin_account_list(@society,@search)",cn);
+        cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("search",q);
+        return Results.Ok(await ReadRows(cmd,12,ct));
+    }
+
+    static async Task<IResult> AccountTypes(AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(!await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","VIEW",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_admin_account_types()",cn);
+        return Results.Ok(await ReadRows(cmd,3,ct));
+    }
+
+    static async Task<IResult> AccountRights(AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(!await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","VIEW",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_admin_module_rights()",cn);
+        return Results.Ok(await ReadRows(cmd,7,ct));
+    }
+
+    static async Task<IResult> AccountUserRights(long userId,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(s.SocietyId is null || !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","VIEW",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_admin_account_rights(@user_id,@society)",cn);
+        cmd.Parameters.AddWithValue("user_id",userId);cmd.Parameters.AddWithValue("society",s.SocietyId.Value);
+        return Results.Ok(await ReadRows(cmd,7,ct));
+    }
+
+    static async Task<IResult> SaveAccount(AdminAccountRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(s.SocietyId is null || !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","EDIT",ct))return Results.Forbid();
+        if(x.UserId==0 && !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","ADD",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_save_account(@society,@user,@login,@name,@email,@phone,@type,@password,@from,@to,@rights,@by,@remark,NULL)",cn);
+        cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("user",(object?)x.UserId??DBNull.Value);
+        cmd.Parameters.AddWithValue("login",x.LoginName);cmd.Parameters.AddWithValue("name",x.DisplayName);
+        cmd.Parameters.AddWithValue("email",(object?)x.Email??DBNull.Value);cmd.Parameters.AddWithValue("phone",(object?)x.Phone??DBNull.Value);
+        cmd.Parameters.AddWithValue("type",x.AccountType);cmd.Parameters.AddWithValue("password",(object?)x.Password??DBNull.Value);
+        cmd.Parameters.AddWithValue("from",x.ValidFrom);cmd.Parameters.AddWithValue("to",(object?)x.ValidTo??DBNull.Value);
+        cmd.Parameters.AddWithValue("rights",JsonSerializer.SerializeToDocument(x.Rights??[]).RootElement);
+        cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");
+        await cmd.ExecuteNonQueryAsync(ct);
+        return Results.Ok(new {success=true});
+    }
+
+    static async Task<IResult> SetAccountStatus(AdminAccountStatusRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(s.SocietyId is null || !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","EDIT",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_set_account_status(@society,@user,@active,@by,@remark)",cn);
+        cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("user",x.UserId);cmd.Parameters.AddWithValue("active",x.IsActive);cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");
+        await cmd.ExecuteNonQueryAsync(ct);return Results.Ok(new {success=true});
+    }
+
+    static async Task<IResult> ExtendAccount(AdminAccountExtendRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(s.SocietyId is null || !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","EDIT",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_extend_account(@society,@user,@to,@by,@remark)",cn);
+        cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("user",x.UserId);cmd.Parameters.AddWithValue("to",x.ValidTo);cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");
+        await cmd.ExecuteNonQueryAsync(ct);return Results.Ok(new {success=true});
+    }
+
+    static async Task<IResult> ConsumerAccount(AuthService auth,HttpContext http,CancellationToken ct,long customerId)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(s.SocietyId is null || !await auth.HasPermissionAsync(s.UserId,"CRM_CUSTOMER_360","VIEW",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_consumer_account(@society,@customer)",cn);
+        cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("customer",customerId);
+        var flats=await ReadRows(cmd,18,ct);
+        if(flats.Count==0)return Results.NotFound(new {message="Consumer not found in selected society."});
+        return Results.Ok(new {customer=new {customerId=flats[0]["customer_id"],customerCode=flats[0]["customer_code"],fullName=flats[0]["full_name"],customerType=flats[0]["customer_type"],phone=flats[0]["phone"],email=flats[0]["email"]},flats});
     }
 
     static async Task<IResult> Query(AuthService auth,HttpContext http,CancellationToken ct,string fn,string q,int columns)
     {
         var session=await AuthGuard.Get(http,auth,ct);
         if(session is null) return Results.Unauthorized();
-        if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")) return Results.Forbid();
         if(session.SocietyId is null) return Results.BadRequest(new {message="Select a society first."});
+        var module=fn switch
+        {
+            "fn_society_admin_customer_search"=>"CRM_CUSTOMER_SEARCH",
+            "fn_society_admin_flat_search"=>"FLATS",
+            "fn_society_admin_bill_list"=>"BILLING_MANAGEMENT",
+            "fn_society_admin_complaints"=>"CRM_COMPLAINT",
+            "fn_society_admin_visitors"=>"SEC_VISITOR",
+            "fn_society_admin_parking"=>"PARKING_MANAGEMENT",
+            _=>"DASHBOARD"
+        };
+        if(!await auth.HasPermissionAsync(session.UserId,module,"VIEW",ct)) return Results.Forbid();
         await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
         await cn.OpenAsync(ct);
         await using var cmd=new NpgsqlCommand($"select * from society_manager.{fn}(@society_id,@search)",cn);
@@ -92,7 +209,7 @@ public static class SocietyAdminEndpoints
     {
         var session=await AuthGuard.Get(http,auth,ct);
         if(session is null) return Results.Unauthorized();
-        if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")) return Results.Forbid();
+        if(session.SocietyId is null || !await auth.HasPermissionAsync(session.UserId,"COLLECTION_MANAGEMENT","VIEW",ct)) return Results.Forbid();
         await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
         await cn.OpenAsync(ct);
         await using var cmd=new NpgsqlCommand("select * from society_manager.fn_society_admin_collection(@society_id,@from_date,@to_date)",cn);
@@ -239,6 +356,10 @@ public static class SocietyAdminEndpoints
     }
 }
 
+public sealed record AdminAccountRight(string ModuleCode,string ActionCode,bool Granted);
+public sealed record AdminAccountRequest(long UserId,string LoginName,string DisplayName,string? Email,string? Phone,string AccountType,string? Password,DateOnly ValidFrom,DateOnly? ValidTo,List<AdminAccountRight>? Rights,string? Remark);
+public sealed record AdminAccountStatusRequest(long UserId,bool IsActive,string? Remark);
+public sealed record AdminAccountExtendRequest(long UserId,DateOnly ValidTo,string? Remark);
 public sealed record ChargeRuleRequest(string ChargeCode,string PlanName,string Method,decimal Rate,DateOnly EffectiveFrom,DateOnly? EffectiveTo,string ScopeType,string? ScopeValue);
 public sealed record InterestRuleRequest(string RuleName,string CalculationType,decimal Rate,string Frequency,string SimpleOrCompound,int GraceDays,decimal? CapAmount,DateOnly EffectiveFrom,DateOnly? EffectiveTo);
 public sealed record ChargeTypeRequest(string Code,string Name,string Method,bool Recurring,bool Taxable,bool Mandatory,string? Remark);

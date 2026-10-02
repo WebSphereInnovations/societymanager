@@ -84,9 +84,7 @@ app.Use(async (context,next) =>
         : path.StartsWith("/modules/cashier",StringComparison.OrdinalIgnoreCase) ? "/modules/cashier/index.html"
         : "/modules/customer/index.html";
     var allowed=(target=="/" && session.RoleCode=="SUPER_ADMIN")
-        || (target.Contains("society-admin") && session.RoleCode is "SUPER_ADMIN" or "SOCIETY_ADMIN")
-        || (target.Contains("cashier") && session.RoleCode is "BILLING_ADMIN" or "COLLECTOR")
-        || (target.Contains("customer") && session.RoleCode=="RESIDENT");
+        || (target.Contains("society-admin") && session.RoleCode!="RESIDENT");
     if(!allowed){var route=await auth.GetLoginRouteAsync(session.UserId,context.RequestAborted);context.Response.Redirect(route?.RoutePath ?? "/login.html");return;}
     await next();
 });
@@ -153,10 +151,8 @@ app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, Ht
     var safeRoute = route?.RoutePath ?? user.RoleCode switch
     {
         "SUPER_ADMIN" => "/",
-        "SOCIETY_ADMIN" => "/modules/society-admin/index.html",
-        "BILLING_ADMIN" or "COLLECTOR" => "/modules/cashier/index.html",
         "RESIDENT" => "/modules/customer/index.html",
-        _ => "/login.html"
+        _ => "/modules/society-admin/index.html"
     };
     return Results.Ok(new {
         user = new { user.UserId,user.LoginName,user.DisplayName,user.RoleCode,user.PreferredLanguage },
@@ -411,6 +407,19 @@ app.MapGet("/login", () => Results.Redirect("/login.html"));
 app.MapGet("/api/subscription/payment", () => Results.StatusCode(StatusCodes.Status405MethodNotAllowed));
 app.Map("/api/{**path}", () => Results.NotFound(new { message="API endpoint not found." }));
 app.MapFallbackToFile("index.html");
+
+if (args.Contains("--apply-account-security-schema", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","015_account_security_and_consumer_account.sql"));
+    await using var command=new NpgsqlCommand(sql,connection);
+    await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Account security and consumer account schema applied.");
+    return;
+}
 
 if (args.Contains("--apply-production-controls", StringComparer.OrdinalIgnoreCase))
 {

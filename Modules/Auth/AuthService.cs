@@ -58,12 +58,24 @@ public sealed class AuthService(IConfiguration configuration)
         if (!IsConfigured) return result;
         await using var cn = new NpgsqlConnection(_connectionString);
         await cn.OpenAsync(ct);
-        await using var cmd = new NpgsqlCommand(            "select * from society_manager.fn_user_permissions(@user_id)", cn);
+        await using var cmd = new NpgsqlCommand("select * from society_manager.fn_user_permissions(@user_id)", cn);
         cmd.Parameters.AddWithValue("user_id", userId);
         await using var r = await cmd.ExecuteReaderAsync(ct);
         while (await r.ReadAsync(ct))
             result.Add(new PermissionItem(r.GetString(0),r.GetString(1)));
         return result;
+    }
+
+    public async Task<bool> HasPermissionAsync(long userId,string moduleCode,string actionCode="VIEW",CancellationToken ct=default)
+    {
+        if (!IsConfigured) return false;
+        await using var cn = new NpgsqlConnection(_connectionString);
+        await cn.OpenAsync(ct);
+        await using var cmd = new NpgsqlCommand("select society_manager.fn_user_has_permission(@user_id,@module_code,@action_code)",cn);
+        cmd.Parameters.AddWithValue("user_id",userId);
+        cmd.Parameters.AddWithValue("module_code",moduleCode);
+        cmd.Parameters.AddWithValue("action_code",actionCode);
+        return Convert.ToBoolean(await cmd.ExecuteScalarAsync(ct));
     }
 
     public async Task<(string RawToken, Guid SessionId)> CreateSessionAsync(long userId, long? societyId, CancellationToken ct)

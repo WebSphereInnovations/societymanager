@@ -9,7 +9,7 @@ public static class PlatformEndpoints
   app.MapGet("/api/menu",async(AuthService a,HttpContext h,CancellationToken c)=>{
    var s=await AuthGuard.Get(h,a,c); if(s is null)return Results.Unauthorized();
    await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION")); await cn.OpenAsync(c);
-   await using var cmd=new NpgsqlCommand("select * from society_manager.fn_role_module_menu(@role)",cn); cmd.Parameters.AddWithValue("role",s.RoleCode);
+   await using var cmd=new NpgsqlCommand("select * from society_manager.fn_user_module_menu(@user_id)",cn); cmd.Parameters.AddWithValue("user_id",s.UserId);
    await using var r=await cmd.ExecuteReaderAsync(c); var rows=new List<Dictionary<string,object?>>(); while(await r.ReadAsync(c)){var x=new Dictionary<string,object?>();for(var i=0;i<4;i++)x[r.GetName(i)]=r.IsDBNull(i)?null:r.GetValue(i);rows.Add(x);} return Results.Ok(rows);
   });
   app.MapGet("/api/platform/dashboard",async(AuthService a,HttpContext h,CancellationToken c)=>await Fn(a,h,c,"fn_super_admin_dashboard",8));

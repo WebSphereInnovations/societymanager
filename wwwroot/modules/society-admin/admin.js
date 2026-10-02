@@ -7,12 +7,13 @@ function table(id,data,columns,opts={}){const el=$('#'+id);if(el._tab){el._tab.d
 function debounce(fn,ms=280){let t;return (...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
 async function init(){
  try{
-  const me=await get('/api/auth/me');session=me.session;
-  if(session.roleCode!=='SOCIETY_ADMIN'&&session.roleCode!=='SUPER_ADMIN'){location.href='/';return}
+  const me=await get('/api/auth/me');session=me.session;window.society360Permissions=me.permissions||[];
+  if(session.roleCode==='RESIDENT'){location.href='/modules/customer/index.html';return}
   const society=me.societies.find(x=>x.societyId===session.societyId)||me.societies[0];
   $('#societyName').textContent=society?.societyName||'Society';
   $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');
-  loadDashboard();loadSubscription();wire();
+  if(window.society360Permissions.some(x=>x.moduleCode==='APP_DASHBOARD'&&x.actionCode==='VIEW'))loadDashboard();
+  if(session.roleCode==='SOCIETY_ADMIN'||session.roleCode==='SUPER_ADMIN')loadSubscription();wire();
  }catch(e){location.href='/login'}
 }
 async function loadSubscription(){
@@ -66,4 +67,6 @@ const translations={en:{dash:'Dashboard',cust:'Customer 360',flat:'Flats & Resid
 function applyLanguage(lang){const d=translations[lang]||translations.en;const map=[['home',d.dash],['customers',d.cust],['flats',d.flat],['bills',d.bill],['collection',d.col],['complaints',d.comp],['visitors',d.vis],['parking',d.park]];map.forEach(([v,t])=>{const b=document.querySelector('[data-view="'+v+'"] span');if(b)b.textContent=t})}
 $('#saveCharge')?.addEventListener('click',async()=>{const r=await fetch('/api/society-admin/config/charge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chargeCode:$('#chargeCode').value,planName:'Future '+$('#chargeCode').value+' '+$('#chargeFrom').value,method:$('#calcMethod').value,rate:Number($('#chargeRate').value),effectiveFrom:$('#chargeFrom').value,effectiveTo:$('#chargeTo').value||null,scopeType:'Society',scopeValue:null})});alert(r.ok?'Future rate saved':'Rate save failed');if(r.ok)loadConfig()});
 $('#saveInterest')?.addEventListener('click',async()=>{const r=await fetch('/api/society-admin/config/interest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ruleName:$('#interestName').value||'Future DPC',calculationType:'Percentage',rate:Number($('#interestRate').value),frequency:'Monthly',simpleOrCompound:$('#interestCompound').value,graceDays:Number($('#interestGrace').value||0),capAmount:null,effectiveFrom:$('#interestFrom').value,effectiveTo:null})});alert(r.ok?'DPC rule saved':'DPC save failed');if(r.ok)loadConfig()});
+Society360I18n.init();
+window.addEventListener('society360-language-changed',()=>{Society360I18n.apply();if(window.buildDatabaseMenu)window.buildDatabaseMenu();});
 init();
