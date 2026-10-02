@@ -1,10 +1,12 @@
+[Reading 126 lines from start (total: 126 lines, 0 remaining)]
+
 SET search_path TO society_manager, public;
 
 ALTER TABLE m_module ADD COLUMN IF NOT EXISTS visible boolean NOT NULL DEFAULT true;
 ALTER TABLE m_permission ADD COLUMN IF NOT EXISTS visible boolean NOT NULL DEFAULT true;
 
-UPDATE m_module SET visible=false WHERE module_code NOT IN ('APP_DASHBOARD','ADMINISTRATOR','ADM_ACCOUNTS');
-UPDATE m_module SET visible=true WHERE module_code IN ('APP_DASHBOARD','ADMINISTRATOR','ADM_ACCOUNTS');
+UPDATE m_module SET visible=true WHERE is_active;
+UPDATE m_module SET visible=false WHERE NOT is_active;
 UPDATE m_permission SET visible=true;
 
 DROP FUNCTION IF EXISTS fn_user_module_menu(bigint);
@@ -124,3 +126,5 @@ BEGIN
  WHERE module_id=p_module_id;
  IF NOT FOUND THEN RAISE EXCEPTION 'Menu not found'; END IF;
 END $$;
+
+[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
