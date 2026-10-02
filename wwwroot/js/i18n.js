@@ -86,11 +86,23 @@ function autoTranslate(root=document){
     }
   });
 }
-function setLanguage(code){if(!languages[code])return;current=code;localStorage.setItem('society360-language',code);document.documentElement.lang=code;apply();window.dispatchEvent(new CustomEvent('society360-language-changed',{detail:{code}}));}
-const api={languages,t,english:key=>keys[key]||key,setLanguage,get current(){return current;},locale:()=>languages[current].locale,init:()=>apply(),apply,translateText,translateDataValue};
+function setLanguage(code){if(!languages[code])return;current=code;localStorage.setItem('society360-language',code);document.documentElement.lang=code;safeApply();window.dispatchEvent(new CustomEvent('society360-language-changed',{detail:{code}}));}
+const api={languages,t,english:key=>keys[key]||key,setLanguage,get current(){return current;},locale:()=>languages[current].locale,init:()=>safeApply(),apply:safeApply,translateText,translateDataValue};
 window.Society360I18n=api;
-window.addEventListener('society360-language-changed',()=>apply());
-const dynamicObserver=new MutationObserver(mutations=>{if(mutations.some(m=>m.addedNodes&&m.addedNodes.length))apply();});
+window.addEventListener('society360-language-changed',()=>safeApply());
+let applying=false;
+let observerTimer=0;
+const dynamicObserver=new MutationObserver(mutations=>{
+  if(applying)return;
+  if(!mutations.some(m=>m.addedNodes&&m.addedNodes.length))return;
+  clearTimeout(observerTimer);
+  observerTimer=setTimeout(()=>safeApply(),50);
+});
+function safeApply(root=document){
+  if(applying)return;
+  applying=true;
+  try{apply(root);}finally{applying=false;}
+}
 if(document.body)dynamicObserver.observe(document.body,{childList:true,subtree:true});
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{apply();dynamicObserver.observe(document.body,{childList:true,subtree:true});},{once:true});else apply();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>safeApply(),{once:true});else safeApply();
 })();
