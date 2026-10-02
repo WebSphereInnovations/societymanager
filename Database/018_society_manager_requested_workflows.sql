@@ -592,3 +592,7 @@ WHERE m.module_code IN ('ADMIN_CREATE_ACCOUNT','ADMIN_MANAGE_ACCOUNT','SOC_CUSTO
 INSERT INTO m_role_permission(role_id,permission_id)
 SELECT r.role_id,p.permission_id FROM m_role r JOIN m_permission p ON p.module_code IN ('ADMIN_CREATE_ACCOUNT','ADMIN_MANAGE_ACCOUNT','SOC_CUSTOMER','SOC_AREA_UPDATE')
 WHERE r.role_code IN ('SOCIETY_ADMIN','SUPER_ADMIN') AND p.is_active ON CONFLICT DO NOTHING;
+
+-- Remove remaining duplicate entries only under the specifically requested modules.
+UPDATE m_module SET visible=false WHERE module_code IN ('SUPER_DASHBOARD','DASH_BILLING','DASH_COLLECTION','DASH_CRM','BO_TICKET','BO_SERVICE_ATTRIBUTES','BO_MASTER_MIGRATION');
+UPDATE m_module SET visible=true,display_order=1,parent_module_code=NULL,module_name='Dashboard' WHERE module_code='APP_DASHBOARD';
