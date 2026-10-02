@@ -75,4 +75,4 @@ window.openRequestedModule=function(c){
  if(c==='MODULE_SUBMODULE'){return window.openAdminSection?.('menus')??false}
  return false
 }
-})();
+}
