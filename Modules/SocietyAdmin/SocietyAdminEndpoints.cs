@@ -81,6 +81,13 @@ public static class SocietyAdminEndpoints
         app.MapPost("/api/society-admin/accounts/extend", async (AdminAccountExtendRequest x,AuthService auth,HttpContext http,CancellationToken ct) =>
             await ExtendAccount(x,auth,http,ct));
 
+        app.MapGet("/api/society-admin/roles", async (AuthService auth,HttpContext http,CancellationToken ct) => await RoleList(auth,http,ct));
+        app.MapGet("/api/society-admin/roles/{roleId:long}/rights", async (long roleId,AuthService auth,HttpContext http,CancellationToken ct) => await RoleRights(roleId,auth,http,ct));
+        app.MapPost("/api/society-admin/roles/save", async (AdminRoleRequest x,AuthService auth,HttpContext http,CancellationToken ct) => await SaveRole(x,auth,http,ct));
+        app.MapGet("/api/society-admin/menu-catalog", async (AuthService auth,HttpContext http,CancellationToken ct) => await MenuCatalog(auth,http,ct));
+        app.MapPost("/api/society-admin/menu-catalog/save", async (AdminMenuRequest x,AuthService auth,HttpContext http,CancellationToken ct) => await SaveMenu(x,auth,http,ct));
+        app.MapPost("/api/society-admin/menu-catalog/visibility", async (AdminMenuVisibilityRequest x,AuthService auth,HttpContext http,CancellationToken ct) => await SetMenuVisibility(x,auth,http,ct));
+
         app.MapGet("/api/society-admin/consumer-account/{customerId:long}", async (long customerId,AuthService auth,HttpContext http,CancellationToken ct) =>
             await ConsumerAccount(auth,http,ct,customerId));
     }
@@ -167,6 +174,77 @@ public static class SocietyAdminEndpoints
         await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_extend_account(@society,@user,@to,@by,@remark)",cn);
         cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("user",x.UserId);cmd.Parameters.AddWithValue("to",x.ValidTo);cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");
         await cmd.ExecuteNonQueryAsync(ct);return Results.Ok(new {success=true});
+    }
+
+    static async Task<IResult> RoleList(AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(s.SocietyId is null || !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","VIEW",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_admin_role_list(@society)",cn);cmd.Parameters.AddWithValue("society",s.SocietyId.Value);
+        return Results.Ok(await ReadRows(cmd,7,ct));
+    }
+
+    static async Task<IResult> RoleRights(long roleId,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(!await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","VIEW",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_admin_role_rights(@role)",cn);cmd.Parameters.AddWithValue("role",roleId);
+        return Results.Ok(await ReadRows(cmd,9,ct));
+    }
+
+    static async Task<IResult> SaveRole(AdminRoleRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(s.SocietyId is null || !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","EDIT",ct))return Results.Forbid();
+        if(x.RoleId==0 && !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","ADD",ct))return Results.Forbid();
+        try
+        {
+            await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+            await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_save_role(@role,@code,@name,@description,@rights,@by,@remark,NULL)",cn);
+            cmd.Parameters.AddWithValue("role",x.RoleId);cmd.Parameters.AddWithValue("code",x.RoleCode);cmd.Parameters.AddWithValue("name",x.RoleName);
+            cmd.Parameters.AddWithValue("description",(object?)x.Description??DBNull.Value);var rights=cmd.Parameters.Add("rights",NpgsqlDbType.Jsonb);rights.Value=JsonSerializer.Serialize(x.Rights??[]);
+            cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");await cmd.ExecuteNonQueryAsync(ct);return Results.Ok(new {success=true});
+        }
+        catch(PostgresException ex){return Results.BadRequest(new {message=ex.MessageText});}
+    }
+
+    static async Task<IResult> MenuCatalog(AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(!await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","VIEW",ct))return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_admin_menu_list()",cn);return Results.Ok(await ReadRows(cmd,9,ct));
+    }
+
+    static async Task<IResult> SaveMenu(AdminMenuRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(!await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","EDIT",ct))return Results.Forbid();
+        if(x.ModuleId==0 && !await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","ADD",ct))return Results.Forbid();
+        try
+        {
+            await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+            await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_save_menu(@id,@code,@name,@parent,@order,@visible,@by,@remark,NULL)",cn);
+            cmd.Parameters.AddWithValue("id",x.ModuleId);cmd.Parameters.AddWithValue("code",x.ModuleCode);cmd.Parameters.AddWithValue("name",x.ModuleName);
+            cmd.Parameters.AddWithValue("parent",(object?)x.ParentModuleCode??DBNull.Value);cmd.Parameters.AddWithValue("order",x.DisplayOrder);cmd.Parameters.AddWithValue("visible",x.Visible);
+            cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");await cmd.ExecuteNonQueryAsync(ct);return Results.Ok(new {success=true});
+        }
+        catch(PostgresException ex){return Results.BadRequest(new {message=ex.MessageText});}
+    }
+
+    static async Task<IResult> SetMenuVisibility(AdminMenuVisibilityRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();
+        if(!await auth.HasPermissionAsync(s.UserId,"ADM_ACCOUNTS","EDIT",ct))return Results.Forbid();
+        try
+        {
+            await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);
+            await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_set_menu_visibility(@id,@visible,@by,@remark)",cn);
+            cmd.Parameters.AddWithValue("id",x.ModuleId);cmd.Parameters.AddWithValue("visible",x.Visible);cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");await cmd.ExecuteNonQueryAsync(ct);return Results.Ok(new {success=true});
+        }
+        catch(PostgresException ex){return Results.BadRequest(new {message=ex.MessageText});}
     }
 
     static async Task<IResult> ConsumerAccount(AuthService auth,HttpContext http,CancellationToken ct,long customerId)
@@ -368,6 +446,10 @@ public sealed record AdminAccountRight(string ModuleCode,string ActionCode,bool 
 public sealed record AdminAccountRequest(long UserId,string LoginName,string DisplayName,string? Email,string? Phone,string AccountType,string? Password,DateOnly ValidFrom,DateOnly? ValidTo,List<AdminAccountRight>? Rights,string? Remark);
 public sealed record AdminAccountStatusRequest(long UserId,bool IsActive,string? Remark);
 public sealed record AdminAccountExtendRequest(long UserId,DateOnly ValidTo,string? Remark);
+public sealed record AdminRoleRight(string ModuleCode,string ActionCode,bool Granted);
+public sealed record AdminRoleRequest(long RoleId,string RoleCode,string RoleName,string? Description,List<AdminRoleRight>? Rights,string? Remark);
+public sealed record AdminMenuRequest(long ModuleId,string ModuleCode,string ModuleName,string? ParentModuleCode,int DisplayOrder,bool Visible,string? Remark);
+public sealed record AdminMenuVisibilityRequest(long ModuleId,bool Visible,string? Remark);
 public sealed record ChargeRuleRequest(string ChargeCode,string PlanName,string Method,decimal Rate,DateOnly EffectiveFrom,DateOnly? EffectiveTo,string ScopeType,string? ScopeValue);
 public sealed record InterestRuleRequest(string RuleName,string CalculationType,decimal Rate,string Frequency,string SimpleOrCompound,int GraceDays,decimal? CapAmount,DateOnly EffectiveFrom,DateOnly? EffectiveTo);
 public sealed record ChargeTypeRequest(string Code,string Name,string Method,bool Recurring,bool Taxable,bool Mandatory,string? Remark);
