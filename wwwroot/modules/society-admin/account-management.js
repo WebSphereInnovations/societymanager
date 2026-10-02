@@ -1,4 +1,3 @@
-[Reading 119 lines from start (total: 119 lines, 0 remaining)]
 
 (function(){
 'use strict';
@@ -19,7 +18,7 @@ async function buildDatabaseMenu(){
 function menuButton(x){
  const b=document.createElement('button');b.type='button';b.dataset.view=accountViewMap[x.module_code]||'accounts';b.dataset.moduleCode=x.module_code;
  b.innerHTML=(accountIcons[x.module_code]||'•')+' <span>'+accountLabel(x)+'</span>';
- b.onclick=()=>show(b.dataset.view,b.querySelector('span')?.textContent||x.module_name);return b;
+ b.onclick=()=>{if(window.openRequestedModule&&window.openRequestedModule(x.module_code,x.module_name))return;show(b.dataset.view,b.querySelector('span')?.textContent||x.module_name)};return b;
 }
 async function loadAccountTypes(){
  const rows=await get('/api/society-admin/accounts/types');$('#accountType').innerHTML=rows.map(x=>'<option value="'+x.role_code+'">'+x.role_name+'</option>').join('');
@@ -119,5 +118,3 @@ function wireAdminTabs(){
 }
 window.buildDatabaseMenu=buildDatabaseMenu;window.openCustomer=()=>{};wireAdminTabs();loadAccountTypes();resetAccountForm();loadAccounts();buildDatabaseMenu();
 })();
-
-[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
