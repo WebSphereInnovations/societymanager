@@ -76,18 +76,16 @@ label{display:block;font-size:10px;font-weight:700;color:#59657c;margin:14px 0 7
 
 <script src="/js/i18n.js"></script>
 <script>
-const loginText={en:{loginTitle:'One secure place for every society.',loginText:'Manage multiple societies, roles, billing, residents and operations from one professional platform.',signIn:'Sign in',welcomeBack:'Welcome back. Enter your account details to continue.',loginName:'Login name',password:'Password',secureHint:'Your password is stored as a salted hash. It is never stored as plain text.'},hi:{loginTitle:'हर सोसायटी के लिए एक सुरक्षित प्लेटफॉर्म।',loginText:'मल्टीपल सोसायटी, रोल, बिलिंग, निवासी और संचालन एक ही प्रोफेशनल प्लेटफॉर्म से मैनेज करें।',signIn:'साइन इन',welcomeBack:'वापसी पर स्वागत है। आगे बढ़ने के लिए अपनी जानकारी दर्ज करें।',loginName:'लॉगिन नाम',password:'पासवर्ड',secureHint:'आपका पासवर्ड salted hash के रूप में सेव होता है।'},mr:{loginTitle:'प्रत्येक सोसायटीसाठी एक सुरक्षित प्लॅटफॉर्म.',loginText:'अनेक सोसायटी, भूमिका, बिलिंग, रहिवासी आणि कामकाज एकाच प्लॅटफॉर्मवर व्यवस्थापित करा.',signIn:'साइन इन',welcomeBack:'पुन्हा स्वागत आहे. पुढे जाण्यासाठी माहिती भरा.',loginName:'लॉगिन नाव',password:'पासवर्ड',secureHint:'तुमचा पासवर्ड salted hash स्वरूपात सेव्ह होतो.'}};
-function applyLoginText(){const lang=Society360I18n.current;const d=loginText[lang]||loginText.en;document.querySelectorAll('[data-i18n]').forEach(e=>{if(d[e.dataset.i18n])e.textContent=d[e.dataset.i18n]});}
-Society360I18n.init();applyLoginText();
-document.querySelector('#language-select').addEventListener('change',e=>{Society360I18n.setLanguage(e.target.value);applyLoginText();});
+Society360I18n.init();
+document.querySelector('#language-select').addEventListener('change',e=>Society360I18n.setLanguage(e.target.value));
 document.querySelector('#login-form').addEventListener('submit',async e=>{
  e.preventDefault();const error=document.querySelector('#error');error.textContent='';
  try{
   const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:login.value.trim(),password:password.value})});
   const data=await res.json().catch(()=>({}));
   if(res.ok){location.href=data.route||'/login.html';return;}
-  error.textContent=res.status===401?'Invalid login name or password.':(data.message||'Login could not be completed.');
- }catch{error.textContent='Server is not reachable. Please try again.';}
+  error.textContent=Society360I18n.translateText(res.status===401?'Invalid login name or password.':(data.message||'Login could not be completed.'));
+ }catch{error.textContent=Society360I18n.translateText('Server is not reachable. Please try again.');}
 });
 
 const signup=document.querySelector('#signup');
@@ -101,22 +99,22 @@ async function loadPlans(){
   const res=await fetch('/api/public/subscription-plans',{cache:'no-store'});
   if(!res.ok)throw new Error();
   const plans=await res.json();
-  box.innerHTML=plans.map((p,i)=>'<div class="plan '+(i===1?'selected':'')+'" data-plan="'+p.planCode+'"><b>'+p.planName+'</b><strong>₹'+Number(p.price).toLocaleString('en-IN')+'</strong><small>'+p.durationDays+' days · up to '+(p.maxFlats||'—')+' flats · '+(p.maxUsers||'—')+' users</small><ul>'+Object.keys(p.features||{}).slice(0,5).map(x=>'<li>'+x.replaceAll('_',' ')+'</li>').join('')+'</ul></div>').join('');
+  box.innerHTML=plans.map((p,i)=>'<div class="plan '+(i===1?'selected':'')+'" data-plan="'+p.planCode+'"><b>'+p.planName+'</b><strong>₹'+Number(p.price).toLocaleString('en-IN')+'</strong><small>'+p.durationDays+' days · up to '+(p.maxFlats||'—')+' flats · '+(p.maxUsers||'—')+' users</small><ul>'+Object.keys(p.features||{}).slice(0,5).map(x=>'<li>'+Society360I18n.translateText(x.replaceAll('_',' '))+'</li>').join('')+'</ul></div>').join('');
   document.querySelectorAll('.plan').forEach(x=>x.addEventListener('click',()=>{document.querySelectorAll('.plan').forEach(y=>y.classList.remove('selected'));x.classList.add('selected');document.querySelector('#s-plan').value=x.dataset.plan;}));
- }catch{box.innerHTML='<div class="plan"><b>Plans unavailable</b><small>Please try again after database setup.</small></div>';}
+ }catch{box.innerHTML='<div class="plan"><b>'+Society360I18n.translateText('Plans unavailable')+'</b><small>'+Society360I18n.translateText('Please try again after database setup.')+'</small></div>';}
 }
 
 document.querySelector('#signup-form').addEventListener('submit',async e=>{
  e.preventDefault();
- const msg=document.querySelector('#signup-message');msg.textContent='Creating society…';
+ const msg=document.querySelector('#signup-message');msg.textContent=Society360I18n.translateText('Creating society…');
  const body={societyName:document.querySelector('#s-name').value,adminName:document.querySelector('#s-admin').value,loginName:document.querySelector('#s-login').value,password:document.querySelector('#s-password').value,planCode:document.querySelector('#s-plan').value,email:document.querySelector('#s-email').value,phone:document.querySelector('#s-phone').value,address:document.querySelector('#s-address').value};
  try{
   const res=await fetch('/api/public/create-society',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const data=await res.json();
-  if(!res.ok){msg.textContent=data.message||'Society creation failed.';return;}
-  msg.textContent='Society created. Redirecting to your Society Admin workspace…';
+  if(!res.ok){msg.textContent=Society360I18n.translateText(data.message||'Society creation failed.');return;}
+  msg.textContent=Society360I18n.translateText('Society created. Redirecting to your Society Admin workspace…');
   location.href=data.route||'/modules/society-admin/index.html';
- }catch{msg.textContent='Unable to reach the server. Please try again.';}
+ }catch{msg.textContent=Society360I18n.translateText('Unable to reach the server. Please try again.');}
 });
 </script>
 </body></html>

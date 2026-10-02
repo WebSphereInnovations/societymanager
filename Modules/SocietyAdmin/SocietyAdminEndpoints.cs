@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Npgsql;
 using Society360.Data;
 using Society360.Security;
@@ -49,6 +50,20 @@ public static class SocietyAdminEndpoints
         app.MapGet("/api/society-admin/config/interest", async (AuthService auth,HttpContext http,CancellationToken ct)=>await Config(auth,http,ct,"fn_society_interest_rules",10));
         app.MapPost("/api/society-admin/config/charge", async (ChargeRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct)=>await SaveCharge(x,auth,http,ct));
         app.MapPost("/api/society-admin/config/interest", async (InterestRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct)=>await SaveInterest(x,auth,http,ct));
+        app.MapGet("/api/society-admin/customer-account/{customerId:long}", async (long customerId, AuthService auth, HttpContext http, CancellationToken ct) =>
+            await CustomerAccount(auth,http,ct,customerId));
+        app.MapGet("/api/society-admin/customer-account/{customerId:long}/statement", async (long customerId, AuthService auth, HttpContext http, CancellationToken ct) =>
+            await AccountStatement(auth,http,ct,customerId));
+        app.MapGet("/api/society-admin/config/charge-types", async (AuthService auth,HttpContext http,CancellationToken ct) =>
+            await Config(auth,http,ct,"fn_society_charge_types",8));
+        app.MapPost("/api/society-admin/config/charge-type", async (ChargeTypeRequest x,AuthService auth,HttpContext http,CancellationToken ct) =>
+            await SaveChargeType(x,auth,http,ct));
+        app.MapGet("/api/society-admin/config/billing", async (AuthService auth,HttpContext http,CancellationToken ct) =>
+            await Config(auth,http,ct,"fn_society_billing_config",6));
+        app.MapPost("/api/society-admin/config/billing", async (BillingConfigRequest x,AuthService auth,HttpContext http,CancellationToken ct) =>
+            await SaveBillingConfig(x,auth,http,ct));
+        app.MapPost("/api/society-admin/billing/generate", async (BillingGenerateRequest x,AuthService auth,HttpContext http,CancellationToken ct) =>
+            await GenerateBills(x,auth,http,ct));
     }
 
     static async Task<IResult> Query(AuthService auth,HttpContext http,CancellationToken ct,string fn,string q,int columns)
@@ -67,7 +82,7 @@ public static class SocietyAdminEndpoints
         while(await r.ReadAsync(ct))
         {
             var row=new Dictionary<string,object?>();
-            for(var i=0;i<columns;i++) row[r.GetName(i)]=r.IsDBNull(i)?null:r.GetValue(i);
+            for(var i=0;i<columns;i++){var v=r.IsDBNull(i)?null:r.GetValue(i);row[r.GetName(i)]=v is System.Net.IPAddress ip?ip.ToString():v;}
             rows.Add(row);
         }
         return Results.Ok(rows);
@@ -126,6 +141,87 @@ public static class SocietyAdminEndpoints
     static async Task<IResult> SaveCharge(ChargeRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct){var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")||s.SocietyId is null)return Results.Forbid();await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);await using var cmd=new NpgsqlCommand("call society_manager.sp_society_save_charge_rule(@society,@code,@plan,@method,@rate,@from,@to,@scope,@value,@user,NULL)",cn);cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("code",x.ChargeCode);cmd.Parameters.AddWithValue("plan",x.PlanName);cmd.Parameters.AddWithValue("method",x.Method);cmd.Parameters.AddWithValue("rate",x.Rate);cmd.Parameters.AddWithValue("from",x.EffectiveFrom);cmd.Parameters.AddWithValue("to",(object?)x.EffectiveTo??DBNull.Value);cmd.Parameters.AddWithValue("scope",x.ScopeType);cmd.Parameters.AddWithValue("value",(object?)x.ScopeValue??DBNull.Value);cmd.Parameters.AddWithValue("user",s.UserId);return Results.Ok(new{success=true,id=await cmd.ExecuteScalarAsync(ct)});}
     static async Task<IResult> SaveInterest(InterestRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct){var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")||s.SocietyId is null)return Results.Forbid();await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);await using var cmd=new NpgsqlCommand("call society_manager.sp_society_save_interest_rule(@society,@name,@type,@rate,@frequency,@compound,@grace,@cap,@from,@to,@user,NULL)",cn);cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("name",x.RuleName);cmd.Parameters.AddWithValue("type",x.CalculationType);cmd.Parameters.AddWithValue("rate",x.Rate);cmd.Parameters.AddWithValue("frequency",x.Frequency);cmd.Parameters.AddWithValue("compound",x.SimpleOrCompound);cmd.Parameters.AddWithValue("grace",x.GraceDays);cmd.Parameters.AddWithValue("cap",(object?)x.CapAmount??DBNull.Value);cmd.Parameters.AddWithValue("from",x.EffectiveFrom);cmd.Parameters.AddWithValue("to",(object?)x.EffectiveTo??DBNull.Value);cmd.Parameters.AddWithValue("user",s.UserId);return Results.Ok(new{success=true,id=await cmd.ExecuteScalarAsync(ct)});}
 
+    static async Task<IResult> CustomerAccount(AuthService auth,HttpContext http,CancellationToken ct,long customerId)
+    {
+        var session=await AuthGuard.Get(http,auth,ct);
+        if(session is null) return Results.Unauthorized();
+        if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || session.SocietyId is null) return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select society_manager.fn_society_admin_customer_account(@society,@customer)",cn);
+        cmd.Parameters.AddWithValue("society",session.SocietyId.Value);
+        cmd.Parameters.AddWithValue("customer",customerId);
+        await using var r=await cmd.ExecuteReaderAsync(ct);
+        if(!await r.ReadAsync(ct)) return Results.NotFound(new {message="Customer account not found."});
+        var json=r.GetFieldValue<JsonDocument>(0);
+        return Results.Json(json.RootElement);
+    }
+
+    static async Task<IResult> AccountStatement(AuthService auth,HttpContext http,CancellationToken ct,long customerId)
+    {
+        var session=await AuthGuard.Get(http,auth,ct);
+        if(session is null) return Results.Unauthorized();
+        if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || session.SocietyId is null) return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_society_admin_account_statement(@society,@customer)",cn);
+        cmd.Parameters.AddWithValue("society",session.SocietyId.Value);
+        cmd.Parameters.AddWithValue("customer",customerId);
+        return Results.Ok(await ReadRows(cmd,9,ct));
+    }
+
+    static async Task<IResult> SaveChargeType(ChargeTypeRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);
+        if(s is null) return Results.Unauthorized();
+        if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || s.SocietyId is null) return Results.Forbid();
+        if(string.IsNullOrWhiteSpace(x.Code)||string.IsNullOrWhiteSpace(x.Name)) return Results.BadRequest(new {message="Code and name are required."});
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("call society_manager.sp_society_add_charge_type(@society,@code,@name,@method,@recurring,@taxable,@mandatory,@user,@remark,NULL)",cn);
+        cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("code",x.Code.Trim());
+        cmd.Parameters.AddWithValue("name",x.Name.Trim());cmd.Parameters.AddWithValue("method",x.Method);
+        cmd.Parameters.AddWithValue("recurring",x.Recurring);cmd.Parameters.AddWithValue("taxable",x.Taxable);
+        cmd.Parameters.AddWithValue("mandatory",x.Mandatory);cmd.Parameters.AddWithValue("user",s.UserId);
+        cmd.Parameters.AddWithValue("remark",(object?)x.Remark??"");
+        await using var r=await cmd.ExecuteReaderAsync(ct);
+        if(!await r.ReadAsync(ct)) return Results.BadRequest(new {message="Charge head could not be saved."});
+        return Results.Ok(new {success=true,chargeTypeId=r.GetInt64(0)});
+    }
+
+    static async Task<IResult> SaveBillingConfig(BillingConfigRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);
+        if(s is null) return Results.Unauthorized();
+        if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || s.SocietyId is null) return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("call society_manager.sp_society_save_billing_config(@society,@day,@due,@carry,@dpc,@user,NULL,@remark)",cn);
+        cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("day",x.BillingDay);
+        cmd.Parameters.AddWithValue("due",x.DueDays);cmd.Parameters.AddWithValue("carry",x.CarryArrear);
+        cmd.Parameters.AddWithValue("dpc",x.AutoDpc);cmd.Parameters.AddWithValue("user",s.UserId);
+        cmd.Parameters.AddWithValue("remark",(object?)x.Remark??"");
+        await using var r=await cmd.ExecuteReaderAsync(ct);
+        if(!await r.ReadAsync(ct)) return Results.BadRequest(new {message="Billing configuration could not be saved."});
+        return Results.Ok(new {success=true,billingConfigId=r.GetInt64(0)});
+    }
+
+    static async Task<IResult> GenerateBills(BillingGenerateRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var s=await AuthGuard.Get(http,auth,ct);
+        if(s is null) return Results.Unauthorized();
+        if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || s.SocietyId is null) return Results.Forbid();
+        var month=new DateOnly(x.Year,x.Month,1);
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("call society_manager.sp_generate_monthly_bills(@society,@month,@user,@due,NULL)",cn);
+        cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("month",month);
+        cmd.Parameters.AddWithValue("user",s.UserId);cmd.Parameters.AddWithValue("due",x.DueDays??0);
+        await using var r=await cmd.ExecuteReaderAsync(ct);
+        if(!await r.ReadAsync(ct)) return Results.BadRequest(new {message="Monthly billing could not be completed."});
+        return Results.Ok(new {success=true,createdCount=r.IsDBNull(0)?0:r.GetInt64(0),billMonth=month});
+    }
+
     static async Task<IResult> Config(AuthService auth,HttpContext http,CancellationToken ct,string fn,int columns)
     {
         var session=await AuthGuard.Get(http,auth,ct); if(session is null)return Results.Unauthorized();
@@ -145,3 +241,6 @@ public static class SocietyAdminEndpoints
 
 public sealed record ChargeRuleRequest(string ChargeCode,string PlanName,string Method,decimal Rate,DateOnly EffectiveFrom,DateOnly? EffectiveTo,string ScopeType,string? ScopeValue);
 public sealed record InterestRuleRequest(string RuleName,string CalculationType,decimal Rate,string Frequency,string SimpleOrCompound,int GraceDays,decimal? CapAmount,DateOnly EffectiveFrom,DateOnly? EffectiveTo);
+public sealed record ChargeTypeRequest(string Code,string Name,string Method,bool Recurring,bool Taxable,bool Mandatory,string? Remark);
+public sealed record BillingConfigRequest(int BillingDay,int DueDays,bool CarryArrear,bool AutoDpc,string? Remark);
+public sealed record BillingGenerateRequest(int Year,int Month,int? DueDays);

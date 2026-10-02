@@ -2,7 +2,8 @@ const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
 let session=null;
 const money=v=>'₹'+Number(v||0).toLocaleString('en-IN',{maximumFractionDigits:2});
 async function get(url){const r=await fetch(url,{cache:'no-store'});if(r.status===401){location.href='/login';throw 0}if(!r.ok)throw new Error('Request failed');return r.json()}
-function table(id,data,columns,opts={}){const el=$('#'+id);if(el._tab){el._tab.destroy()}el._tab=new Tabulator(el,{data,layout:'fitColumns',height:'470px',pagination:true,paginationSize:15,headerFilterPlaceholder:'Filter...',columns,...opts});return el._tab}
+const tableRegistry=new Map();
+function table(id,data,columns,opts={}){const el=$('#'+id);if(el._tab){el._tab.destroy()}const localized=columns.map(c=>({...c,title:Society360I18n.translateText(c.title)}));el._tab=new Tabulator(el,{data,layout:'fitColumns',height:'470px',pagination:true,paginationSize:15,headerFilterPlaceholder:Society360I18n.translateText('Filter...'),columns:localized,...opts});tableRegistry.set(id,{table:el._tab,columns});return el._tab}
 function debounce(fn,ms=280){let t;return (...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
 async function init(){
  try{
@@ -46,8 +47,9 @@ function wire(){
  $('#customerSearch').oninput=debounce(e=>loadCustomers(e.target.value));$('#flatSearch').oninput=debounce(e=>loadFlats(e.target.value));
  $('#billSearch').oninput=debounce(e=>loadBills(e.target.value));$('#complaintSearch').oninput=debounce(e=>loadComplaints(e.target.value));
  $('#visitorSearch').oninput=debounce(e=>loadVisitors(e.target.value));$('#parkingSearch').oninput=debounce(e=>loadParking(e.target.value));
- $('#language-select').value=localStorage.getItem('society360-language')||'en';$('#language-select').onchange=e=>{localStorage.setItem('society360-language',e.target.value);applyLanguage(e.target.value)}
- setInterval(()=>$('#clock').textContent=new Date().toLocaleString(),1000);
+ $('#language-select').value=Society360I18n.current;$('#language-select').onchange=e=>Society360I18n.setLanguage(e.target.value);
+ window.addEventListener('society360-language-changed',()=>{tableRegistry.forEach(x=>{try{x.table.setColumns(x.columns.map(c=>({...c,title:Society360I18n.translateText(c.title)})))}catch{}});});
+ setInterval(()=>$('#clock').textContent=new Date().toLocaleString(Society360I18n.locale()),1000);
 }
 async function loadCustomers(q){const rows=await get('/api/society-admin/customers?q='+encodeURIComponent(q));const t=table('customerTable',rows,[{title:'Customer',field:'full_name',headerFilter:true},{title:'Code',field:'customer_code',headerFilter:true},{title:'Phone',field:'phone',headerFilter:true},{title:'Flat',field:'flat_no',headerFilter:true},{title:'Wing',field:'wing',headerFilter:true},{title:'Email',field:'email'}]);t.on('rowClick',(_,row)=>openCustomer(row.getData().customer_id))}
 async function openCustomer(id){const x=await get('/api/society-admin/customer/'+id);const d=$('#customer360');d.classList.remove('hidden');d.innerHTML='<b>'+x.full_name+'</b><div class="cards" style="grid-template-columns:repeat(4,1fr);margin-top:10px"><article><small>Flat</small><strong>'+x.flat_no+'</strong></article><article><small>Billed</small><strong>'+money(x.billed_amount)+'</strong></article><article><small>Paid</small><strong>'+money(x.paid_amount)+'</strong></article><article><small>Outstanding</small><strong>'+money(x.outstanding)+'</strong></article></div><h3 style="margin:18px 0 10px">Service History</h3><div id="serviceHistoryTable"></div>';loadCustomerHistory(id)}
