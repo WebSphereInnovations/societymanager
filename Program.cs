@@ -80,6 +80,8 @@ app.Use(async (context,next) =>
     var auth=context.RequestServices.GetRequiredService<AuthService>();
     var session=await AuthGuard.Get(context,auth,context.RequestAborted);
     if(session is null){context.Response.Redirect("/login.html");return;}
+    context.Response.Headers.CacheControl="no-store, no-cache, must-revalidate, max-age=0";
+    context.Response.Headers.Pragma="no-cache";
     var target=(path.Equals("/",StringComparison.OrdinalIgnoreCase) || path.Equals("/index.html",StringComparison.OrdinalIgnoreCase)) ? "/"
         : path.StartsWith("/modules/society-admin",StringComparison.OrdinalIgnoreCase) ? "/modules/society-admin/index.html"
         : path.StartsWith("/modules/cashier",StringComparison.OrdinalIgnoreCase) ? "/modules/cashier/index.html"
