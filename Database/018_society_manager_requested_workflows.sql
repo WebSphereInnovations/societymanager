@@ -455,6 +455,32 @@ BEGIN
  RETURN v_id;
 END; $$;
 
+CREATE OR REPLACE FUNCTION fn_super_tickets()
+RETURNS TABLE(ticket_id bigint,society_id bigint,society_name varchar,ticket_no varchar,title varchar,description text,status_code varchar,status_name varchar,status_color varchar,priority varchar,created_at timestamptz,updated_at timestamptz,resolved_at timestamptz)
+LANGUAGE sql AS $$ SELECT t.ticket_id,t.society_id,society_name,t.ticket_no,t.title,t.description,st.status_code,st.status_name,st.display_color,t.priority,t.created_at,t.updated_at,t.resolved_at FROM t_it_ticket t JOIN m_society s ON s.society_id=t.society_id JOIN m_ticket_status st ON st.ticket_status_id=t.ticket_status_id ORDER BY t.created_at DESC; $$;
+
+CREATE OR REPLACE FUNCTION sp_super_update_ticket(p_ticket_id bigint,p_status_code varchar,p_user_id bigint)
+RETURNS bigint LANGUAGE plpgsql AS $$
+DECLARE v_status bigint;v_society bigint;v_id bigint;
+BEGIN
+ IF NOT EXISTS(SELECT 1 FROM m_user WHERE user_id=p_user_id AND role_code='SUPER_ADMIN' AND is_active) THEN RAISE EXCEPTION 'Super Admin permission required'; END IF;
+ SELECT ticket_status_id INTO v_status FROM m_ticket_status WHERE status_code=p_status_code AND is_active AND visible;
+ SELECT society_id INTO v_society FROM t_it_ticket WHERE ticket_id=p_ticket_id FOR UPDATE;
+ IF v_status IS NULL OR v_society IS NULL THEN RAISE EXCEPTION 'Ticket or status not found'; END IF;
+ UPDATE t_it_ticket SET ticket_status_id=v_status,updated_at=now(),resolved_at=CASE WHEN p_status_code='RESOLVED' THEN now() ELSE resolved_at END WHERE ticket_id=p_ticket_id RETURNING ticket_id INTO v_id;
+ INSERT INTO t_notification(society_id,recipient_user_id,notification_type,title,message,reference_entity,reference_id,channel)
+ SELECT v_society,u.user_id,'TICKET_STATUS','IT Ticket Status Updated','IT ticket status changed to '||p_status_code,'TICKET',v_id,'APP' FROM m_user u WHERE u.society_id=v_society AND u.role_code='SOCIETY_ADMIN' AND u.is_active;
+ RETURN v_id;
+END; $$;
+
+CREATE OR REPLACE FUNCTION fn_document_content(p_society_id bigint,p_document_id bigint)
+RETURNS TABLE(file_name varchar,content_type varchar,file_data bytea)
+LANGUAGE sql AS $$ SELECT file_name,content_type,file_data FROM t_customer_document WHERE society_id=p_society_id AND document_id=p_document_id AND is_active; $$;
+
+CREATE OR REPLACE FUNCTION fn_ticket_statuses()
+RETURNS TABLE(ticket_status_id bigint,status_code varchar,status_name varchar,display_color varchar)
+LANGUAGE sql AS $$ SELECT ticket_status_id,status_code,status_name,display_color FROM m_ticket_status WHERE is_active AND visible ORDER BY status_order; $$;
+
 CREATE OR REPLACE FUNCTION fn_tickets(p_society_id bigint)
 RETURNS TABLE(ticket_id bigint,ticket_no varchar,title varchar,description text,status_code varchar,status_name varchar,status_color varchar,priority varchar,created_at timestamptz,updated_at timestamptz,resolved_at timestamptz)
 LANGUAGE sql AS $$ SELECT t.ticket_id,t.ticket_no,t.title,t.description,s.status_code,s.status_name,s.display_color,t.priority,t.created_at,t.updated_at,t.resolved_at FROM t_it_ticket t JOIN m_ticket_status s ON s.ticket_status_id=t.ticket_status_id WHERE t.society_id=p_society_id ORDER BY t.created_at DESC; $$;
