@@ -4,11 +4,11 @@
     if(!r.ok){location.href='/login';return;}
     const x=await r.json();
     window.Society360Session=x;
-    const name=document.querySelector('.topbar h1');
-    if(name) name.innerHTML='<span data-i18n="goodAfternoon">'+Society360I18n.t('goodAfternoon')+'</span>, '+x.session.displayName+' <span class="wave">✦</span>';
     const user=document.querySelector('#dashboardUser'); if(user) user.textContent=x.session.displayName;
     const dashboardAdmin=document.querySelector('#dashboardAdminName'); if(dashboardAdmin) dashboardAdmin.textContent=x.session.displayName;
     const dashboardAvatar=document.querySelector('#dashboardAvatar'); if(dashboardAvatar) dashboardAvatar.textContent=x.session.displayName.split(' ').map(v=>v[0]).slice(0,2).join('').toUpperCase();
+    const name=document.querySelector('.topbar h1');
+    if(name) name.querySelector('#dashboardUser').textContent=x.session.displayName;
     const admin=document.querySelector('.admin b');
     if(admin) admin.textContent=x.session.displayName;
     const role=document.querySelector('.admin small');
@@ -57,4 +57,4 @@ document.querySelector('#language-select').addEventListener('change',e=>Society3
 window.addEventListener('society360-language-changed',refreshLocalized);
 clock();setInterval(clock,1000);loadSystemHealth();renderBillingTable();
 document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>{document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));a.classList.add('active');}));
-// Dashboard actions must open real connected workflows; no fake success messages.
+// The dashboard action is intentionally not a fake success. Module actions are wired by their operational screens.

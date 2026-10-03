@@ -389,14 +389,13 @@ app.MapGet("/api/support/faq", async (string? q, string? lang, AuthService auth,
 {
     var session=await AuthGuard.Get(http,auth,ct);
     var societyId=session?.SocietyId ?? 0;
-    var language=(lang ?? session?.PreferredLanguage ?? "en").Trim().ToLowerInvariant();
-    if(language is not ("en" or "hi" or "mr" or "gu" or "kn" or "ta")) language="en";
+    var language=(lang ?? "en").Trim().ToLowerInvariant();
+    if(language!="en" && language!="hi" && language!="mr" && language!="gu" && language!="kn" && language!="ta") language="en";
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
     if(string.IsNullOrWhiteSpace(cs)) return Results.Problem("Database is not configured.",statusCode:503);
     await using var cn=new NpgsqlConnection(cs); await cn.OpenAsync(ct);
     await using var cmd=new NpgsqlCommand("select * from society_manager.fn_support_faq(@society,@lang,@q)",cn);
-    cmd.Parameters.AddWithValue("society",societyId);
-    cmd.Parameters.AddWithValue("lang",language);
+    cmd.Parameters.AddWithValue("society",societyId); cmd.Parameters.AddWithValue("lang",language);
     cmd.Parameters.AddWithValue("q",(object?)(q?.Trim()) ?? DBNull.Value);
     await using var reader=await cmd.ExecuteReaderAsync(ct);
     var rows=new List<object>();
