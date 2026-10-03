@@ -68,6 +68,15 @@ app.UseAuthentication();
 app.UseRouting();
 app.UseRateLimiter();
 
+static string GetClientIp(HttpContext context)
+{
+    var cfIp = context.Request.Headers["CF-Connecting-IP"].ToString().Trim();
+    if (System.Net.IPAddress.TryParse(cfIp, out _)) return cfIp;
+    var forwarded = context.Request.Headers["X-Forwarded-For"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
+    if (System.Net.IPAddress.TryParse(forwarded, out _)) return forwarded;
+    return context.Connection.RemoteIpAddress?.ToString() ?? "";
+}
+
 app.Use(async (context,next) =>
 {
     var path=context.Request.Path.Value ?? "";
@@ -116,7 +125,7 @@ app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, Ht
     if (string.IsNullOrWhiteSpace(request.Login) || string.IsNullOrWhiteSpace(request.Password))
         return Results.BadRequest(new { message = "Login name and password are required." });
 
-    var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "";
+    var ip = GetClientIp(httpContext);
     var userAgent = httpContext.Request.Headers.UserAgent.ToString();
     var user = await auth.AuthenticateAsync(request.Login.Trim(),request.Password,ct);
     if (user is null)
@@ -231,7 +240,7 @@ app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, S
         var createdUserId=reader.GetInt64(1);
         var sessionInfo=await auth.CreateSessionAsync(createdUserId,createdSocietyId,ct);
         var token=sessionInfo.RawToken;
-        await auth.RecordLoginSuccessAsync(createdUserId,createdSocietyId,request.LoginName.Trim(),httpContext.Connection.RemoteIpAddress?.ToString()??"",httpContext.Request.Headers.UserAgent.ToString(),sessionInfo.SessionId,ct);
+        await auth.RecordLoginSuccessAsync(createdUserId,createdSocietyId,request.LoginName.Trim(),GetClientIp(httpContext),httpContext.Request.Headers.UserAgent.ToString(),sessionInfo.SessionId,ct);
         AuthGuard.ClearCookie(response);
         var identity=new ClaimsIdentity(new[]
         {
@@ -506,6 +515,19 @@ if (args.Contains("--apply-admin-roles-menu-controls", StringComparer.OrdinalIgn
     await using var command=new NpgsqlCommand(sql,connection);
     await command.ExecuteNonQueryAsync();
     Console.WriteLine("Admin roles and menu controls schema applied.");
+    return;
+}
+
+if (args.Contains("--apply-login-ip-tracking", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","025_dynamic_login_ip_tracking.sql"));
+    await using var command=new NpgsqlCommand(sql,connection);
+    await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Dynamic login IP tracking schema applied.");
     return;
 }
 
