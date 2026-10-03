@@ -80,7 +80,34 @@ async function crm(k){
  const search=async()=>{try{const r=await api('/api/sm/customers/search?q='+encodeURIComponent(caq.value));const t=grid('caqTable',r,cols);t.on('rowClick',async(e,row)=>{if(!e.target.classList.contains('rw-select'))return;const d=await api('/api/sm/customer/'+row.getData().customer_id);const status=d.due_status||row.getData().due_status||'NO_DUE';const due=Number(d.current_dues||0);$('#cad').innerHTML='<div class="customer-hero"><div><h3>'+esc(d.customer?.full_name)+'</h3><p>Customer ID: '+esc(d.customer?.customer_code||d.customer?.customer_id)+' · Mobile: '+esc(d.customer?.phone)+' · Email: '+esc(d.customer?.email)+'</p></div><div class="due-card '+esc(status)+'"><small>Current Dues</small><strong>₹'+due.toFixed(2)+'</strong><span>'+esc(status==='BEFORE_DUE'?'Before Due':status==='DUE_TODAY'?'Due Today':status==='OVERDUE'?'Overdue':'No Due')+'</span></div></div><div class="customer-summary"><div><b>Flats</b><span>'+(d.flats||[]).length+'</span></div><div><b>Parking</b><span>'+(d.parking||[]).length+'</span></div><div><b>Vehicles</b><span>'+(d.vehicles||[]).length+'</span></div><div><b>Documents</b><span>'+(d.documents||[]).length+'</span></div></div><div class="customer-detail-grid"><div><h4>Flat Details</h4><div id="caFlats"></div></div><div><h4>Parking / Vehicles</h4><div id="caParking"></div><div id="caVehicles"></div></div></div>';grid('caFlats',d.flats||[],[{title:'Flat',field:'flat_no',headerFilter:true},{title:'Wing',field:'wing',headerFilter:true},{title:'Building',field:'building'},{title:'Area',field:'area_sqft'},{title:'Relation',field:'relation'}]);grid('caParking',d.parking||[],[{title:'Slot',field:'slot_no'},{title:'Type',field:'slot_type'},{title:'Charge',field:'charge'},{title:'From',field:'start_date'}]);grid('caVehicles',d.vehicles||[],[{title:'Registration',field:'registration_no'},{title:'Type',field:'vehicle_type'}]);grid('cabTable',d.dues||[],Object.keys((d.dues||[])[0]||{}).map(x=>({title:x.replaceAll('_',' '),field:x,headerFilter:true})));grid('cacTable',d.payments||[],Object.keys((d.payments||[])[0]||{}).map(x=>({title:x.replaceAll('_',' '),field:x,headerFilter:true})));grid('camTable',d.complaints||[],Object.keys((d.complaints||[])[0]||{}).map(x=>({title:x.replaceAll('_',' '),field:x,headerFilter:true})));grid('cahTable',d.service_history||[],Object.keys((d.service_history||[])[0]||{}).map(x=>({title:x.replaceAll('_',' '),field:x,headerFilter:true})))});}catch(e){$('#cad').innerHTML='<div class="hero"><h3>Unable to load customer account</h3><p>'+esc(e.message)+'</p></div>'}};
  caq.oninput=search;search();
 }
-async function mis(k){const m=new Date().toISOString().slice(0,7)+'-01';const map={consumer:['/api/sm/mis/consumer?wingId=&q=','Consumer Master Data'],billing:['/api/sm/mis/billing?month='+m,'Billing Data'],collection:['/api/sm/mis/collection?month='+m+'&status=','Collection Details'],complaints:['/api/sm/mis/complaints?status=','Complaint History']};const x=map[k];const r=await api(x[0]);panel(x[1],'<div id="misTable"></div>');grid('misTable',r,Object.keys(r[0]||{}).map(a=>({title:a.replaceAll('_',' '),field:a,headerFilter:true})))}
+async function mis(k){
+ const options=await api('/api/sm/mis/options');
+ const by=g=>options.filter(x=>x.option_group===g);
+ const wings=by('WING'),months=by('MONTH'),collectionStatuses=by('COLLECTION_STATUS'),complaintStatuses=by('COMPLAINT_STATUS');
+ const monthValue=months[0]?.option_code||new Date().toISOString().slice(0,7)+'-01';
+ const monthOptions=months.map(x=>'<option value="'+esc(x.option_code)+'">'+esc(x.option_name)+'</option>').join('');
+ const wingOptions='<option value="">All Wings</option>'+wings.map(x=>'<option value="'+esc(x.option_code)+'">'+esc(x.option_name)+'</option>').join('');
+ const collectionOptions='<option value="">All</option>'+collectionStatuses.map(x=>'<option value="'+esc(x.option_code)+'">'+esc(x.option_name)+'</option>').join('');
+ const complaintOptions='<option value="">All</option>'+complaintStatuses.map(x=>'<option value="'+esc(x.option_code)+'">'+esc(x.option_name)+'</option>').join('');
+ if(k==='consumer'){
+  panel('Consumer Master Data','<div class="requested-form">'+sel('misWing','Wing',wingOptions)+'<button class="primary" id="misRun">Show</button></div><div id="misTable"></div>');
+  const load=async()=>{const r=await api('/api/sm/mis/consumer?wingId='+(misWing.value||'')+'&q=');grid('misTable',r,Object.keys(r[0]||{}).map(a=>({title:a.replaceAll('_',' '),field:a,headerFilter:true})))};
+  misRun.onclick=load;await load();return;
+ }
+ if(k==='billing'){
+  panel('Billing Data','<div class="requested-form">'+sel('misMonth','Month',monthOptions)+'</div><div id="misTable"></div>');
+  misMonth.value=monthValue;const loadBilling=async()=>{const r=await api('/api/sm/mis/billing?month='+encodeURIComponent(misMonth.value));grid('misTable',r,Object.keys(r[0]||{}).map(a=>({title:a.replaceAll('_',' '),field:a,headerFilter:true})))};
+  misMonth.onchange=loadBilling;await loadBilling();return;
+ }
+ if(k==='collection'){
+  panel('Collection Details','<div class="requested-form">'+sel('misMonth','Month',monthOptions)+sel('misStatus','Payment Status',collectionOptions)+'</div><div id="misTable"></div>');
+  misMonth.value=monthValue;const loadCollection=async()=>{const r=await api('/api/sm/mis/collection?month='+encodeURIComponent(misMonth.value)+'&status='+encodeURIComponent(misStatus.value));grid('misTable',r,Object.keys(r[0]||{}).map(a=>({title:a.replaceAll('_',' '),field:a,headerFilter:true})))};
+  misMonth.onchange=loadCollection;misStatus.onchange=loadCollection;await loadCollection();return;
+ }
+ panel('Complaint History','<div class="requested-form">'+sel('misComplaintStatus','Complaint Status',complaintOptions)+'</div><div id="misTable"></div>');
+ const loadComplaints=async()=>{const r=await api('/api/sm/mis/complaints?status='+encodeURIComponent(misComplaintStatus.value));grid('misTable',r,Object.keys(r[0]||{}).map(a=>({title:a.replaceAll('_',' '),field:a,headerFilter:true})))};
+ misComplaintStatus.onchange=loadComplaints;await loadComplaints();
+}
 async function notifications(){const r=await api('/api/sm/notifications');panel('Notification Center','<div id="notificationTable"></div>');grid('notificationTable',r,[{title:'Type',field:'notification_type'},{title:'Title',field:'title'},{title:'Message',field:'message'},{title:'Read',field:'is_read'},{title:'Date',field:'created_at'}])}
 window.openRequestedModule=function(c){
  if(c==='ADMIN_CREATE_ACCOUNT'){return window.openAdminSection?.('create')??false}
