@@ -27,7 +27,11 @@ async function init(){
   const society=me.societies.find(x=>x.societyId===session.societyId)||me.societies[0];
   $('#societyName').textContent=society?.societyName||'Society';
   $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');
-  loadDashboard();loadSubscription();wire();buildDatabaseMenu(); }catch(e){location.href='/login'}
+  wire();
+  await Promise.allSettled([loadDashboard(),loadSubscription(),buildDatabaseMenu()]);
+ }catch(e){
+  if(e?.message==='AUTH_REQUIRED') location.href='/login';
+ }
 }
 async function loadSubscription(){
  try{
