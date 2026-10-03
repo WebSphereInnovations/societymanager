@@ -581,12 +581,9 @@ if (args.Contains("--provision-society-admin-demo", StringComparer.OrdinalIgnore
     await connection.OpenAsync();
     var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","SocietyAdmin","002_demo_account.sql"));
     await using var command=new NpgsqlCommand(sql,connection);
-    await using var reader=await command.ExecuteReaderAsync();
-    if(await reader.ReadAsync())
-    {
-        Console.WriteLine("DEMO_LOGIN=lakeadmin");
-        Console.WriteLine("DEMO_TOKEN="+reader.GetString(0));
-    }
+    await command.ExecuteNonQueryAsync();
+    Console.WriteLine("DEMO_LOGIN=lakeadmin");
+    Console.WriteLine("DEMO_ACCOUNT_READY=true");
     return;
 }
 
