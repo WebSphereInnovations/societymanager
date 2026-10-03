@@ -66,8 +66,13 @@ function autoTranslate(root=document){
   nodes.forEach(([n,base,s])=>{
     n.nodeValue=current==='en'?base:(tr[current]?.[s]?base.replace(s,tr[current][s]):base);
   });
-  document.querySelectorAll('input[placeholder],textarea[placeholder],option,[title],[aria-label]').forEach(el=>{
+  document.querySelectorAll('input[placeholder],textarea[placeholder],input[type="button"],input[type="submit"],option,[title],[aria-label]').forEach(el=>{
     if(el.dataset.i18nIgnore==='true')return;
+    if((el.tagName==='INPUT') && (el.type==='button'||el.type==='submit')){
+      if(!el.dataset.i18nOriginalValue)el.dataset.i18nOriginalValue=el.value;
+      const base=el.dataset.i18nOriginalValue;
+      el.value=current==='en'?base:(tr[current]?.[normalize(base)]||base);
+    }
     if(el.placeholder){
       if(!el.dataset.i18nOriginalPlaceholder)el.dataset.i18nOriginalPlaceholder=el.placeholder;
       const base=el.dataset.i18nOriginalPlaceholder;
@@ -95,6 +100,7 @@ function setLanguage(code){if(!languages[code])return;current=code;localStorage.
 const api={languages,t,english:key=>keys[key]||key,setLanguage,get current(){return current;},locale:()=>languages[current].locale,init:()=>safeApply(),apply:safeApply,translateText,translateDataValue};
 window.Society360I18n=api;
 window.addEventListener('society360-language-changed',()=>safeApply());
+document.addEventListener('change',e=>{if(e.target?.id==='language-select')setLanguage(e.target.value);});
 let applying=false;
 let observerTimer=0;
 const dynamicObserver=new MutationObserver(mutations=>{
