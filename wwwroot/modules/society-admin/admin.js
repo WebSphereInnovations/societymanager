@@ -26,7 +26,7 @@ async function init(){
   if(session.roleCode!=='SOCIETY_ADMIN'&&session.roleCode!=='SUPER_ADMIN'){location.href='/';return}
   const society=me.societies.find(x=>x.societyId===session.societyId)||me.societies[0];
   $('#societyName').textContent=society?.societyName||'Society';
-  $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');
+  $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');$('#heading').textContent='Hello, '+session.displayName;
   wire();
   await Promise.allSettled([loadDashboard(),loadSubscription(),buildDatabaseMenu()]);
  }catch(e){
