@@ -118,6 +118,7 @@ async function mis(k){
 }
 async function notifications(){const r=await api('/api/sm/notifications');panel('Notification Center','<div id="notificationTable"></div>');grid('notificationTable',r,[{title:'Type',field:'notification_type'},{title:'Title',field:'title'},{title:'Message',field:'message'},{title:'Read',field:'is_read'},{title:'Date',field:'created_at'}])}
 window.openRequestedModule=function(c){
+ if(c.startsWith('SEC_')||c.startsWith('VIS_')){return window.openSecurityVisitor?.(c)??false}
  if(c==='ADMIN_CREATE_ACCOUNT'){return window.openAdminSection?.('create')??false}
  if(c==='ADMIN_MANAGE_ACCOUNT'){return window.openAdminSection?.('manage')??false}
  if(c==='ADMIN_SUBSCRIPTION'){subscription();return true}

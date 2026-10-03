@@ -95,6 +95,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapSocietyAdminEndpoints();
 app.MapRequestedSocietyManagerEndpoints();
+app.MapSecurityVisitorEndpoints();
 app.MapCustomerEndpoints();
 app.MapCashierEndpoints();
 app.MapPaymentEndpoints();
@@ -411,6 +412,16 @@ app.MapGet("/login", () => Results.Redirect("/login.html"));
 app.MapGet("/api/subscription/payment", () => Results.StatusCode(StatusCodes.Status405MethodNotAllowed));
 app.Map("/api/{**path}", () => Results.NotFound(new { message="API endpoint not found." }));
 app.MapFallbackToFile("index.html");
+
+if (args.Contains("--apply-security-visitor-schema", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","024_security_visitor_management.sql"));
+    await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Security and Visitor Management schema applied."); return;
+}
 
 if (args.Contains("--apply-requested-runtime-hardening", StringComparer.OrdinalIgnoreCase))
 {
