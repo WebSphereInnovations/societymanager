@@ -12,7 +12,7 @@ async function buildDatabaseMenu(){
  roots.forEach(root=>{
   const children=rows.filter(x=>x.parent_module_code===root.module_code);
   if(children.length){
-   const d=document.createElement('details');d.open=true;const s=document.createElement('summary');s.textContent=Society360I18n.translateText(root.module_name);d.appendChild(s);
+   const d=document.createElement('details');d.open=false;const s=document.createElement('summary');s.textContent=Society360I18n.translateText(root.module_name);d.appendChild(s);
    children.forEach(c=>{const b=document.createElement('button');b.type='button';b.dataset.view=moduleViewMap[c.module_code]||'module-workspace';b.dataset.moduleCode=c.module_code;b.innerHTML='<span>'+Society360I18n.translateText(c.module_name)+'</span>';b.onclick=()=>{if(window.openRequestedModule?.(c.module_code))return;show(b.dataset.view,c.module_name)};d.appendChild(b)});nav.appendChild(d);
   }else{
    const b=document.createElement('button');b.type='button';b.dataset.view=moduleViewMap[root.module_code]||'module-workspace';b.dataset.moduleCode=root.module_code;b.innerHTML='<span>'+Society360I18n.translateText(root.module_name)+'</span>';b.onclick=()=>{if(window.openRequestedModule?.(root.module_code))return;show(b.dataset.view,root.module_name)};nav.appendChild(b);
@@ -49,7 +49,13 @@ function show(view,label){
  }
  if(view==='customers')loadCustomers('');if(view==='flats')loadFlats('');if(view==='bills')loadBills('');if(view==='collection')loadCollection();if(view==='complaints')loadComplaints('');if(view==='visitors')loadVisitors('');if(view==='parking')loadParking('');if(view==='configuration')loadConfig();if(view==='security')loadSecurity()}
 function wire(){
- document.querySelectorAll('.side nav details').forEach(x=>x.open=true);
+ document.querySelectorAll('.side nav details').forEach(x=>{
+  x.open=false;
+  x.addEventListener('toggle',()=>{
+   if(!x.open)return;
+   document.querySelectorAll('.side nav details').forEach(y=>{if(y!==x)y.open=false});
+  });
+ });
  $$('[data-view]').forEach(x=>{if(x.closest('.side nav'))return;x.addEventListener('click',()=>show(x.dataset.view,x.querySelector('span')?.textContent||x.textContent.trim()))});
  $('#logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST'});location.href='/login'};
  $('#recordSubscriptionPayment').onclick=async()=>{
