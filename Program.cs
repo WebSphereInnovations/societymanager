@@ -422,6 +422,16 @@ if (args.Contains("--apply-requested-runtime-hardening", StringComparer.OrdinalI
     Console.WriteLine("Requested runtime hardening schema applied."); return;
 }
 
+if (args.Contains("--apply-mis-filter-options", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","021_mis_filter_options.sql"));
+    await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
+    Console.WriteLine("MIS filter options schema applied."); return;
+}
+
 if (args.Contains("--apply-requested-module-hardening", StringComparer.OrdinalIgnoreCase))
 {
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
