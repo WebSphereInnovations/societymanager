@@ -385,6 +385,25 @@ app.MapGet("/api/security/csrf", (IAntiforgery antiforgery, HttpContext http) =>
     return Results.Ok(new { token=token.RequestToken });
 });
 
+app.MapGet("/api/support/faq", async (string? q, string? lang, AuthService auth, HttpContext http, CancellationToken ct) =>
+{
+    var session=await AuthGuard.Get(http,auth,ct);
+    var societyId=session?.SocietyId ?? 0;
+    var language=(lang ?? session?.PreferredLanguage ?? "en").Trim().ToLowerInvariant();
+    if(language is not ("en" or "hi" or "mr" or "gu" or "kn" or "ta")) language="en";
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if(string.IsNullOrWhiteSpace(cs)) return Results.Problem("Database is not configured.",statusCode:503);
+    await using var cn=new NpgsqlConnection(cs); await cn.OpenAsync(ct);
+    await using var cmd=new NpgsqlCommand("select * from society_manager.fn_support_faq(@society,@lang,@q)",cn);
+    cmd.Parameters.AddWithValue("society",societyId);
+    cmd.Parameters.AddWithValue("lang",language);
+    cmd.Parameters.AddWithValue("q",(object?)(q?.Trim()) ?? DBNull.Value);
+    await using var reader=await cmd.ExecuteReaderAsync(ct);
+    var rows=new List<object>();
+    while(await reader.ReadAsync(ct)) rows.Add(new { faqId=reader.GetInt64(0),faqCode=reader.GetString(1),question=reader.GetString(2),answer=reader.GetString(3),displayOrder=reader.GetInt32(4) });
+    return Results.Ok(rows);
+});
+
 app.MapPost("/api/migration/preview", async (HttpRequest request, MigrationService migration, AuthService auth, HttpContext http, IAntiforgery antiforgery, CancellationToken ct) =>
 {
     var session=await AuthGuard.Get(http,auth,ct);
