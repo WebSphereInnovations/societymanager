@@ -13,17 +13,17 @@
 <label>Current password</label><input id="loginCurrent" type="password">
 <label>New login name</label><input id="newLogin" value="Rahul">
 <button id="changeLogin">Change login name</button><div id="loginMsg" class="msg"></div></section>
-<section class="card"><h2>Password</h2><p class="sub">Password is stored in PostgreSQL as a salted one-way hash.</p>
+<section class="card"><h2>Password</h2><p class="sub">Password is stored securely and cannot be recovered.</p>
 <label>Current password</label><input id="passCurrent" type="password">
 <label>New password</label><input id="newPass" type="password">
 <label>Confirm new password</label><input id="confirmPass" type="password">
 <button id="changePass">Change password</button><div id="passMsg" class="msg"></div></section>
-<section class="card wide"><h2>Connection String Protector</h2><p class="sub">Encrypt or decrypt a connection string using the server-side ASP.NET Data Protection key ring. Access is restricted to Super Admin.</p>
-<label>Value</label><textarea id="connectionValue" placeholder="Paste plain connection string or encrypted value"></textarea>
+<section class="card wide"><h2>Protected Connection Settings</h2><p class="sub">Protect sensitive connection settings. Access is restricted to Super Admin.</p>
+<label>Value</label><textarea id="connectionValue" placeholder="Paste plain protected connection value or encrypted value"></textarea>
 <div class="actions"><button id="protect">Encrypt</button><button id="unprotect">Decrypt</button></div>
 <div id="connMsg" class="msg"></div>
-<p class="note">The application key ring is stored under the Windows user's local Society360 key directory. Do not copy encrypted values or key files to untrusted machines.</p></section>
-<section class="card wide"><h2>Security rules</h2><p class="note">Login passwords are never decryptable. Each password change creates a new salted hash. Session tokens are random values in the browser and only their SHA-256 hashes are stored in the database. Society access is validated server-side before a society-scoped operation is served.</p></section>
+<p class="note">Keep protected values private and never share them with untrusted users or machines.</p></section>
+<section class="card wide"><h2>Security rules</h2><p class="note">Login passwords cannot be recovered. Each password change is securely stored, and access to society data is checked before every protected operation.</p></section>
 </div></div>
 <script>async function me(){const r=await fetch('/api/auth/me');if(!r.ok){location.href='/login';return null}const x=await r.json();if(x.session.roleCode!=='SUPER_ADMIN'){location.href='/';return null}return x}
 const msg=(id,text,err=false)=>{const e=document.querySelector(id);e.textContent=text;e.className='msg'+(err?' err':'')};

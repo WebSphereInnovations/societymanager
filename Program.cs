@@ -461,6 +461,16 @@ if (args.Contains("--apply-five-language-system", StringComparer.OrdinalIgnoreCa
     await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
     Console.WriteLine("Five-language system applied."); return;
 }
+if (args.Contains("--apply-customer-account-audit-timeline", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","034_customer_account_audit_timeline.sql"));
+    await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Customer Account audit timeline migration applied."); return;
+}
+
 if (args.Contains("--apply-security-visitor-schema", StringComparer.OrdinalIgnoreCase))
 {
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");

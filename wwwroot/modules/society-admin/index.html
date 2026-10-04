@@ -5,7 +5,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Society360 — Society Admin</title>
 <link href="/lib/tabulator/tabulator.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/modules/society-admin/admin.css"><link rel="stylesheet" href="/modules/society-admin/consumer-account.css?v=20261004"><link rel="stylesheet" href="/css/support-assistant.css">
+<link rel="stylesheet" href="/modules/society-admin/admin.css"><link rel="stylesheet" href="/modules/society-admin/consumer-account.css?v=20261004.1"><link rel="stylesheet" href="/css/support-assistant.css">
 </head>
 <body>
 <div class="ambient a"></div><div class="ambient b"></div>
@@ -30,10 +30,10 @@
  <div class="quick"><button data-view="customers">Customer Search →</button><button data-view="flats">Flat Search →</button><button data-view="bills">Billing Grid →</button><button data-view="collection">Collection Grid →</button></div>
 </section><section id="customers" class="view">
  <div class="ca-shell">
-  <div class="ca-hero"><div><span class="ca-kicker" data-ca-i18n="Customer Account"></span><h2 data-ca-i18n="Consumer 360° Account"></h2><p data-ca-i18n="Search one consumer and open the complete account, financial and service history."></p></div><div class="ca-secure"><span>?</span><span data-ca-i18n="Selected society"></span></div></div>
+  <div class="ca-hero"><div><span class="ca-kicker" data-ca-i18n="Customer Account"></span><h2 data-ca-i18n="Consumer 360° Account"></h2><p data-ca-i18n="Search one consumer and open the complete account, financial and service history."></p></div><div class="ca-secure"><span>●</span><span data-ca-i18n="Selected society"></span></div></div>
   <div class="ca-search-card">
    <div class="ca-search-top"><div><strong data-ca-i18n="Search Consumer"></strong><small data-ca-i18n="Start with 1–2 characters or digits. Search is live from your selected society."></small></div><button type="button" id="caClearSearch" class="ca-ghost" data-ca-i18n="Clear"></button></div>
-   <div class="ca-search-row"><div class="ca-search-box"><span>?</span><input id="caSearchInput" autocomplete="off" placeholder="Consumer ID / Name / Flat / Mobile / Email" aria-label="Search Consumer"></div></div>
+   <div class="ca-search-row"><div class="ca-search-box"><span>⌕</span><input id="caSearchInput" autocomplete="off" placeholder="Consumer ID / Name / Flat / Mobile / Email" aria-label="Search Consumer"></div></div>
    <div class="ca-search-hints"><span data-ca-i18n="Consumer ID"></span><span data-ca-i18n="Name"></span><span data-ca-i18n="Flat Number"></span><span data-ca-i18n="Mobile Number"></span><span data-ca-i18n="Email"></span></div>
    <div id="caSearchResults" class="ca-results hidden"></div>
   </div>
@@ -78,7 +78,7 @@
 <section id="security" class="view"><div class="section-head"><div><span class="eyebrow">SECURITY & AUDIT</span><h2>Login & Session Audit</h2><p>Current login snapshot with last login IP, date, count and failed-login count. Detailed login history remains in the audit data.</p></div></div><div id="loginSecurityTable"></div></section>
 <section id="configuration" class="view"><div class="section-head"><div><span class="eyebrow">SOCIETY CONFIGURATION</span><h2>Rates, DPC, Rebate & Effective Dates</h2><p>Future-effective rules are stored separately so old bills keep their historical rates.</p></div></div><div class="hero"><div><h2>Maintenance by square foot</h2><p>Example: set Maintenance → PerSqFt → ?2.50 → Effective From 2026-10-01. The new rule is used for future billing; existing bills are not rewritten.</p></div></div><div class="cards"><article><small>Charge / Rate</small><strong>PerSqFt / Fixed</strong></article><article><small>DPC / Interest</small><strong>Rate + Grace</strong></article><article><small>Rebate</small><strong>Early Payment</strong></article><article><small>Versioning</small><strong>Effective Dates</strong></article></div><div class="panel"><h3>Existing charge rules</h3><div id="chargeConfigTable"></div><div class="form" style="margin-top:12px"><select id="chargeCode"><option>MAINT</option><option>SINK</option><option>WATER</option><option>PARK</option><option>REPAIR</option></select><select id="calcMethod"><option>PerSqFt</option><option>Fixed</option><option>PerUnit</option><option>Percentage</option></select><input id="chargeRate" type="number" step=".0001" placeholder="Rate"><input id="chargeFrom" type="date"><input id="chargeTo" type="date"><button class="primary" id="saveCharge">Save Future Rate</button></div></div><div class="panel" style="margin-top:14px"><h3>DPC / Interest rules</h3><div id="interestConfigTable"></div><div class="form" style="margin-top:12px"><input id="interestName" placeholder="Rule name"><input id="interestRate" type="number" step=".001" placeholder="Rate %"><input id="interestGrace" type="number" placeholder="Grace days"><select id="interestCompound"><option>Simple</option><option>Compound</option></select><input id="interestFrom" type="date"><button class="primary" id="saveInterest">Save Future DPC Rule</button></div></div></section>\n<section id="module-workspace" class="view"><div class="section-head"><div><span class="eyebrow" id="moduleCode">MODULE</span><h2 id="moduleTitle">Module Workspace</h2><p id="moduleInfo">Society-scoped operational workspace.</p></div></div><div class="hero"><div><h2>Module workspace</h2><p>Use this workspace to open the selected operational function.</p><div class="quick"><button data-view="bills">Open Billing</button><button data-view="collection">Open Collection</button><button data-view="customers">Open CRM</button></div></div></div></section>
 <section id="accounts" class="view">
- <div class="section-head"><div><span class="eyebrow">ADMINISTRATOR</span><h2>Account & Access Administration</h2><p>Create employee accounts, manage role rights and maintain the database-driven menu catalog.</p></div></div>
+ <div class="section-head"><div><span class="eyebrow">ADMINISTRATOR</span><h2>Account & Access Administration</h2><p>Create employee accounts, manage role rights and maintain the menu catalog.</p></div></div>
  <div class="admin-tabs">
   <button class="admin-tab active" data-admin-tab="accounts">Employee Accounts</button>
   <button class="admin-tab" data-admin-tab="roles">Roles & Rights</button>
@@ -126,5 +126,5 @@
 <footer><span>Society360 — Society Admin</span><span id="clock"></span></footer>
 </main>
 <script src="/lib/tabulator/tabulator.min.js"></script>
-<script src="/js/i18n.js?v=20261004.6"></script><script src="/modules/society-admin/customer-account.js?v=20261004.3"></script><script src="/modules/society-admin/admin.js?v=20261004.3"></script><script src="/modules/society-admin/account-management.js?v=20261004.3"></script><script src="/modules/society-admin/requested-workflows.js?v=20261004.3"></script><script src="/modules/society-admin/security-visitor.js?v=20261004.3"></script><script src="/js/support-assistant.js?v=20261004.3"></script>
+<script src="/js/i18n.js?v=20261004.6"></script><script src="/modules/society-admin/customer-account.js?v=20261004.4"></script><script src="/modules/society-admin/admin.js?v=20261004.4"></script><script src="/modules/society-admin/account-management.js?v=20261004.4"></script><script src="/modules/society-admin/requested-workflows.js?v=20261004.4"></script><script src="/modules/society-admin/security-visitor.js?v=20261004.4"></script><script src="/js/support-assistant.js?v=20261004.4"></script>
 </body></html>

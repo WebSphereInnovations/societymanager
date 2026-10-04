@@ -120,9 +120,23 @@ const extra={
  }
 };
 Object.keys(extra).forEach(code=>Object.assign(tr[code],extra[code]));
+Object.assign(tr.mr,{'Tax':'कर','Rebate':'सवलत','Late Fee / DPC':'विलंब शुल्क / DPC'});
+Object.assign(tr.gu,{'Tax':'કર','Rebate':'રિબેટ','Late Fee / DPC':'વિલંબ ફી / DPC'});
+Object.assign(tr.kn,{'Tax':'ತೆರಿಗೆ','Rebate':'ರಿಯಾಯಿತಿ','Late Fee / DPC':'ತಡ ಶುಲ್ಕ / DPC'});
+Object.assign(tr.te,{'Tax':'పన్ను','Rebate':'రాయితీ','Late Fee / DPC':'ఆలస్య రుసుము / DPC'});
+Object.assign(tr.mr,{'Logout':'लॉगआउट','SOCIETY CONTROL CENTER':'सोसायटी नियंत्रण केंद्र','Everything your society team needs, in one place.':'तुमच्या सोसायटी टीमला आवश्यक सर्व सुविधा एका ठिकाणी.','Billing, residents, collection, complaints, visitors and parking are managed in one place.':'बिलिंग, रहिवासी, वसुली, तक्रारी, अभ्यागत आणि पार्किंग एका ठिकाणी व्यवस्थापित करा.','Total flats':'एकूण फ्लॅट','Registered units':'नोंदणीकृत युनिट्स','Occupied':'वापरात','Current occupancy':'सध्याची रहिवासी स्थिती','Collected':'वसूल रक्कम','This month':'या महिन्यात','Outstanding':'थकबाकी','Across open bills':'खुल्या बिलांची थकबाकी','Complaints':'तक्रारी','Need attention':'लक्ष आवश्यक','Visitors inside':'आतील अभ्यागत','Live security view':'लाइव्ह सुरक्षा दृश्य','Customer Search':'ग्राहक शोध','Flat Search':'फ्लॅट शोध','Billing Grid':'बिलिंग यादी','Collection Grid':'वसुली यादी','Manage your society operations from one connected workspace.':'एका एकत्रित कार्यक्षेत्रातून सोसायटीचे कामकाज व्यवस्थापित करा.','Customer Account':'ग्राहक खाते'});
+Object.assign(tr.gu,{'Logout':'લૉગઆઉટ','SOCIETY CONTROL CENTER':'સોસાયટી નિયંત્રણ કેન્દ્ર','Everything your society team needs, in one place.':'તમારી સોસાયટી ટીમને જરૂરી બધું એક જ જગ્યાએ.','Billing, residents, collection, complaints, visitors and parking are managed in one place.':'બિલિંગ, રહેવાસીઓ, વસૂલાત, ફરિયાદો, મુલાકાતીઓ અને પાર્કિંગ એક જ જગ્યાએ સંચાલિત થાય છે.','Total flats':'કુલ ફ્લેટ','Registered units':'નોંધાયેલા યુનિટ્સ','Occupied':'રહેણાંક','Current occupancy':'વર્તમાન વસવાટ','Collected':'વસૂલ રકમ','This month':'આ મહિને','Outstanding':'બાકી રકમ','Across open bills':'ખુલ્લા બિલોની બાકી રકમ','Complaints':'ફરિયાદો','Need attention':'ધ્યાન જરૂરી','Visitors inside':'અંદરના મુલાકાતીઓ','Live security view':'લાઇવ સુરક્ષા દૃશ્ય','Customer Search':'ગ્રાહક શોધ','Flat Search':'ફ્લેટ શોધ','Billing Grid':'બિલિંગ યાદી','Collection Grid':'વસૂલાત યાદી','Manage your society operations from one connected workspace.':'એક સંકલિત કાર્યસ્થળથી સોસાયટીનું સંચાલન કરો.','Customer Account':'ગ્રાહક ખાતું'});
+Object.assign(tr.kn,{'Logout':'ಲಾಗ್‌ಔಟ್','SOCIETY CONTROL CENTER':'ಸೊಸೈಟಿ ನಿಯಂತ್ರಣ ಕೇಂದ್ರ','Everything your society team needs, in one place.':'ನಿಮ್ಮ ಸೊಸೈಟಿ ತಂಡಕ್ಕೆ ಬೇಕಾದ ಎಲ್ಲವೂ ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ.','Billing, residents, collection, complaints, visitors and parking are managed in one place.':'ಬಿಲ್ಲಿಂಗ್, ನಿವಾಸಿಗಳು, ವಸೂಲಿ, ದೂರುಗಳು, ಭೇಟಿ ನೀಡುವವರು ಮತ್ತು ಪಾರ್ಕಿಂಗ್ ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ನಿರ್ವಹಿಸಲಾಗುತ್ತದೆ.','Total flats':'ಒಟ್ಟು ಫ್ಲಾಟ್‌ಗಳು','Registered units':'ನೋಂದಾಯಿತ ಘಟಕಗಳು','Occupied':'ವಾಸವಾಗಿರುವವು','Current occupancy':'ಪ್ರಸ್ತುತ ವಾಸಸ್ಥಿತಿ','Collected':'ವಸೂಲಿ','This month':'ಈ ತಿಂಗಳು','Outstanding':'ಬಾಕಿ','Across open bills':'ತೆರೆದ ಬಿಲ್‌ಗಳ ಬಾಕಿ','Complaints':'ದೂರುಗಳು','Need attention':'ಗಮನ ಅಗತ್ಯ','Visitors inside':'ಒಳಗಿನ ಭೇಟಿ ನೀಡುವವರು','Live security view':'ಲೈವ್ ಭದ್ರತಾ ದೃಶ್ಯ','Customer Search':'ಗ್ರಾಹಕ ಹುಡುಕಿ','Flat Search':'ಫ್ಲಾಟ್ ಹುಡುಕಿ','Billing Grid':'ಬಿಲ್ಲಿಂಗ್ ಪಟ್ಟಿ','Collection Grid':'ವಸೂಲಿ ಪಟ್ಟಿ','Manage your society operations from one connected workspace.':'ಒಂದು ಏಕೀಕೃತ ಕಾರ್ಯಕ್ಷೇತ್ರದಿಂದ ಸೊಸೈಟಿ ಕಾರ್ಯಾಚರಣೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ.','Customer Account':'ಗ್ರಾಹಕ ಖಾತೆ'});
+Object.assign(tr.te,{'Logout':'లాగ్ అవుట్','SOCIETY CONTROL CENTER':'సొసైటీ నియంత్రణ కేంద్రం','Everything your society team needs, in one place.':'మీ సొసైటీ బృందానికి అవసరమైన ప్రతిదీ ఒకే చోట.','Billing, residents, collection, complaints, visitors and parking are managed in one place.':'బిల్లింగ్, నివాసులు, వసూళ్లు, ఫిర్యాదులు, సందర్శకులు మరియు పార్కింగ్ ఒకే చోట నిర్వహించబడతాయి.','Total flats':'మొత్తం ఫ్లాట్లు','Registered units':'నమోదైన యూనిట్లు','Occupied':'నివసిస్తున్నవి','Current occupancy':'ప్రస్తుత నివాస స్థితి','Collected':'వసూలు','This month':'ఈ నెల','Outstanding':'బకాయి','Across open bills':'తెరిచిన బిల్లుల బకాయి','Complaints':'ఫిర్యాదులు','Need attention':'శ్రద్ధ అవసరం','Visitors inside':'లోపల ఉన్న సందర్శకులు','Live security view':'లైవ్ భద్రత దృశ్యం','Customer Search':'కస్టమర్ శోధన','Flat Search':'ఫ్లాట్ శోధన','Billing Grid':'బిల్లింగ్ జాబితా','Collection Grid':'వసూలు జాబితా','Manage your society operations from one connected workspace.':'ఒకే సమగ్ర కార్యస్థలం నుంచి సొసైటీ కార్యకలాపాలను నిర్వహించండి.','Customer Account':'కస్టమర్ ఖాతా'});
 function allowed(code){return Object.prototype.hasOwnProperty.call(languages,code)?code:'en';}
 let current=allowed(localStorage.getItem('society360-language')||'en');
 function translateText(key){if(key==null)return '';const s=String(key);return (tr[current]&&tr[current][s])||en[s]||s;}
+function translateStaticTextNodes(){
+ const root=document.body;if(!root)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ const nodes=[];let n;while((n=walker.nextNode())){const p=n.parentElement;if(!p||['SCRIPT','STYLE','NOSCRIPT','OPTION'].includes(p.tagName))continue;const s=n.nodeValue.trim();if(s&&((tr[current]&&tr[current][s])||en[s]))nodes.push([n,s]);}
+ nodes.forEach(([node,s])=>{node.nodeValue=node.nodeValue.replace(s,translateText(s));});
+}
 function apply(){
  document.documentElement.lang=languages[current].locale.split('-')[0];
  document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.getAttribute('data-i18n');el.textContent=translateText(key);});
@@ -133,6 +147,7 @@ function apply(){
   Object.entries(languages).forEach(([code,info])=>{const o=document.createElement('option');o.value=code;o.textContent=info.name;sel.appendChild(o);});
   sel.value=val;
  });
+ translateStaticTextNodes();
 }
 function init(){current=allowed(localStorage.getItem('society360-language')||current);apply();}
 function setLanguage(code){current=allowed(code);localStorage.setItem('society360-language',current);apply();window.dispatchEvent(new CustomEvent('society360-language-changed',{detail:{language:current}}));}
