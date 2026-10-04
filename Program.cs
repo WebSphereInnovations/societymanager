@@ -1,3 +1,5 @@
+[Reading 772 lines from start (total: 772 lines, 0 remaining)]
+
 
 using System.Security.Claims;
 using System.Threading.RateLimiting;
@@ -227,7 +229,7 @@ app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, S
     {
         await using var cn = db.CreateConnection();
         await cn.OpenAsync(ct);
-        await using var cmd = new NpgsqlCommand("call society_manager.sp_create_society_signup(CAST(@society_name AS varchar),CAST(@email AS varchar),CAST(@phone AS varchar),CAST(@address AS text),CAST(@admin_name AS varchar),CAST(@login_name AS varchar),CAST(@password AS varchar),CAST(@plan_code AS varchar),CAST(NULL AS bigint),CAST(NULL AS bigint),CAST(NULL AS varchar),CAST(NULL AS varchar),CAST(NULL AS varchar),CAST(NULL AS numeric),CAST(NULL AS date))",cn);
+        await using var cmd = new NpgsqlCommand("select * from society_manager.fn_create_society_signup(@society_name,@email,@phone,@address,@admin_name,@login_name,@password,@plan_code)",cn);
         cmd.Parameters.AddWithValue("society_name",request.SocietyName.Trim());
         cmd.Parameters.AddWithValue("email",(object?)request.Email?.Trim()??DBNull.Value);
         cmd.Parameters.AddWithValue("phone",(object?)request.Phone?.Trim()??DBNull.Value);
@@ -263,7 +265,14 @@ app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, S
     }
     catch(PostgresException ex)
     {
-        return Results.BadRequest(new { message=ex.MessageText });
+        Console.Error.WriteLine($"[CREATE-SOCIETY] {ex.SqlState}: {ex.MessageText}");
+        var message = ex.SqlState switch
+        {
+            "23505" => "The requested society or login name already exists.",
+            "23514" => "The supplied society information failed validation.",
+            _ => "Society creation could not be completed. Please verify the details and try again."
+        };
+        return Results.BadRequest(new { message });
     }
 }).RequireRateLimiting("public-auth");
 
@@ -763,3 +772,5 @@ public sealed record CreateSocietyRequest(
 public sealed record ChangePasswordRequest(string CurrentPassword,string NewPassword);
 public sealed record SubscriptionPaymentRequest(long SubscriptionId,decimal Amount,string PaymentMode,string? ReferenceNo);
 public sealed record ConnectionRequest(string Value);
+
+[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
