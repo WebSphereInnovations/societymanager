@@ -1,11 +1,11 @@
 (function(){
 'use strict';
 const languages={
- en:{name:'English (Default)',native:'English',locale:'en-IN'},
- mr:{name:'Marathi',native:'मराठी',locale:'mr-IN'},
- gu:{name:'Gujarati',native:'ગુજરાતી',locale:'gu-IN'},
- kn:{name:'Kannada',native:'ಕನ್ನಡ',locale:'kn-IN'},
- te:{name:'Telugu',native:'తెలుగు',locale:'te-IN'}
+ en:{name:'English',native:'English',locale:'en-IN'},
+ mr:{name:'मराठी',native:'मराठी',locale:'mr-IN'},
+ gu:{name:'ગુજરાતી',native:'ગુજરાતી',locale:'gu-IN'},
+ kn:{name:'ಕನ್ನಡ',native:'ಕನ್ನಡ',locale:'kn-IN'},
+ te:{name:'తెలుగు',native:'తెలుగు',locale:'te-IN'}
 };
 const en={
  invoice:'Invoice',flat:'Flat',resident:'Resident',type:'Type',amount:'Amount',date:'Date',status:'Status',
@@ -61,6 +61,7 @@ const tr={
  te:{...en}
 };
 Object.assign(tr.mr,{
+ 'loginTitle':'प्रत्येक सोसायटीसाठी एक सुरक्षित ठिकाण.','loginText':'सोसायट्या, रहिवासी, बिलिंग आणि कामकाज एका व्यावसायिक प्लॅटफॉर्मवर व्यवस्थापित करा.','signIn':'साइन इन करा','welcomeBack':'पुन्हा स्वागत आहे. पुढे जाण्यासाठी आपल्या खात्याची माहिती भरा.','loginName':'लॉगिन नाव','password':'पासवर्ड','secureHint':'आपला पासवर्ड सुरक्षित आहे आणि साध्या मजकुरात साठवला जात नाही.','createSociety':'नवीन सोसायटी खाते तयार करा',
  'Administrator':'प्रशासक','Manage Account':'खाते व्यवस्थापन','Create Account':'खाते तयार करा','Manage / Edit Account':'खाते व्यवस्थापित / संपादित करा','Subscription & Billing Plan':'सदस्यता आणि बिलिंग योजना',
  'Role & Rights':'भूमिका आणि अधिकार','Module & Submodule':'मॉड्यूल आणि उपमॉड्यूल','Back Office':'बॅक ऑफिस','Raise Ticket':'तिकीट नोंदवा','Document Management System':'दस्तऐवज व्यवस्थापन प्रणाली',
  'Society Management':'सोसायटी व्यवस्थापन','New Building':'नवीन इमारत','New Wing':'नवीन विंग','New Flat':'नवीन फ्लॅट','New Parking':'नवीन पार्किंग','Customer':'ग्राहक',
@@ -76,6 +77,7 @@ Object.assign(tr.mr,{
  'Payment Date / Time':'पेमेंट दिनांक / वेळ','Payment Amount':'पेमेंट रक्कम','Payment Method':'पेमेंट पद्धत','Transaction / Reference Number':'व्यवहार / संदर्भ क्रमांक','Related Bill Number':'संबंधित बिल क्रमांक','Previous Due':'मागील देय','Payment Status':'पेमेंट स्थिती','Collector / Channel':'वसुलीदार / माध्यम','Remarks':'शेरा','Print':'प्रिंट'
 });
 Object.assign(tr.gu,{
+ 'loginTitle':'प्रत्येक સોસાયટી માટે એક સુરક્ષિત સ્થાન.','loginText':'સોસાયટીઓ, રહેવાસીઓ, બિલિંગ અને કામગીરીને એક વ્યાવસાયિક પ્લેટફોર્મ પરથી સંચાલિત કરો.','signIn':'સાઇન ઇન કરો','welcomeBack':'ફરી સ્વાગત છે. આગળ વધવા માટે તમારા ખાતાની વિગતો દાખલ કરો.','loginName':'લૉગિન નામ','password':'પાસવર્ડ','secureHint':'તમારો પાસવર્ડ સુરક્ષિત છે અને સાદા લખાણમાં સંગ્રહિત થતો નથી.','createSociety':'નવી સોસાયટી ખાતું બનાવો',
  'Administrator':'વહીવટકર્તા','Manage Account':'ખાતું સંચાલન','Create Account':'ખાતું બનાવો','Manage / Edit Account':'ખાતું સંચાલિત / સંપાદિત કરો','Subscription & Billing Plan':'સબ્સ્ક્રિપ્શન અને બિલિંગ યોજના','Role & Rights':'ભૂમિકા અને અધિકારો','Module & Submodule':'મોડ્યુલ અને સબમોડ્યુલ',
  'Back Office':'બેક ઓફિસ','Raise Ticket':'ટિકિટ નોંધાવો','Document Management System':'દસ્તાવેજ વ્યવસ્થાપન સિસ્ટમ','Society Management':'સોસાયટી વ્યવસ્થાપન','New Building':'નવી ઇમારત','New Wing':'નવી વિંગ','New Flat':'નવો ફ્લેટ','New Parking':'નવી પાર્કિંગ','Customer':'ગ્રાહક',
  'Billing Management':'બિલિંગ વ્યવસ્થાપન','Billing Adjustment':'બિલિંગ સમાયોજન','Collection Management':'વસૂલાત વ્યવસ્થાપન','Accept Payment':'ચુકવણી સ્વીકારો','Customer Relationship Management':'ગ્રાહક સંબંધ વ્યવસ્થાપન','Customer Account':'ગ્રાહક ખાતું','Customer Interaction':'ગ્રાહક સંપર્ક','Notification Center':'સૂચના કેન્દ્ર',
@@ -85,6 +87,7 @@ Object.assign(tr.gu,{
  'Consumer Information':'ગ્રાહક માહિતી','Account Summary':'ખાતા સારાંશ','Billing History':'બિલિંગ ઇતિહાસ','Payment History':'ચુકવણી ઇતિહાસ','Current Dues':'વર્તમાન બાકી','Service History':'સેવા ઇતિહાસ','Interactions':'સંપર્કો','Adjustments':'સમાયોજન','Documents':'દસ્તાવેજો','Timeline':'ટાઇમલાઇન','Old Value':'જૂની કિંમત','New Value':'નવી કિંમત','Changed By':'બદલનાર','Changed At':'બદલવાનો સમય','Field':'ફીલ્ડ','Bill':'બિલ','Receipt':'રસીદ','Amount Details':'રકમની વિગતો','Previous Outstanding':'પાછલી બાકી','Total Bill Amount':'કુલ બિલ રકમ','Paid Amount':'ચૂકવેલી રકમ','Remaining Due':'બાકી ચૂકવણી','Consumer Name':'ગ્રાહકનું નામ','Flat / House Number':'ફ્લેટ / ઘર નંબર','Address':'સરનામું','Bill Number':'બિલ નંબર','Bill Date':'બિલ તારીખ','Due Date':'નિયત તારીખ','Payment Amount':'ચુકવણી રકમ','Payment Method':'ચુકવણી પદ્ધતિ','Transaction / Reference Number':'વ્યવહાર / સંદર્ભ નંબર','Related Bill Number':'સંબંધિત બિલ નંબર','Previous Due':'પાછલી બાકી','Payment Status':'ચુકવણી સ્થિતિ','Collector / Channel':'વસૂલાતદાર / માધ્યમ','Remarks':'નોંધ','Print':'પ્રિન્ટ'
 });
 Object.assign(tr.kn,{
+ 'loginTitle':'ಪ್ರತಿ ಸೊಸೈಟಿಗೆ ಒಂದು ಸುರಕ್ಷಿತ ಸ್ಥಳ.','loginText':'ಸೊಸೈಟಿಗಳು, ನಿವಾಸಿಗಳು, ಬಿಲ್ಲಿಂಗ್ ಮತ್ತು ಕಾರ್ಯಾಚರಣೆಗಳನ್ನು ಒಂದೇ ವೃತ್ತಿಪರ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್‌ನಲ್ಲಿ ನಿರ್ವಹಿಸಿ.','signIn':'ಸೈನ್ ಇನ್ ಮಾಡಿ','welcomeBack':'ಮತ್ತೆ ಸ್ವಾಗತ. ಮುಂದುವರಿಯಲು ನಿಮ್ಮ ಖಾತೆಯ ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ.','loginName':'ಲಾಗಿನ್ ಹೆಸರು','password':'ಪಾಸ್‌ವರ್ಡ್','secureHint':'ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಸುರಕ್ಷಿತವಾಗಿದೆ ಮತ್ತು ಸರಳ ಪಠ್ಯವಾಗಿ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ.','createSociety':'ಹೊಸ ಸೊಸೈಟಿ ಖಾತೆ ರಚಿಸಿ',
  'Administrator':'ನಿರ್ವಾಹಕರು','Manage Account':'ಖಾತೆ ನಿರ್ವಹಣೆ','Create Account':'ಖಾತೆ ರಚಿಸಿ','Manage / Edit Account':'ಖಾತೆ ನಿರ್ವಹಿಸಿ / ಸಂಪಾದಿಸಿ','Subscription & Billing Plan':'ಚಂದಾದಾರಿಕೆ ಮತ್ತು ಬಿಲ್ಲಿಂಗ್ ಯೋಜನೆ','Role & Rights':'ಪಾತ್ರ ಮತ್ತು ಹಕ್ಕುಗಳು','Module & Submodule':'ಮಾಡ್ಯೂಲ್ ಮತ್ತು ಸಬ್‌ಮಾಡ್ಯೂಲ್',
  'Back Office':'ಬ್ಯಾಕ್ ಆಫೀಸ್','Raise Ticket':'ಟಿಕೆಟ್ ದಾಖಲಿಸಿ','Document Management System':'ದಾಖಲೆ ನಿರ್ವಹಣಾ ವ್ಯವಸ್ಥೆ','Society Management':'ಸೊಸೈಟಿ ನಿರ್ವಹಣೆ','New Building':'ಹೊಸ ಕಟ್ಟಡ','New Wing':'ಹೊಸ ವಿಂಗ್','New Flat':'ಹೊಸ ಫ್ಲಾಟ್','New Parking':'ಹೊಸ ಪಾರ್ಕಿಂಗ್','Customer':'ಗ್ರಾಹಕ',
  'Billing Management':'ಬಿಲ್ಲಿಂಗ್ ನಿರ್ವಹಣೆ','Billing Adjustment':'ಬಿಲ್ಲಿಂಗ್ ಹೊಂದಾಣಿಕೆ','Collection Management':'ವಸೂಲಿ ನಿರ್ವಹಣೆ','Accept Payment':'ಪಾವತಿ ಸ್ವೀಕರಿಸಿ','Customer Relationship Management':'ಗ್ರಾಹಕ ಸಂಬಂಧ ನಿರ್ವಹಣೆ','Customer Account':'ಗ್ರಾಹಕ ಖಾತೆ','Customer Interaction':'ಗ್ರಾಹಕ ಸಂವಹನ','Notification Center':'ಅಧಿಸೂಚನೆ ಕೇಂದ್ರ',
@@ -94,6 +97,7 @@ Object.assign(tr.kn,{
  'Consumer Information':'ಗ್ರಾಹಕರ ಮಾಹಿತಿ','Account Summary':'ಖಾತೆ ಸಾರಾಂಶ','Billing History':'ಬಿಲ್ಲಿಂಗ್ ಇತಿಹಾಸ','Payment History':'ಪಾವತಿ ಇತಿಹಾಸ','Current Dues':'ಪ್ರಸ್ತುತ ಬಾಕಿ','Service History':'ಸೇವಾ ಇತಿಹಾಸ','Interactions':'ಸಂವಹನಗಳು','Adjustments':'ಹೊಂದಾಣಿಕೆಗಳು','Documents':'ದಾಖಲೆಗಳು','Timeline':'ಟೈಮ್‌ಲೈನ್','Old Value':'ಹಳೆಯ ಮೌಲ್ಯ','New Value':'ಹೊಸ ಮೌಲ್ಯ','Changed By':'ಬದಲಿಸಿದವರು','Changed At':'ಬದಲಿಸಿದ ಸಮಯ','Field':'ಫೀಲ್ಡ್','Bill':'ಬಿಲ್','Receipt':'ರಸೀದಿ','Amount Details':'ಮೊತ್ತದ ವಿವರಗಳು','Previous Outstanding':'ಹಿಂದಿನ ಬಾಕಿ','Total Bill Amount':'ಒಟ್ಟು ಬಿಲ್ ಮೊತ್ತ','Paid Amount':'ಪಾವತಿಸಿದ ಮೊತ್ತ','Remaining Due':'ಉಳಿದ ಬಾಕಿ','Consumer Name':'ಗ್ರಾಹಕರ ಹೆಸರು','Flat / House Number':'ಫ್ಲಾಟ್ / ಮನೆ ಸಂಖ್ಯೆ','Address':'ವಿಳಾಸ','Bill Number':'ಬಿಲ್ ಸಂಖ್ಯೆ','Bill Date':'ಬಿಲ್ ದಿನಾಂಕ','Due Date':'ಪಾವತಿ ದಿನಾಂಕ','Payment Amount':'ಪಾವತಿ ಮೊತ್ತ','Payment Method':'ಪಾವತಿ ವಿಧಾನ','Transaction / Reference Number':'ವಹಿವಾಟು / ಉಲ್ಲೇಖ ಸಂಖ್ಯೆ','Related Bill Number':'ಸಂಬಂಧಿತ ಬಿಲ್ ಸಂಖ್ಯೆ','Previous Due':'ಹಿಂದಿನ ಬಾಕಿ','Payment Status':'ಪಾವತಿ ಸ್ಥಿತಿ','Collector / Channel':'ವಸೂಲಿಗಾರ / ಮಾಧ್ಯಮ','Remarks':'ಟಿಪ್ಪಣಿ','Print':'ಮುದ್ರಿಸಿ'
 });
 Object.assign(tr.te,{
+ 'loginTitle':'ప్రతి సొసైటీకి ఒక సురక్షిత స్థలం.','loginText':'సొసైటీలు, నివాసులు, బిల్లింగ్ మరియు కార్యకలాపాలను ఒక ప్రొఫెషనల్ ప్లాట్‌ఫారమ్‌లో నిర్వహించండి.','signIn':'సైన్ ఇన్ చేయండి','welcomeBack':'మళ్లీ స్వాగతం. కొనసాగించడానికి మీ ఖాతా వివరాలను నమోదు చేయండి.','loginName':'లాగిన్ పేరు','password':'పాస్‌వర్డ్','secureHint':'మీ పాస్‌వర్డ్ సురక్షితంగా ఉంది మరియు సాధారణ టెక్స్ట్‌గా నిల్వ చేయబడదు.','createSociety':'కొత్త సొసైటీ ఖాతాను సృష్టించండి',
  'Administrator':'నిర్వాహకుడు','Manage Account':'ఖాతా నిర్వహణ','Create Account':'ఖాతా సృష్టించండి','Manage / Edit Account':'ఖాతాను నిర్వహించండి / సవరించండి','Subscription & Billing Plan':'చందా మరియు బిల్లింగ్ ప్రణాళిక','Role & Rights':'పాత్ర మరియు హక్కులు','Module & Submodule':'మాడ్యూల్ మరియు ఉపమాడ్యూల్',
  'Back Office':'బ్యాక్ ఆఫీస్','Raise Ticket':'టికెట్ నమోదు చేయండి','Document Management System':'పత్రాల నిర్వహణ వ్యవస్థ','Society Management':'సొసైటీ నిర్వహణ','New Building':'కొత్త భవనం','New Wing':'కొత్త వింగ్','New Flat':'కొత్త ఫ్లాట్','New Parking':'కొత్త పార్కింగ్','Customer':'కస్టమర్',
  'Billing Management':'బిల్లింగ్ నిర్వహణ','Billing Adjustment':'బిల్లింగ్ సర్దుబాటు','Collection Management':'వసూలు నిర్వహణ','Accept Payment':'చెల్లింపు స్వీకరించండి','Customer Relationship Management':'కస్టమర్ సంబంధాల నిర్వహణ','Customer Account':'కస్టమర్ ఖాతా','Customer Interaction':'కస్టమర్ పరస్పర చర్య','Notification Center':'నోటిఫికేషన్ కేంద్రం',
