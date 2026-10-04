@@ -1,5 +1,3 @@
-[Reading 16 lines from start (total: 16 lines, 0 remaining)]
-
 BEGIN;
 -- Legacy migration retained for deployment ordering. It is intentionally non-destructive.
 -- The application now supports six languages; no existing language or translation rows are deleted.
@@ -16,5 +14,3 @@ ON CONFLICT(language_code) DO UPDATE SET
 UPDATE society_manager.m_language SET is_active=true
 WHERE language_code IN ('en','hi','mr','kn','ta','te');
 COMMIT;
-
-[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]

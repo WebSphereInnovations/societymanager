@@ -1,5 +1,3 @@
-[Reading 86 lines from start (total: 86 lines, 0 remaining)]
-
 BEGIN;
 
 -- Restore the six-language catalog after the legacy five-language cleanup migration.
@@ -86,5 +84,3 @@ SET question_te=CASE faq_code
 WHERE society_id IS NULL AND faq_code IN ('PAYMENT','VISITOR','COMPLAINT','DUES','RECEIPT','CUSTOMER');
 
 COMMIT;
-
-[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
