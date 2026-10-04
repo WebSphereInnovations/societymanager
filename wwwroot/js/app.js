@@ -29,9 +29,9 @@ async function loadSystemHealth(){
   }
 }
 function clock(){const d=new Date();document.querySelector('#clock').textContent=d.toLocaleDateString(Society360I18n.locale(),{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+' · '+d.toLocaleTimeString(Society360I18n.locale(),{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
-function refreshLocalized(){Society360I18n.apply();Society360I18n.apply();loadSystemHealth();clock();}
+function refreshLocalized(){Society360I18n.apply();loadSystemHealth();clock();}
 Society360I18n.init();
-document.querySelector('#language-select').addEventListener('change',e=>Society360I18n.setLanguage(e.target.value));
+// Language selectors are bound centrally by /js/i18n.js.
 window.addEventListener('society360-language-changed',refreshLocalized);
 clock();setInterval(clock,1000);loadSystemHealth();
 document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>{document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));a.classList.add('active');}));
