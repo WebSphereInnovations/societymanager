@@ -28,7 +28,7 @@ async function init(){
   $('#societyName').textContent=society?.societyName||'Society';
   $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');$('#heading').textContent='Hello, '+session.displayName;
   wire();
-  wireConsumerAccount();
+  window.customerAccount360?.init();
   await Promise.allSettled([loadDashboard(),loadSubscription(),buildDatabaseMenu()]);
  }catch(e){
   if(e?.message==='AUTH_REQUIRED') location.href='/login';

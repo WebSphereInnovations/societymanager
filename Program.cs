@@ -12,6 +12,7 @@ using Society360.Data;
 using Society360.Modules.Migration;
 using Society360.Modules.SocietyAdmin;
 using Society360.Modules.Customer;
+using Society360.Modules.CustomerAccount;
 using Society360.Modules.Cashier;
 using Society360.Modules.Platform;
 using Society360.Security;
@@ -106,6 +107,7 @@ app.MapSocietyAdminEndpoints();
 app.MapRequestedSocietyManagerEndpoints();
 app.MapSecurityVisitorEndpoints();
 app.MapCustomerEndpoints();
+app.MapCustomerAccountEndpoints();
 app.MapCashierEndpoints();
 app.MapPaymentEndpoints();
 app.MapPlatformEndpoints();
@@ -559,6 +561,19 @@ if (args.Contains("--apply-consumer-account-360-schema", StringComparer.OrdinalI
     await using var command=new NpgsqlCommand(sql,connection);
     await command.ExecuteNonQueryAsync();
     Console.WriteLine("Consumer Account 360 schema applied.");
+    return;
+}
+
+if (args.Contains("--apply-customer-account-360-production", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","029_customer_account_360_production.sql"));
+    await using var command=new NpgsqlCommand(sql,connection);
+    await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Customer Account 360 production schema applied.");
     return;
 }
 
