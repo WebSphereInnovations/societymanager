@@ -128,7 +128,9 @@ window.openRequestedModule=function(c){
  if(c==='BACKOFFICE_DOCUMENT'){backoffice('document');return true}
  if(c==='BACKOFFICE_SERVICE'){backoffice('service');return true}
  if(c==='BACKOFFICE_MIGRATION'){backoffice('migration');return true}
- if(c==='CRM_CUSTOMER_ACCOUNT'){crm('account');return true}
+ // Customer Account is handled by the dedicated Consumer 360 module loaded in index.html.
+ // Do not route CRM_CUSTOMER_ACCOUNT into the legacy requested-workflows panel.
+ if(c==='CRM_CUSTOMER_ACCOUNT'){return false}
  if(c==='CRM_CUSTOMER_INTERACTION'){crm('interaction');return true}
  if(c.startsWith('MIS_')){mis(c==='MIS_CONSUMER_MASTER'?'consumer':c==='MIS_BILLING_DATA'?'billing':c==='MIS_COLLECTION_DETAILS'?'collection':'complaints');return true}
  if(c==='NOTIFICATION_CENTER'){notifications();return true}
