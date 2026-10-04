@@ -1,24 +1,5 @@
 (function(){
 'use strict';
-const accountViewMap={APP_DASHBOARD:'home',SA_DASHBOARD:'home',SA_SOCIETY_PROFILE:'configuration',SA_BUILDINGS:'flats',SA_WINGS:'flats',SA_FLATS:'flats',SA_RESIDENTS:'customers',SA_FAMILY:'customers',SA_BILLING_DASH:'bills',SA_BILL_GENERATION:'bills',SA_BILL_REGISTER:'bills',SA_BILL_ADJUSTMENT:'bills',SA_REBATE:'configuration',SA_DPC:'configuration',SA_CHARGE_CONFIG:'configuration',SA_RATE_PLANS:'configuration',SA_TAX_CONFIG:'configuration',SA_COLLECTION:'collection',SA_PAYMENT_ENTRY:'collection',SA_RECEIPTS:'collection',SA_REVERSAL:'collection',SA_PARKING:'parking',SA_VEHICLES:'parking',SA_PARKING_ASSIGN:'parking',SA_COMPLAINTS:'complaints',SA_VISITORS:'visitors',SA_SECURITY:'security',SA_DOCUMENTS:'documents',SA_NOTICES:'notices',SA_COMMUNICATION:'communication',SA_REPORTS:'reports',SA_MIGRATION:'migration',SA_AUDIT:'audit',ADM_ACCOUNTS:'accounts',ADMINISTRATOR:'accounts',CASH_DASHBOARD:'home',CASH_CUSTOMER:'customers',CASH_ACCEPT_PAYMENT:'collection',CASH_RECEIPTS:'collection',CASH_ALLOCATION:'collection',CASH_REVERSAL:'collection',CASH_ADJUSTMENT:'bills',CASH_BILL_LOOKUP:'bills'};
-const accountIcons={APP_DASHBOARD:'⌂',ADMINISTRATOR:'⚙'};
-function accountLabel(x){return Society360I18n.translateText(x.module_name||x.moduleName||x.module_code||x.moduleCode)}
-async function buildDatabaseMenu(){
- try{
-  const rows=await get('/api/menu');const nav=$('#dbMenu');if(!nav)return;nav.innerHTML='';
-  const roots=rows.filter(x=>!x.parent_module_code);
-  roots.forEach(root=>{
-   const children=rows.filter(x=>x.parent_module_code===root.module_code);
-   if(children.length){const d=document.createElement('details');d.open=true;const s=document.createElement('summary');s.textContent=accountLabel(root);d.appendChild(s);children.forEach(c=>d.appendChild(menuButton(c)));nav.appendChild(d)}
-   else nav.appendChild(menuButton(root));
-  });
- }catch(e){}
-}
-function menuButton(x){
- const b=document.createElement('button');b.type='button';b.dataset.view=accountViewMap[x.module_code]||'accounts';b.dataset.moduleCode=x.module_code;
- b.innerHTML=(accountIcons[x.module_code]||'•')+' <span>'+accountLabel(x)+'</span>';
- b.onclick=()=>{if(window.openRequestedModule&&window.openRequestedModule(x.module_code,x.module_name))return;show(b.dataset.view,b.querySelector('span')?.textContent||x.module_name)};return b;
-}
 async function loadAccountTypes(){
  const rows=await get('/api/society-admin/accounts/types');$('#accountType').innerHTML=rows.map(x=>'<option value="'+x.role_code+'">'+x.role_name+'</option>').join('');
 }

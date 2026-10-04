@@ -5,7 +5,12 @@ async function get(url){const r=await fetch(url,{cache:'no-store'});if(r.status=
 const tableRegistry=new Map();
 function table(id,data,columns,opts={}){const el=$('#'+id);if(el._tab){el._tab.destroy()}const localized=columns.map(c=>({...c,title:Society360I18n.translateText(c.title)}));el._tab=new Tabulator(el,{data,layout:'fitColumns',height:'470px',pagination:true,paginationSize:15,headerFilterPlaceholder:Society360I18n.translateText('Filter...'),columns:localized,...opts});tableRegistry.set(id,{table:el._tab,columns});return el._tab}
 function debounce(fn,ms=280){let t;return (...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
-const moduleViewMap={APP_DASHBOARD:'home',SA_DASHBOARD:'home',SA_SOCIETY_PROFILE:'configuration',SA_BUILDINGS:'flats',SA_WINGS:'flats',SA_FLATS:'flats',SA_RESIDENTS:'customers',SA_FAMILY:'customers',CRM_CUSTOMER_ACCOUNT:'customers',CRM_CUSTOMER_INTERACTION:'customers',MIS_CONSUMER_MASTER:'customers',SA_BILLING_DASH:'bills',SA_BILL_GENERATION:'bills',SA_BILL_REGISTER:'bills',SA_BILL_ADJUSTMENT:'bills',SA_REBATE:'configuration',SA_DPC:'configuration',SA_CHARGE_CONFIG:'configuration',SA_RATE_PLANS:'configuration',SA_TAX_CONFIG:'configuration',SA_COLLECTION:'collection',SA_PAYMENT_ENTRY:'collection',SA_RECEIPTS:'collection',SA_REVERSAL:'collection',SA_PARKING:'parking',SA_VEHICLES:'parking',SA_PARKING_ASSIGN:'parking',SA_COMPLAINTS:'complaints',SA_VISITORS:'visitors',SA_SECURITY:'security',SA_DOCUMENTS:'documents',SA_NOTICES:'notices',SA_COMMUNICATION:'communication',SA_REPORTS:'reports',SA_MIGRATION:'migration',SA_AUDIT:'audit',ADM_ACCOUNTS:'accounts',ADMINISTRATOR:'accounts',CASH_DASHBOARD:'home',CASH_CUSTOMER:'customers',CASH_ACCEPT_PAYMENT:'collection',CASH_RECEIPTS:'collection',CASH_ALLOCATION:'collection',CASH_REVERSAL:'collection',CASH_ADJUSTMENT:'bills',CASH_BILL_LOOKUP:'bills'};
+const moduleViewMap={APP_DASHBOARD:'home',SA_DASHBOARD:'home',SA_SOCIETY_PROFILE:'configuration',SA_BUILDINGS:'flats',SA_WINGS:'flats',SA_FLATS:'flats',SA_RESIDENTS:'customers',SA_FAMILY:'customers',CRM_CUSTOMER_ACCOUNT:'customers',CRM_CUSTOMER_INTERACTION:'customers',MIS_CONSUMER_MASTER:'customers',SA_BILLING_DASH:'bills',SA_BILL_GENERATION:'bills',SA_BILL_REGISTER:'bills',SA_BILL_ADJUSTMENT:'bills',SA_REBATE:'configuration',SA_DPC:'configuration',SA_CHARGE_CONFIG:'configuration',SA_RATE_PLANS:'configuration',SA_TAX_CONFIG:'configuration',SA_COLLECTION:'collection',SA_PAYMENT_ENTRY:'collection',SA_RECEIPTS:'collection',SA_REVERSAL:'collection',SA_PARKING:'parking',SA_VEHICLES:'parking',SA_PARKING_ASSIGN:'parking',SA_COMPLAINTS:'complaints',SA_VISITORS:'visitors',SA_SECURITY:'security',SA_REPORTS:'security',SA_MIGRATION:'module-workspace',SA_AUDIT:'security',ADM_ACCOUNTS:'accounts',ADMINISTRATOR:'accounts',CASH_DASHBOARD:'home',CASH_CUSTOMER:'customers',CASH_ACCEPT_PAYMENT:'collection',CASH_RECEIPTS:'collection',CASH_ALLOCATION:'collection',CASH_REVERSAL:'collection',CASH_ADJUSTMENT:'bills',CASH_BILL_LOOKUP:'bills',NOTIFICATION_CENTER:'module-workspace'};
+['BILL_RANGE','BILL_DUMMY_CYCLE','BILL_ERROR_CORRECTION','BILL_COMPUTATION','BILL_DOWNLOAD','BILL_REVERT','BILL_TRACKER','BILL_ADJUSTMENT','BILL_TARIFF','BILL_DUMMY','BILL_ESTIMATE'].forEach(x=>moduleViewMap[x]='bills');
+['COL_ACCEPT_PAYMENT','COL_SERVICE_PAYMENT','COL_BANK_DETAILS','COL_DISHONORED'].forEach(x=>moduleViewMap[x]='collection');
+['SA_RATE','SA_WAIVER','SA_TAX','SA_EFFECTIVE'].forEach(x=>moduleViewMap[x]='configuration');
+['PARK_SLOT','PARK_ASSIGN','PARK_VEHICLE','PARK_CHARGE'].forEach(x=>moduleViewMap[x]='parking');
+['DOC_CUSTOMER','DOC_SOCIETY','DOC_TEMPLATE','NOTICE_CREATE','NOTICE_SMS','NOTICE_PUSH','RPT_BILLING','RPT_COLLECTION','RPT_OUTSTANDING','RPT_CONSUMER','RPT_AUDIT','AUDIT_LOG','AUDIT_LOGIN','AUDIT_APPROVAL','SUPER_AUDIT'].forEach(x=>moduleViewMap[x]='module-workspace');
 async function buildDatabaseMenu(){
  const rows=await get('/api/menu');const nav=$('#dbMenu');if(!nav)return;nav.innerHTML='';
  const roots=rows.filter(x=>!x.parent_module_code);
@@ -17,6 +22,13 @@ async function buildDatabaseMenu(){
   }else{
    const b=document.createElement('button');b.type='button';b.dataset.view=moduleViewMap[root.module_code]||'module-workspace';b.dataset.moduleCode=root.module_code;b.innerHTML='<span>'+Society360I18n.translateText(root.module_name)+'</span>';b.onclick=()=>{if(window.openRequestedModule?.(root.module_code))return;show(b.dataset.view,root.module_name)};nav.appendChild(b);
   }
+ });
+ nav.querySelectorAll('details').forEach(d=>{
+  d.open=false;
+  d.addEventListener('toggle',()=>{
+   if(!d.open)return;
+   nav.querySelectorAll('details').forEach(other=>{if(other!==d)other.open=false;});
+  });
  });
 }
 

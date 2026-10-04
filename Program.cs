@@ -227,7 +227,7 @@ app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, S
     {
         await using var cn = db.CreateConnection();
         await cn.OpenAsync(ct);
-        await using var cmd = new NpgsqlCommand("call society_manager.sp_create_society_signup(@society_name,@email,@phone,@address,@admin_name,@login_name,@password,@plan_code,NULL,NULL,NULL,NULL,NULL,NULL,NULL)",cn);
+        await using var cmd = new NpgsqlCommand("call society_manager.sp_create_society_signup(CAST(@society_name AS varchar),CAST(@email AS varchar),CAST(@phone AS varchar),CAST(@address AS text),CAST(@admin_name AS varchar),CAST(@login_name AS varchar),CAST(@password AS varchar),CAST(@plan_code AS varchar),CAST(NULL AS bigint),CAST(NULL AS bigint),CAST(NULL AS varchar),CAST(NULL AS varchar),CAST(NULL AS varchar),CAST(NULL AS numeric),CAST(NULL AS date))",cn);
         cmd.Parameters.AddWithValue("society_name",request.SocietyName.Trim());
         cmd.Parameters.AddWithValue("email",(object?)request.Email?.Trim()??DBNull.Value);
         cmd.Parameters.AddWithValue("phone",(object?)request.Phone?.Trim()??DBNull.Value);
@@ -441,6 +441,16 @@ app.MapGet("/login", () => Results.Redirect("/login.html"));
 app.MapGet("/api/subscription/payment", () => Results.StatusCode(StatusCodes.Status405MethodNotAllowed));
 app.Map("/api/{**path}", () => Results.NotFound(new { message="API endpoint not found." }));
 app.MapFallbackToFile("index.html");
+
+if (args.Contains("--apply-visible-menu-dedup", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","031_visible_menu_dedup.sql"));
+    await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Visible menu duplicate consolidation applied."); return;
+}
 
 if (args.Contains("--apply-security-visitor-schema", StringComparer.OrdinalIgnoreCase))
 {
