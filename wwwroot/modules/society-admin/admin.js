@@ -28,6 +28,7 @@ async function init(){
   $('#societyName').textContent=society?.societyName||'Society';
   $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');$('#heading').textContent='Hello, '+session.displayName;
   wire();
+  wireConsumerAccount();
   await Promise.allSettled([loadDashboard(),loadSubscription(),buildDatabaseMenu()]);
  }catch(e){
   if(e?.message==='AUTH_REQUIRED') location.href='/login';
@@ -67,16 +68,78 @@ function wire(){
   const x=await get('/api/subscription/current');if(!confirm('Record payment of ₹'+Number(x.amount).toLocaleString('en-IN')+' as '+$('#paymentMode').value+'?'))return;
   const r=await fetch('/api/subscription/payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subscriptionId,amount:x.amount,paymentMode:$('#paymentMode').value,referenceNo:$('#paymentReference').value})});
   const d=await r.json();if(!r.ok){alert(d.message||'Payment failed');return}alert('Subscription payment recorded successfully.');loadSubscription(); };
- $('#customerSearch').oninput=debounce(e=>loadCustomers(e.target.value));$('#flatSearch').oninput=debounce(e=>loadFlats(e.target.value));
+ $('#flatSearch').oninput=debounce(e=>loadFlats(e.target.value));
  $('#billSearch').oninput=debounce(e=>loadBills(e.target.value));$('#complaintSearch').oninput=debounce(e=>loadComplaints(e.target.value));
  $('#visitorSearch').oninput=debounce(e=>loadVisitors(e.target.value));$('#parkingSearch').oninput=debounce(e=>loadParking(e.target.value));
  $('#language-select').value=Society360I18n.current;$('#language-select').onchange=e=>Society360I18n.setLanguage(e.target.value);
- window.addEventListener('society360-language-changed',()=>{buildDatabaseMenu();tableRegistry.forEach(x=>{try{x.table.setColumns(x.columns.map(c=>({...c,title:Society360I18n.translateText(c.title)})))}catch{}});});
+ window.addEventListener('society360-language-changed',()=>{buildDatabaseMenu();tableRegistry.forEach(x=>{try{x.table.setColumns(x.columns.map(c=>({...c,title:Society360I18n.translateText(c.title)})))}catch{}});if(activeConsumerAccount){renderConsumerInfo(activeConsumerAccount);renderConsumerTables(activeConsumerAccount)}});
  setInterval(()=>$('#clock').textContent=new Date().toLocaleString(Society360I18n.locale()),1000);
 }
-async function loadCustomers(q){const rows=await get('/api/society-admin/customers?q='+encodeURIComponent(q));const t=table('customerTable',rows,[{title:'Customer',field:'full_name',headerFilter:true},{title:'Code',field:'customer_code',headerFilter:true},{title:'Phone',field:'phone',headerFilter:true},{title:'Flat',field:'flat_no',headerFilter:true},{title:'Wing',field:'wing',headerFilter:true},{title:'Email',field:'email'}]);t.on('rowClick',(_,row)=>openCustomer(row.getData().customer_id))}
-async function openCustomer(id){const x=await get('/api/society-admin/customer/'+id);const d=$('#customer360');d.classList.remove('hidden');d.innerHTML='<b>'+x.full_name+'</b><div class="cards" style="grid-template-columns:repeat(4,1fr);margin-top:10px"><article><small>Flat</small><strong>'+x.flat_no+'</strong></article><article><small>Billed</small><strong>'+money(x.billed_amount)+'</strong></article><article><small>Paid</small><strong>'+money(x.paid_amount)+'</strong></article><article><small>Outstanding</small><strong>'+money(x.outstanding)+'</strong></article></div><h3 style="margin:18px 0 10px">Service History</h3><div id="serviceHistoryTable"></div>';loadCustomerHistory(id)}
-async function loadCustomerHistory(id){const rows=await get('/api/society-admin/customer/'+id+'/service-history');table('serviceHistoryTable',rows,[{title:'Date',field:'occurred_at',headerFilter:true},{title:'Module',field:'module_code',headerFilter:true},{title:'Event',field:'event_title',headerFilter:true},{title:'Reference',field:'reference_no',headerFilter:true},{title:'Amount',field:'amount',hozAlign:'right',formatter:c=>money(c.getValue())},{title:'Channel',field:'channel',headerFilter:true},{title:'Modified By',field:'performed_by_name',headerFilter:true},{title:'Remark',field:'remark'}],{height:'360px'})}
+let activeConsumerAccount=null;
+function consumerText(v){return v===null||v===undefined||v===''?'—':String(v)}
+function consumerMoney(v){return money(v)}
+function showConsumerTab(tab){
+ $$('.consumer-tab').forEach(b=>b.classList.toggle('active',b.dataset.consumerTab===tab));
+ $$('.consumer-panel').forEach(p=>p.classList.toggle('active',p.id==='consumerPanel-'+tab));
+ setTimeout(()=>tableRegistry.forEach(x=>{try{x.table.redraw(true)}catch{}}),30);
+}
+function renderConsumerInfo(x){
+ const c=x.consumer||{},s=x.summary||{},flats=x.flats||[];
+ $('#activeConsumerId').textContent='CID '+consumerText(c.consumerId);
+ $('#consumerAvatar').textContent=consumerText(c.fullName).split(/\s+/).map(v=>v[0]).slice(0,2).join('').toUpperCase()||'C';
+ $('#consumerName').textContent=consumerText(c.fullName);
+ $('#consumerMeta').textContent=consumerText(c.customerCode)+' · '+Society360I18n.translateDataValue(consumerText(c.customerType));
+ $('#consumerPhone').textContent=consumerText(c.phone);$('#consumerEmail').textContent=consumerText(c.email);
+ $('#summaryConsumerId').textContent=consumerText(c.consumerId);$('#summaryFlatCount').textContent=consumerText(s.flatCount||0);
+ $('#summaryOutstanding').textContent=consumerMoney(s.outstanding||0);$('#summaryNextDue').textContent=consumerText(s.nextDueDate);
+ $('#consumerInfoGrid').innerHTML=[
+  ['Consumer ID',c.consumerId],['Customer Code',c.customerCode],['Full Name',c.fullName],['Customer Type',c.customerType],['Mobile',c.phone],['Email',c.email]
+ ].map(a=>'<div class="consumer-info-row"><span>'+Society360I18n.translateText(a[0])+'</span><strong>'+consumerText(a[1])+'</strong></div>').join('');
+ $('#consumerFlatSummary').innerHTML=flats.length?flats.map(f=>'<div class="consumer-flat-chip"><div><b>'+consumerText(f.flatNo)+' · '+consumerText(f.wing)+'</b><small>'+consumerText(f.building)+' · '+Society360I18n.translateDataValue(consumerText(f.relationType))+'</small></div><strong>'+Society360I18n.translateDataValue(consumerText(f.occupancyStatus))+'</strong></div>').join(''):'<div class="muted">'+Society360I18n.translateText('No flats linked')+'</div>';
+}
+function dueDateFormatter(cell){
+ const v=cell.getValue();if(!v)return '—';const d=new Date(v);if(Number.isNaN(d.getTime()))return consumerText(v);
+ const today=new Date();today.setHours(0,0,0,0);d.setHours(0,0,0,0);
+ const cls=d<today?'due-overdue':d.getTime()===today.getTime()?'due-today':'due-upcoming';
+ return '<span class="'+cls+'">'+consumerText(v)+'</span>';
+}
+function translatedValue(cell){return Society360I18n.translateDataValue(consumerText(cell.getValue()))}
+function consumerColumns(){
+ return {
+ flats:[{title:'Flat',field:'flatNo',headerFilter:true},{title:'Wing',field:'wing',headerFilter:true},{title:'Building',field:'building',headerFilter:true},{title:'Area Sq.Ft.',field:'areaSqft'},{title:'Relation',field:'relationType',headerFilter:true,formatter:translatedValue},{title:'Occupancy',field:'occupancyStatus',headerFilter:true,formatter:translatedValue}],
+ bills:[{title:'Bill No',field:'billNo',headerFilter:true},{title:'Flat',field:'flatNo',headerFilter:true},{title:'Bill Date',field:'billDate',headerFilter:true},{title:'Due Date',field:'dueDate',headerFilter:true,formatter:dueDateFormatter},{title:'Total',field:'totalAmount',formatter:c=>consumerMoney(c.getValue())},{title:'Paid',field:'paidAmount',formatter:c=>consumerMoney(c.getValue())},{title:'Balance',field:'balance',formatter:c=>consumerMoney(c.getValue())},{title:'DPC',field:'dpcAmount',formatter:c=>consumerMoney(c.getValue())},{title:'Status',field:'status',headerFilter:true,formatter:translatedValue}],
+ payments:[{title:'Payment No',field:'paymentNo',headerFilter:true},{title:'Date',field:'paymentDate',headerFilter:true},{title:'Flat',field:'flatNo',headerFilter:true},{title:'Amount',field:'amount',formatter:c=>consumerMoney(c.getValue())},{title:'Mode',field:'mode',headerFilter:true,formatter:translatedValue},{title:'Reference',field:'referenceNo',headerFilter:true},{title:'Status',field:'status',headerFilter:true,formatter:translatedValue}],
+ complaints:[{title:'Complaint No',field:'complaintNo',headerFilter:true},{title:'Flat',field:'flatNo',headerFilter:true},{title:'Category',field:'category',headerFilter:true},{title:'Title',field:'title',headerFilter:true},{title:'Priority',field:'priority',headerFilter:true,formatter:translatedValue},{title:'Status',field:'status',headerFilter:true,formatter:translatedValue},{title:'Created',field:'createdAt',headerFilter:true}],
+ parking:[{title:'Slot',field:'slotNo',headerFilter:true},{title:'Type',field:'slotType',headerFilter:true,formatter:translatedValue},{title:'Charge',field:'charge',formatter:c=>consumerMoney(c.getValue())},{title:'Flat',field:'flatNo',headerFilter:true},{title:'Start',field:'startDate'},{title:'End',field:'endDate'},{title:'Active',field:'isActive',formatter:translatedValue}],
+ history:[{title:'Date',field:'performedAt',headerFilter:true},{title:'Module',field:'eventType',headerFilter:true},{title:'Event',field:'eventTitle',headerFilter:true},{title:'Reference',field:'referenceNo',headerFilter:true},{title:'Flat',field:'flatNo',headerFilter:true},{title:'By',field:'performedBy',headerFilter:true},{title:'Remark',field:'modifyRemark'}]
+ };
+}
+function renderConsumerTables(x){
+ const c=consumerColumns();
+ table('consumerFlatsTable',x.flats||[],c.flats,{height:'420px'});
+ table('consumerBillsTable',x.bills||[],c.bills,{height:'420px'});
+ table('consumerPaymentsTable',x.payments||[],c.payments,{height:'420px'});
+ table('consumerComplaintsTable',x.complaints||[],c.complaints,{height:'420px'});
+ table('consumerParkingTable',x.parking||[],c.parking,{height:'420px'});
+ table('consumerHistoryTable',x.serviceHistory||[],c.history,{height:'420px'});
+}
+async function openConsumerAccount(consumerId){
+ const x=await get('/api/society-admin/consumer-master-account/'+encodeURIComponent(consumerId));if(!x)return;
+ activeConsumerAccount=x;$('#consumerAccountEmpty').classList.add('hidden');$('#consumerAccountContent').classList.remove('hidden');renderConsumerInfo(x);renderConsumerTables(x);showConsumerTab('overview');
+}
+function renderConsumerSuggestions(rows){
+ const box=$('#consumerSuggestions');if(!rows.length){box.innerHTML='<div class="consumer-suggestion"><div><b>'+Society360I18n.translateText('No matching customer found')+'</b><div class="consumer-suggestion-meta">'+Society360I18n.translateText('Try a flat number, name, mobile or Consumer ID.')+'</div></div></div>';box.classList.remove('hidden');return;}
+ box.innerHTML=rows.map(r=>'<div class="consumer-suggestion" data-consumer-id="'+r.consumer_id+'"><div><div class="consumer-suggestion-main">'+consumerText(r.full_name)+'</div><div class="consumer-suggestion-meta">CID '+consumerText(r.consumer_id)+' · '+consumerText(r.phone)+' · '+consumerText(r.flat_count)+' '+Society360I18n.translateText('flats')+'</div></div><div class="consumer-suggestion-right"><b>'+consumerMoney(r.outstanding)+'</b>'+consumerText(r.primary_flat)+' '+consumerText(r.primary_wing)+'</div></div>').join('');
+ box.classList.remove('hidden');box.querySelectorAll('[data-consumer-id]').forEach(el=>el.onclick=async()=>{box.classList.add('hidden');$('#customerSearch').value=el.querySelector('.consumer-suggestion-main').textContent;await openConsumerAccount(el.dataset.consumerId)});
+}
+const loadConsumerSuggestions=debounce(async q=>{if(!q.trim()){ $('#consumerSuggestions').classList.add('hidden');return;}try{const rows=await get('/api/society-admin/consumer-search?q='+encodeURIComponent(q.trim()));renderConsumerSuggestions(rows)}catch(e){console.error(e)}},180);
+function wireConsumerAccount(){
+ $('#customerSearch').oninput=e=>loadConsumerSuggestions(e.target.value);
+ $('#clearConsumerSearch').onclick=()=>{$('#customerSearch').value='';$('#consumerSuggestions').classList.add('hidden');activeConsumerAccount=null;$('#consumerAccountContent').classList.add('hidden');$('#consumerAccountEmpty').classList.remove('hidden');};
+ document.addEventListener('click',e=>{if(!e.target.closest('.consumer-searchbar'))$('#consumerSuggestions')?.classList.add('hidden')});
+ $$('.consumer-tab').forEach(b=>b.onclick=()=>showConsumerTab(b.dataset.consumerTab));
+}
+async function loadCustomers(q){if(q){loadConsumerSuggestions(q);return;}$('#consumerAccountEmpty').classList.remove('hidden');$('#consumerAccountContent').classList.add('hidden');}
 async function loadSecurity(){const rows=await get('/api/society-admin/security/logins');table('loginSecurityTable',rows,[{title:'Login',field:'login_name',headerFilter:true},{title:'Name',field:'display_name',headerFilter:true},{title:'Role',field:'role_code',headerFilter:true},{title:'Last Login',field:'last_login_at',headerFilter:true},{title:'IP',field:'last_login_ip',headerFilter:true},{title:'Login Count',field:'login_count',hozAlign:'right'},{title:'Failed Count',field:'failed_login_count',hozAlign:'right'},{title:'Last Failed',field:'last_failed_at'}])}
 async function loadFlats(q){const rows=await get('/api/society-admin/flats?q='+encodeURIComponent(q));table('flatTable',rows,[{title:'Flat',field:'flat_no',headerFilter:true},{title:'Wing',field:'wing',headerFilter:true},{title:'Building',field:'building',headerFilter:true},{title:'Type',field:'unit_type',headerFilter:true},{title:'Area',field:'area_sqft',hozAlign:'right'},{title:'Occupancy',field:'occupancy_status',headerFilter:true},{title:'Owner',field:'owner_name',headerFilter:true},{title:'Phone',field:'owner_phone'}])}
 async function loadBills(q){const rows=await get('/api/society-admin/bills?q='+encodeURIComponent(q));table('billTable',rows,[{title:'Bill No',field:'bill_no',headerFilter:true},{title:'Month',field:'bill_month',headerFilter:true},{title:'Flat',field:'flat_no',headerFilter:true},{title:'Customer',field:'customer_name',headerFilter:true},{title:'Amount',field:'total_amount',hozAlign:'right',formatter:c=>money(c.getValue())},{title:'Paid',field:'paid_amount',hozAlign:'right',formatter:c=>money(c.getValue())},{title:'Balance',field:'balance',hozAlign:'right',formatter:c=>money(c.getValue())},{title:'Due',field:'due_date'},{title:'Status',field:'status',formatter:c=>'<span class="pill">'+c.getValue()+'</span>'}])}

@@ -29,6 +29,10 @@ public static class SocietyAdminEndpoints
 
         app.MapGet("/api/society-admin/customers", async (string? q, AuthService auth, HttpContext http, CancellationToken ct) =>
             await Query(auth,http,ct,"fn_society_admin_customer_search",q??"",7));
+        app.MapGet("/api/society-admin/consumer-search", async (string? q, AuthService auth, HttpContext http, CancellationToken ct) =>
+            await ConsumerSearch(auth,http,ct,q??""));
+        app.MapGet("/api/society-admin/consumer-master-account/{consumerId:long}", async (long consumerId, AuthService auth, HttpContext http, CancellationToken ct) =>
+            await ConsumerAccountByMasterId(auth,http,ct,consumerId));
         app.MapGet("/api/society-admin/flats", async (string? q, AuthService auth, HttpContext http, CancellationToken ct) =>
             await Query(auth,http,ct,"fn_society_admin_flat_search",q??"",9));
         app.MapGet("/api/society-admin/bills", async (string? q, AuthService auth, HttpContext http, CancellationToken ct) =>
@@ -257,6 +261,32 @@ public static class SocietyAdminEndpoints
         var flats=await ReadRows(cmd,18,ct);
         if(flats.Count==0)return Results.NotFound(new {message="Consumer not found in selected society."});
         return Results.Ok(new {customer=new {customerId=flats[0]["customer_id"],customerCode=flats[0]["customer_code"],fullName=flats[0]["full_name"],customerType=flats[0]["customer_type"],phone=flats[0]["phone"],email=flats[0]["email"]},flats});
+    }
+
+    static async Task<IResult> ConsumerSearch(AuthService auth,HttpContext http,CancellationToken ct,string q)
+    {
+        var session=await AuthGuard.Get(http,auth,ct);
+        if(session is null) return Results.Unauthorized();
+        if(session.SocietyId is null || !await auth.HasPermissionAsync(session.UserId,"CRM_CUSTOMER_SEARCH","VIEW",ct)) return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_society360_consumer_search(@society,@search)",cn);
+        cmd.Parameters.AddWithValue("society",session.SocietyId.Value);cmd.Parameters.AddWithValue("search",q.Trim());
+        return Results.Ok(await ReadRows(cmd,11,ct));
+    }
+
+    static async Task<IResult> ConsumerAccountByMasterId(AuthService auth,HttpContext http,CancellationToken ct,long consumerId)
+    {
+        var session=await AuthGuard.Get(http,auth,ct);
+        if(session is null) return Results.Unauthorized();
+        if(session.SocietyId is null || !await auth.HasPermissionAsync(session.UserId,"CRM_CUSTOMER_360","VIEW",ct)) return Results.Forbid();
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand("select society_manager.fn_society360_consumer_account(@society,@consumer)",cn);
+        cmd.Parameters.AddWithValue("society",session.SocietyId.Value);cmd.Parameters.AddWithValue("consumer",consumerId);
+        var value=await cmd.ExecuteScalarAsync(ct);
+        if(value is null || value is DBNull) return Results.NotFound(new {message="Consumer account not found in the selected society."});
+        return Results.Json(value);
     }
 
     static async Task<IResult> Query(AuthService auth,HttpContext http,CancellationToken ct,string fn,string q,int columns)

@@ -549,6 +549,19 @@ if (args.Contains("--apply-login-ip-tracking", StringComparer.OrdinalIgnoreCase)
     return;
 }
 
+if (args.Contains("--apply-consumer-account-360-schema", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","028_consumer_account_360.sql"));
+    await using var command=new NpgsqlCommand(sql,connection);
+    await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Consumer Account 360 schema applied.");
+    return;
+}
+
 if (args.Contains("--apply-production-controls", StringComparer.OrdinalIgnoreCase))
 {
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");

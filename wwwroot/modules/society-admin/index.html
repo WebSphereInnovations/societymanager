@@ -5,7 +5,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Society360 — Society Admin</title>
 <link href="/lib/tabulator/tabulator.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/modules/society-admin/admin.css"><link rel="stylesheet" href="/css/support-assistant.css">
+<link rel="stylesheet" href="/modules/society-admin/admin.css"><link rel="stylesheet" href="/modules/society-admin/consumer-account.css?v=20261004"><link rel="stylesheet" href="/css/support-assistant.css">
 </head>
 <body>
 <div class="ambient a"></div><div class="ambient b"></div>
@@ -28,7 +28,62 @@
   <article><small>Complaints</small><strong id="openComplaints">—</strong><span>Need attention</span></article>
   <article><small>Visitors inside</small><strong id="insideVisitors">—</strong><span>Live security view</span></article> </div>
  <div class="quick"><button data-view="customers">Customer Search →</button><button data-view="flats">Flat Search →</button><button data-view="bills">Billing Grid →</button><button data-view="collection">Collection Grid →</button></div>
-</section><section id="customers" class="view"><div class="section-head"><div><span class="eyebrow">CRM</span><h2>Customer 360</h2><p>Start typing the first two letters of a customer name, phone or code.</p></div><input id="customerSearch" class="search" placeholder="Search customer..."></div><div id="customerTable"></div><div id="customer360" class="drawer hidden"></div></section>
+</section><section id="customers" class="view">
+ <div class="consumer-account">
+  <div class="consumer-account-head">
+   <div><span class="eyebrow" data-i18n="Customer Account"></span><h2 data-i18n="Customer Account Information"></h2><p data-i18n="Search by flat number, customer name or mobile number. Start with the first few characters or digits."></p></div>
+   <div class="consumer-id-badge" id="activeConsumerId">—</div>
+  </div>
+  <div class="consumer-searchbar">
+   <div class="consumer-search-label" data-i18n="Search Customer Account"></div>
+   <div class="consumer-search-input-wrap">
+    <span class="search-icon">⌕</span>
+    <input id="customerSearch" class="consumer-search-input" autocomplete="off" data-i18n-placeholder="Flat no / Name / Mobile / Consumer ID" placeholder="Flat no / Name / Mobile / Consumer ID">
+    <button type="button" id="clearConsumerSearch" class="consumer-clear" data-i18n="Clear">Clear</button>
+   </div>
+   <div id="consumerSuggestions" class="consumer-suggestions hidden"></div>
+  </div>
+  <div id="consumerAccountEmpty" class="consumer-empty">
+   <div class="consumer-empty-icon">360</div>
+   <h3 data-i18n="Search a customer to open the account"></h3>
+   <p data-i18n="The account is loaded directly from PostgreSQL and is restricted to the selected society."></p>
+  </div>
+  <div id="consumerAccountContent" class="hidden">
+   <div class="consumer-profile">
+    <div class="consumer-avatar" id="consumerAvatar">C</div>
+    <div class="consumer-profile-main"><span class="eyebrow" data-i18n="MASTER CONSUMER"></span><h2 id="consumerName">—</h2><div id="consumerMeta">—</div></div>
+    <div class="consumer-contact"><div><small data-i18n="Mobile"></small><strong id="consumerPhone">—</strong></div><div><small data-i18n="Email"></small><strong id="consumerEmail">—</strong></div></div>
+   </div>
+   <div class="consumer-cards">
+    <article><small data-i18n="Consumer ID"></small><strong id="summaryConsumerId">—</strong></article>
+    <article><small data-i18n="Total Flats"></small><strong id="summaryFlatCount">0</strong></article>
+    <article><small data-i18n="Outstanding"></small><strong id="summaryOutstanding">₹0</strong></article>
+    <article><small data-i18n="Next Due Date"></small><strong id="summaryNextDue">—</strong></article>
+   </div>
+   <div class="consumer-tabs" id="consumerTabs">
+    <button class="consumer-tab active" data-consumer-tab="overview" data-i18n="Overview"></button>
+    <button class="consumer-tab" data-consumer-tab="flats" data-i18n="Flats"></button>
+    <button class="consumer-tab" data-consumer-tab="billing" data-i18n="Billing"></button>
+    <button class="consumer-tab" data-consumer-tab="payments" data-i18n="Collection"></button>
+    <button class="consumer-tab" data-consumer-tab="complaints" data-i18n="Complaints"></button>
+    <button class="consumer-tab" data-consumer-tab="parking" data-i18n="Parking"></button>
+    <button class="consumer-tab" data-consumer-tab="history" data-i18n="Service History"></button>
+   </div>
+   <div class="consumer-panel active" id="consumerPanel-overview">
+    <div class="consumer-overview-grid">
+     <div class="consumer-info-panel"><h3 data-i18n="Customer Information"></h3><div id="consumerInfoGrid"></div></div>
+     <div class="consumer-info-panel"><h3 data-i18n="Flat Summary"></h3><div id="consumerFlatSummary"></div></div>
+    </div>
+   </div>
+   <div class="consumer-panel" id="consumerPanel-flats"><div id="consumerFlatsTable"></div></div>
+   <div class="consumer-panel" id="consumerPanel-billing"><div id="consumerBillsTable"></div></div>
+   <div class="consumer-panel" id="consumerPanel-payments"><div id="consumerPaymentsTable"></div></div>
+   <div class="consumer-panel" id="consumerPanel-complaints"><div id="consumerComplaintsTable"></div></div>
+   <div class="consumer-panel" id="consumerPanel-parking"><div id="consumerParkingTable"></div></div>
+   <div class="consumer-panel" id="consumerPanel-history"><div id="consumerHistoryTable"></div></div>
+  </div>
+ </div>
+</section>
 <section id="flats" class="view"><div class="section-head"><div><span class="eyebrow">MASTER DATA</span><h2>Flats & Residents</h2><p>Search by flat, wing or resident-linked unit.</p></div><input id="flatSearch" class="search" placeholder="Search flat / wing..."></div><div id="flatTable"></div></section>
 <section id="bills" class="view"><div class="section-head"><div><span class="eyebrow">BILLING</span><h2>Billing</h2><p>Live bills for the selected society.</p></div><input id="billSearch" class="search" placeholder="Bill / flat / customer..."></div><div id="billTable"></div></section>
 <section id="collection" class="view"><div class="section-head"><div><span class="eyebrow">COLLECTION</span><h2>Collection & Receipts</h2><p>Recent collection transactions returned by the database procedure.</p></div></div><div id="collectionTable"></div></section>
