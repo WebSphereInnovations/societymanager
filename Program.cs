@@ -590,6 +590,19 @@ if (args.Contains("--apply-production-controls", StringComparer.OrdinalIgnoreCas
     return;
 }
 
+if (args.Contains("--apply-customer-account-consolidation", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","030_customer_account_consolidation.sql"));
+    await using var command=new NpgsqlCommand(sql,connection);
+    await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Customer Account consolidation schema applied.");
+    return;
+}
+
 if (args.Contains("--apply-migration-schema", StringComparer.OrdinalIgnoreCase))
 {
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");

@@ -115,12 +115,10 @@ public static class CustomerAccountEndpoints
     static async Task<bool> CanSearchAsync(SessionContext s, AuthService auth, CancellationToken ct)
     {
         if (s.RoleCode is "SUPER_ADMIN" or "SOCIETY_ADMIN")
-            return await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_SEARCH", "VIEW", ct)
-                || await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_360", "VIEW", ct);
+            return await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_ACCOUNT", "VIEW", ct);
         if (s.RoleCode == "CASHIER")
             return await auth.HasPermissionAsync(s.UserId, "COLLECTION_MANAGEMENT", "VIEW", ct)
-                || await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_SEARCH", "VIEW", ct)
-                || await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_360", "VIEW", ct);
+                || await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_ACCOUNT", "VIEW", ct);
         return false;
     }
 
@@ -144,9 +142,9 @@ public static class CustomerAccountEndpoints
 
         if (s.RoleCode == "CASHIER")
             return await auth.HasPermissionAsync(s.UserId, "COLLECTION_MANAGEMENT", "VIEW", ct)
-                || await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_360", "VIEW", ct);
+                || await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_ACCOUNT", "VIEW", ct);
 
-        return await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_360", "VIEW", ct);
+        return await auth.HasPermissionAsync(s.UserId, "CRM_CUSTOMER_ACCOUNT", "VIEW", ct);
     }
 
     static async Task<List<Dictionary<string, object?>>> ReadRows(NpgsqlCommand cmd, CancellationToken ct)
