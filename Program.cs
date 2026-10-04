@@ -1,5 +1,3 @@
-[Reading 772 lines from start (total: 772 lines, 0 remaining)]
-
 
 using System.Security.Claims;
 using System.Threading.RateLimiting;
@@ -772,5 +770,3 @@ public sealed record CreateSocietyRequest(
 public sealed record ChangePasswordRequest(string CurrentPassword,string NewPassword);
 public sealed record SubscriptionPaymentRequest(long SubscriptionId,decimal Amount,string PaymentMode,string? ReferenceNo);
 public sealed record ConnectionRequest(string Value);
-
-[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]

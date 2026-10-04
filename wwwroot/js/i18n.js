@@ -1,11 +1,10 @@
-[Reading 173 lines from start (total: 173 lines, 0 remaining)]
-
 (function(){
 'use strict';
 const languages={
  en:{name:'English',native:'English',locale:'en-IN'},
  hi:{name:'हिन्दी',native:'हिन्दी',locale:'hi-IN'},
  mr:{name:'मराठी',native:'मराठी',locale:'mr-IN'},
+ gu:{name:'ગુજરાતી',native:'ગુજરાતી',locale:'gu-IN'},
  kn:{name:'ಕನ್ನಡ',native:'ಕನ್ನಡ',locale:'kn-IN'},
  ta:{name:'தமிழ்',native:'தமிழ்',locale:'ta-IN'},
  te:{name:'తెలుగు',native:'తెలుగు',locale:'te-IN'}
@@ -173,5 +172,3 @@ window.Society360I18n={
  languages:Object.freeze(languages)
 };
 })();
-
-[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
