@@ -139,7 +139,15 @@ function wireConsumerAccount(){
  document.addEventListener('click',e=>{if(!e.target.closest('.consumer-searchbar'))$('#consumerSuggestions')?.classList.add('hidden')});
  $$('.consumer-tab').forEach(b=>b.onclick=()=>showConsumerTab(b.dataset.consumerTab));
 }
-async function loadCustomers(q){if(q){loadConsumerSuggestions(q);return;}$('#consumerAccountEmpty').classList.remove('hidden');$('#consumerAccountContent').classList.add('hidden');}
+async function loadCustomers(q){
+  // Customer Account is owned by customer-account.js. Do not render the legacy customer grid here.
+  // Keeping this adapter prevents the old Society Admin customer-list renderer from hijacking Consumer 360.
+  if(window.customerAccount360?.init) window.customerAccount360.init();
+  if(q){
+    const input=$('#caSearchInput');
+    if(input){input.value=q;input.dispatchEvent(new Event('input',{bubbles:true}));}
+  }
+}
 async function loadSecurity(){const rows=await get('/api/society-admin/security/logins');table('loginSecurityTable',rows,[{title:'Login',field:'login_name',headerFilter:true},{title:'Name',field:'display_name',headerFilter:true},{title:'Role',field:'role_code',headerFilter:true},{title:'Last Login',field:'last_login_at',headerFilter:true},{title:'IP',field:'last_login_ip',headerFilter:true},{title:'Login Count',field:'login_count',hozAlign:'right'},{title:'Failed Count',field:'failed_login_count',hozAlign:'right'},{title:'Last Failed',field:'last_failed_at'}])}
 async function loadFlats(q){const rows=await get('/api/society-admin/flats?q='+encodeURIComponent(q));table('flatTable',rows,[{title:'Flat',field:'flat_no',headerFilter:true},{title:'Wing',field:'wing',headerFilter:true},{title:'Building',field:'building',headerFilter:true},{title:'Type',field:'unit_type',headerFilter:true},{title:'Area',field:'area_sqft',hozAlign:'right'},{title:'Occupancy',field:'occupancy_status',headerFilter:true},{title:'Owner',field:'owner_name',headerFilter:true},{title:'Phone',field:'owner_phone'}])}
 async function loadBills(q){const rows=await get('/api/society-admin/bills?q='+encodeURIComponent(q));table('billTable',rows,[{title:'Bill No',field:'bill_no',headerFilter:true},{title:'Month',field:'bill_month',headerFilter:true},{title:'Flat',field:'flat_no',headerFilter:true},{title:'Customer',field:'customer_name',headerFilter:true},{title:'Amount',field:'total_amount',hozAlign:'right',formatter:c=>money(c.getValue())},{title:'Paid',field:'paid_amount',hozAlign:'right',formatter:c=>money(c.getValue())},{title:'Balance',field:'balance',hozAlign:'right',formatter:c=>money(c.getValue())},{title:'Due',field:'due_date'},{title:'Status',field:'status',formatter:c=>'<span class="pill">'+c.getValue()+'</span>'}])}
