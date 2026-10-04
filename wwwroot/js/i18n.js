@@ -4,7 +4,6 @@ const languages={
  en:{name:'English',native:'English',locale:'en-IN'},
  hi:{name:'हिन्दी',native:'हिन्दी',locale:'hi-IN'},
  mr:{name:'मराठी',native:'मराठी',locale:'mr-IN'},
- gu:{name:'ગુજરાતી',native:'ગુજરાતી',locale:'gu-IN'},
  kn:{name:'ಕನ್ನಡ',native:'ಕನ್ನಡ',locale:'kn-IN'},
  ta:{name:'தமிழ்',native:'தமிழ்',locale:'ta-IN'},
  te:{name:'తెలుగు',native:'తెలుగు',locale:'te-IN'}
