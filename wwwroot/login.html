@@ -1,3 +1,5 @@
+[Reading 119 lines from start (total: 119 lines, 0 remaining)]
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -32,7 +34,7 @@ label{display:block;font-size:10px;font-weight:700;color:#59657c;margin:14px 0 7
 <div class="brand"><div class="mark">3</div><div><b>Society<span>360</span></b><small>Smart Community OS</small></div></div>
 <h1 data-i18n="loginTitle">One secure place for every society.</h1>
 <p data-i18n="loginText">Manage multiple societies, roles, billing, residents and operations from one professional platform.</p>
-<div class="chips"><span class="chip">Multi-Society</span><span class="chip">Dynamic Rights</span><span class="chip">Billing</span><span class="chip">5 Languages</span></div></section>
+<div class="chips"><span class="chip" data-i18n="multiSociety">Multi-Society</span><span class="chip" data-i18n="dynamicRights">Dynamic Rights</span><span class="chip" data-i18n="billingChip">Billing</span><span class="chip" data-i18n="sixLanguages">6 Languages</span></div></section>
 <section class="form">
 <div class="form-top"><h2 data-i18n="signIn">Sign in</h2><div class="lang"><select id="language-select"><option value="en">English</option><option value="mr">मराठी</option><option value="gu">ગુજરાતી</option><option value="kn">ಕನ್ನಡ</option><option value="te">&#x0C24;&#x0C46;&#x0C32;&#x0C41;&#x0C17;&#x0C41;</option></select></div></div>
 <p data-i18n="welcomeBack">Welcome back. Enter your account details to continue.</p>
@@ -42,21 +44,21 @@ label{display:block;font-size:10px;font-weight:700;color:#59657c;margin:14px 0 7
 <div id="error" class="error"></div>
 <button type="submit" data-i18n="signIn">Sign in</button>
 </form>
-<a class="signup-link" id="open-signup">Create a new society account</a>
+<a class="signup-link" id="open-signup" data-i18n="createSociety">Create a new society account</a>
 <div class="hint" data-i18n="secureHint">Your password is stored as a salted hash. It is never stored as plain text.</div>
-<div class="security">Society360 · Secure access</div>
+<div class="security" data-i18n="secureAccess">Society360 · Secure access</div>
 </section>
 </div>
 
 <div class="signup" id="signup">
  <div class="signup-card">
-  <div class="signup-head"><div><h2>Create your Society360 society</h2><p>Create the society, first Society Admin account and subscription together. Payment is kept as Pending until your payment method is connected.</p></div><button class="close" id="close-signup" type="button">×</button></div>
+  <div class="signup-head"><div><h2 data-i18n="createSocietyTitle">Create your Society360 society</h2><p data-i18n="createSocietyText">Create the society, first Society Admin account and subscription together. Payment is kept as Pending until your payment method is connected.</p></div><button class="close" id="close-signup" type="button">×</button></div>
   <div class="signup-grid">
    <form class="signup-form" id="signup-form">
-    <label>Society name</label><input id="s-name" required minlength="3" placeholder="Example: Green Valley Residency">
-    <label>Administrator name</label><input id="s-admin" required minlength="2" placeholder="Full name">
-    <label>Admin login name</label><input id="s-login" required minlength="4" autocomplete="username" placeholder="societyadmin">
-    <label>Password</label><input id="s-password" required minlength="10" type="password" autocomplete="new-password" placeholder="Minimum 10 characters">
+    <label data-i18n="societyName">Society name</label><input id="s-name" required minlength="3" data-i18n-placeholder="exampleSociety">
+    <label data-i18n="administratorName">Administrator name</label><input id="s-admin" required minlength="2" data-i18n-placeholder="fullName">
+    <label data-i18n="adminLoginName">Admin login name</label><input id="s-login" required minlength="4" autocomplete="username" data-i18n-placeholder="loginName">
+    <label data-i18n="password">Password</label><input id="s-password" required minlength="10" type="password" autocomplete="new-password" data-i18n-placeholder="minimumPassword">
     <label>Email</label><input id="s-email" type="email" placeholder="admin@example.com">
     <label>Phone</label><input id="s-phone" placeholder="+91">
     <label>Address</label><input id="s-address" placeholder="Society address">
@@ -73,7 +75,7 @@ label{display:block;font-size:10px;font-weight:700;color:#59657c;margin:14px 0 7
  </div>
 </div>
 
-<script src="/js/i18n.js?v=20261004.6"></script>
+<script src="/js/i18n.js?v=20261004.8"></script>
 <script>
 Society360I18n.init();
 document.querySelector('#language-select').addEventListener('change',e=>Society360I18n.setLanguage(e.target.value));
@@ -117,3 +119,5 @@ document.querySelector('#signup-form').addEventListener('submit',async e=>{
 });
 </script>
 <script src="/js/support-assistant.js"></script></body></html>
+
+[executed on device: Sandman (3c28f028-a467-4934-be2f-752a8db6b6a8)]
