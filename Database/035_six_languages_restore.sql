@@ -1,4 +1,4 @@
-[Reading 85 lines from start (total: 85 lines, 0 remaining)]
+[Reading 86 lines from start (total: 86 lines, 0 remaining)]
 
 BEGIN;
 
@@ -15,6 +15,7 @@ ON CONFLICT(language_code) DO UPDATE
 SET language_name=excluded.language_name,native_name=excluded.native_name,
     locale_name=excluded.locale_name,is_active=true,sort_order=excluded.sort_order;
 
+UPDATE society_manager.m_language SET is_active=(language_code IN ('en','hi','mr','kn','ta','te'));
 UPDATE society_manager.m_user SET preferred_language='en'
 WHERE preferred_language IS NULL OR preferred_language NOT IN ('en','hi','mr','kn','ta','te');
 UPDATE society_manager.m_society SET default_language='en'
