@@ -442,16 +442,25 @@ app.MapGet("/api/subscription/payment", () => Results.StatusCode(StatusCodes.Sta
 app.Map("/api/{**path}", () => Results.NotFound(new { message="API endpoint not found." }));
 app.MapFallbackToFile("index.html");
 
-if (args.Contains("--apply-visible-menu-dedup", StringComparer.OrdinalIgnoreCase))
+if (args.Contains("--apply-customer-account-activity", StringComparer.OrdinalIgnoreCase))
 {
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
     if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
     await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
-    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","031_visible_menu_dedup.sql"));
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","033_customer_account_activity_bill_receipt.sql"));
     await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
-    Console.WriteLine("Visible menu duplicate consolidation applied."); return;
+    Console.WriteLine("Customer Account activity, bill and receipt procedures applied."); return;
 }
 
+if (args.Contains("--apply-five-language-system", StringComparer.OrdinalIgnoreCase))
+{
+    var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection=new NpgsqlConnection(cs); await connection.OpenAsync();
+    var sql=await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),"Database","032_five_languages_only.sql"));
+    await using var command=new NpgsqlCommand(sql,connection); await command.ExecuteNonQueryAsync();
+    Console.WriteLine("Five-language system applied."); return;
+}
 if (args.Contains("--apply-security-visitor-schema", StringComparer.OrdinalIgnoreCase))
 {
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");

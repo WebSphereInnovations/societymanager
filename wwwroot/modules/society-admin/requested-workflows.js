@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
 'use strict';
 const $=s=>document.querySelector(s), host=()=>$('#module-workspace');
 const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));

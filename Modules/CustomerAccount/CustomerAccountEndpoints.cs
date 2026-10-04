@@ -12,6 +12,8 @@ public static class CustomerAccountEndpoints
         app.MapGet("/api/customer-account/me", GetMine);
         app.MapGet("/api/customer-account/{consumerId:long}", GetAccount);
         app.MapGet("/api/customer-account/{consumerId:long}/section/{section}", GetSection);
+        app.MapGet("/api/customer-account/{consumerId:long}/bill/{billId:long}", GetBill);
+        app.MapGet("/api/customer-account/{consumerId:long}/receipt/{paymentId:long}", GetReceipt);
     }
 
     static async Task<IResult> Search(string? q, int? limit, AuthService auth, HttpContext http, CancellationToken ct)
@@ -109,6 +111,38 @@ public static class CustomerAccountEndpoints
         cmd.Parameters.AddWithValue("offset", offset);
         var value = await cmd.ExecuteScalarAsync(ct);
         if (value is null || value is DBNull) return Results.NotFound(new { message = "Consumer account not found." });
+        return Results.Text(value.ToString()!, "application/json");
+    }
+
+    static async Task<IResult> GetBill(long consumerId, long billId, AuthService auth, HttpContext http, CancellationToken ct)
+    {
+        var s = await AuthGuard.Get(http, auth, ct);
+        if (s is null) return Results.Unauthorized();
+        if (s.SocietyId is null || !await CanOpenAsync(s, auth, consumerId, ct)) return Results.Forbid();
+        await using var cn = new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd = new NpgsqlCommand("select society_manager.sp_customer_bill_view(@society,@consumer,@bill)", cn);
+        cmd.Parameters.AddWithValue("society", s.SocietyId.Value);
+        cmd.Parameters.AddWithValue("consumer", consumerId);
+        cmd.Parameters.AddWithValue("bill", billId);
+        var value = await cmd.ExecuteScalarAsync(ct);
+        if (value is null || value is DBNull) return Results.NotFound(new { message = "Bill not found for the selected consumer." });
+        return Results.Text(value.ToString()!, "application/json");
+    }
+
+    static async Task<IResult> GetReceipt(long consumerId, long paymentId, AuthService auth, HttpContext http, CancellationToken ct)
+    {
+        var s = await AuthGuard.Get(http, auth, ct);
+        if (s is null) return Results.Unauthorized();
+        if (s.SocietyId is null || !await CanOpenAsync(s, auth, consumerId, ct)) return Results.Forbid();
+        await using var cn = new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd = new NpgsqlCommand("select society_manager.sp_customer_receipt_view(@society,@consumer,@payment)", cn);
+        cmd.Parameters.AddWithValue("society", s.SocietyId.Value);
+        cmd.Parameters.AddWithValue("consumer", consumerId);
+        cmd.Parameters.AddWithValue("payment", paymentId);
+        var value = await cmd.ExecuteScalarAsync(ct);
+        if (value is null || value is DBNull) return Results.NotFound(new { message = "Receipt not found for the selected consumer." });
         return Results.Text(value.ToString()!, "application/json");
     }
 

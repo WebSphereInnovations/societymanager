@@ -1,4 +1,4 @@
-﻿const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
+const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
 let session=null;
 const money=v=>'â‚¹'+Number(v||0).toLocaleString('en-IN',{maximumFractionDigits:2});
 async function get(url){const r=await fetch(url,{cache:'no-store'});if(r.status===401){location.href='/login';throw 0}if(!r.ok)throw new Error('Request failed');return r.json()}
@@ -11,16 +11,18 @@ const moduleViewMap={APP_DASHBOARD:'home',SA_DASHBOARD:'home',SA_SOCIETY_PROFILE
 ['SA_RATE','SA_WAIVER','SA_TAX','SA_EFFECTIVE'].forEach(x=>moduleViewMap[x]='configuration');
 ['PARK_SLOT','PARK_ASSIGN','PARK_VEHICLE','PARK_CHARGE'].forEach(x=>moduleViewMap[x]='parking');
 ['DOC_CUSTOMER','DOC_SOCIETY','DOC_TEMPLATE','NOTICE_CREATE','NOTICE_SMS','NOTICE_PUSH','RPT_BILLING','RPT_COLLECTION','RPT_OUTSTANDING','RPT_CONSUMER','RPT_AUDIT','AUDIT_LOG','AUDIT_LOGIN','AUDIT_APPROVAL','SUPER_AUDIT'].forEach(x=>moduleViewMap[x]='module-workspace');
-async function buildDatabaseMenu(){
+const menuIconMap={APP_DASHBOARD:'⌂',ADMINISTRATOR:'⚙',BILLING:'▣',COLLECTION:'₹',CRM:'◉',SECURITY:'♙',PARKING:'▤',REPORTS:'▥',DOCUMENTS:'▤',NOTICES:'◈',CONFIGURATION:'⚙',MIGRATION:'↥',AUDIT:'◷'};
+function menuIcon(code){const c=String(code||'');if(c==='APP_DASHBOARD')return menuIconMap.APP_DASHBOARD;if(c.startsWith('BILL_')||c.startsWith('SA_BILL'))return menuIconMap.BILLING;if(c.startsWith('COL_')||c.includes('COLLECTION'))return menuIconMap.COLLECTION;if(c.startsWith('CRM_')||c.includes('CUSTOMER'))return menuIconMap.CRM;if(c.startsWith('SEC_')||c.includes('VISITOR'))return menuIconMap.SECURITY;if(c.startsWith('PARK_')||c.includes('PARK'))return menuIconMap.PARKING;if(c.startsWith('RPT_')||c.includes('REPORT'))return menuIconMap.REPORTS;if(c.startsWith('DOC_')||c.includes('DOCUMENT'))return menuIconMap.DOCUMENTS;if(c.startsWith('NOTICE_')||c.includes('NOTICE'))return menuIconMap.NOTICES;if(c.includes('RATE')||c.includes('TAX')||c.includes('DPC')||c.includes('REBATE')||c.includes('CONFIG'))return menuIconMap.CONFIGURATION;if(c.includes('MIGRATION'))return menuIconMap.MIGRATION;if(c.includes('AUDIT'))return menuIconMap.AUDIT;if(c.startsWith('ADM_')||c==='ADMINISTRATOR')return menuIconMap.ADMINISTRATOR;return '•';}
+async function buildSystemMenu(){
  const rows=await get('/api/menu');const nav=$('#dbMenu');if(!nav)return;nav.innerHTML='';
  const roots=rows.filter(x=>!x.parent_module_code);
  roots.forEach(root=>{
   const children=rows.filter(x=>x.parent_module_code===root.module_code);
   if(children.length){
    const d=document.createElement('details');d.open=false;const s=document.createElement('summary');s.textContent=Society360I18n.translateText(root.module_name);d.appendChild(s);
-   children.forEach(c=>{const b=document.createElement('button');b.type='button';b.dataset.view=moduleViewMap[c.module_code]||'module-workspace';b.dataset.moduleCode=c.module_code;b.innerHTML='<span>'+Society360I18n.translateText(c.module_name)+'</span>';b.onclick=()=>{if(window.openRequestedModule?.(c.module_code))return;show(b.dataset.view,c.module_name)};d.appendChild(b)});nav.appendChild(d);
+   children.forEach(c=>{const b=document.createElement('button');b.type='button';b.dataset.view=moduleViewMap[c.module_code]||'module-workspace';b.dataset.moduleCode=c.module_code;b.innerHTML='<span class="menu-icon" aria-hidden="true">'+menuIcon(c.module_code)+'</span><span>'+Society360I18n.translateText(c.module_name)+'</span>';b.onclick=()=>{if(window.openRequestedModule?.(c.module_code))return;show(b.dataset.view,c.module_name)};d.appendChild(b)});nav.appendChild(d);
   }else{
-   const b=document.createElement('button');b.type='button';b.dataset.view=moduleViewMap[root.module_code]||'module-workspace';b.dataset.moduleCode=root.module_code;b.innerHTML='<span>'+Society360I18n.translateText(root.module_name)+'</span>';b.onclick=()=>{if(window.openRequestedModule?.(root.module_code))return;show(b.dataset.view,root.module_name)};nav.appendChild(b);
+   const b=document.createElement('button');b.type='button';b.dataset.view=moduleViewMap[root.module_code]||'module-workspace';b.dataset.moduleCode=root.module_code;b.innerHTML='<span class="menu-icon" aria-hidden="true">'+menuIcon(root.module_code)+'</span><span>'+Society360I18n.translateText(root.module_name)+'</span>';b.onclick=()=>{if(window.openRequestedModule?.(root.module_code))return;show(b.dataset.view,root.module_name)};nav.appendChild(b);
   }
  });
  nav.querySelectorAll('details').forEach(d=>{
@@ -41,7 +43,7 @@ async function init(){
   $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');$('#heading').textContent='Hello, '+session.displayName;
   wire();
   window.customerAccount360?.init();
-  await Promise.allSettled([loadDashboard(),loadSubscription(),buildDatabaseMenu()]);
+  await Promise.allSettled([loadDashboard(),loadSubscription(),buildSystemMenu()]);
  }catch(e){
   if(e?.message==='AUTH_REQUIRED') location.href='/login';
  }
@@ -84,7 +86,7 @@ function wire(){
  $('#billSearch').oninput=debounce(e=>loadBills(e.target.value));$('#complaintSearch').oninput=debounce(e=>loadComplaints(e.target.value));
  $('#visitorSearch').oninput=debounce(e=>loadVisitors(e.target.value));$('#parkingSearch').oninput=debounce(e=>loadParking(e.target.value));
  $('#language-select').value=Society360I18n.current;$('#language-select').onchange=e=>Society360I18n.setLanguage(e.target.value);
- window.addEventListener('society360-language-changed',()=>{buildDatabaseMenu();tableRegistry.forEach(x=>{try{x.table.setColumns(x.columns.map(c=>({...c,title:Society360I18n.translateText(c.title)})))}catch{}});if(activeConsumerAccount){renderConsumerInfo(activeConsumerAccount);renderConsumerTables(activeConsumerAccount)}});
+ window.addEventListener('society360-language-changed',()=>{buildSystemMenu();tableRegistry.forEach(x=>{try{x.table.setColumns(x.columns.map(c=>({...c,title:Society360I18n.translateText(c.title)})))}catch{}});window.customerAccount360?.refreshLanguage?.();});
  setInterval(()=>$('#clock').textContent=new Date().toLocaleString(Society360I18n.locale()),1000);
 }
 async function loadCustomers(q){

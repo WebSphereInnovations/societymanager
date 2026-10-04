@@ -86,7 +86,7 @@ function clearMenu(){$('#menuId').value='';$('#menuCode').value='';$('#menuCode'
 async function saveMenu(){
  const p={moduleId:Number($('#menuId').value||0),moduleCode:$('#menuCode').value.trim(),moduleName:$('#menuName').value.trim(),parentModuleCode:$('#menuParent').value||null,displayOrder:Number($('#menuOrder').value||100),visible:$('#menuVisible').value==='true',remark:$('#menuRemark').value.trim()};
  if(!p.moduleCode||!p.moduleName){alert('Menu Code and Menu Name are required.');return}
- const r=await fetch('/api/society-admin/menu-catalog/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json().catch(()=>({}));if(!r.ok){alert(d.message||'Menu could not be saved.');return}alert('Menu saved successfully.');clearMenu();loadMenus();buildDatabaseMenu();
+ const r=await fetch('/api/society-admin/menu-catalog/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json().catch(()=>({}));if(!r.ok){alert(d.message||'Menu could not be saved.');return}alert('Menu saved successfully.');clearMenu();loadMenus();buildSystemMenu();
 }
 function wireAdminTabs(){
  document.querySelectorAll('.admin-tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.admin-tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.admin-tab-panel').forEach(x=>x.classList.toggle('active',x.id==='adminTab-'+b.dataset.adminTab));if(b.dataset.adminTab==='roles')loadRoles();if(b.dataset.adminTab==='menus')loadMenus()});
@@ -96,7 +96,7 @@ function wireAdminTabs(){
  $('#newRole').onclick=clearRole;$('#clearRole').onclick=clearRole;$('#saveRole').onclick=saveRole;
  $('#newMenu').onclick=clearMenu;$('#clearMenu').onclick=clearMenu;$('#saveMenu').onclick=saveMenu;
 }
-window.buildDatabaseMenu=buildDatabaseMenu;
+window.buildSystemMenu=buildSystemMenu;
 window.openAdminSection=function(section){
  show('accounts');
  const tabs=document.querySelector('.admin-tabs');
@@ -110,5 +110,5 @@ window.openAdminSection=function(section){
  return false;
 };
 window.openCustomer=()=>{};
-wireAdminTabs();loadAccountTypes();resetAccountForm();loadAccounts();buildDatabaseMenu();
+wireAdminTabs();loadAccountTypes();resetAccountForm();loadAccounts();buildSystemMenu();
 })();
