@@ -39,6 +39,17 @@
 - Verification: `node --check wwwroot/js/i18n.js` passed; `git diff --check` passed; wwwroot replacement-character/???? scan returned 0; stale i18n cache references returned 0.
 - Browser-authenticated visual E2E could not be freshly claimed in this small batch because no authenticated browser automation session was available; the root-cause code path was verified statically and through the shared runtime implementation. Full authenticated E2E remains Batch 5.
 
+## Batch 4B — Cashier authenticated page complete
+- Status: COMPLETE
+- Page audited: `wwwroot/modules/cashier/index.html` including its inline authenticated runtime and all directly rendered customer/payment/bill/collection/report content.
+- Visible HTML audit: 69 distinct English text candidates; 0 missing central translation keys after cashier vocabulary coverage was added.
+- Form audit: search, amount, reference/cheque, remarks placeholders and Cash/UPI/Bank Transfer/Cheque options are routed through central i18n attributes/resources.
+- Dynamic audit: customer search Tabulator headers use centralized field aliases; bill/collection report headers use centralized translation lookup; selected-customer, Customer 360, payment and workspace labels use `Society360I18n.t`; language-change event rebuilds dynamic tables/content without reload.
+- Added cashier/collection vocabulary for all six active languages: en, hi, mr, gu, kn, ta.
+- Bumped shared i18n cache reference to `20261005.02` so the authenticated runtime receives the updated dictionaries/rendering code.
+- Verification: `node --check wwwroot/js/i18n.js` passed; extracted Cashier inline JavaScript `node --check` passed; visible HTML candidate audit reported 0 missing keys; Unicode/???? scan returned 0; `git diff --check` passed.
+- Full live authenticated visual switching for this route remains part of Batch 5; this batch did not claim a browser visual E2E pass.
+
 ## Batch 4 — Module/page UI audit
 - Status: IN PROGRESS
 - Completed item: wwwroot/login.html
