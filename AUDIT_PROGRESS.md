@@ -61,8 +61,21 @@
 - Added permanent project rule: MULTILINGUAL_DEVELOPMENT_RULES.md.
 - Verification: super-admin-security.js and i18n.js node syntax checks passed; page has no inline application script and uses external page JS; all 40 new security-page keys have six-language coverage with 0 missing; targeted i18n Unicode check found 0 U+FFFD and 0 ???? runs; git diff --check passed.
 - Full browser language-switch verification for this authenticated route remains part of Batch 5 because it requires a live authenticated session; this batch did not claim that visual E2E test.
-- Pending next items: wwwroot/modules/cashier/index.html, wwwroot/modules/customer/index.html, wwwroot/modules/migration/index.html, wwwroot/modules/society-admin/index.html, followed by frontend JS/CSS module chunks. Completed pages must not be repeated.
+- Completed item: wwwroot/modules/cashier/index.html (Batch 4B). Do not repeat it.
+- Pending next items: wwwroot/modules/customer/index.html, wwwroot/modules/migration/index.html, wwwroot/modules/society-admin/index.html, followed by frontend JS/CSS module chunks. Completed pages must not be repeated.
 - Existing central i18n changes remain part of the saved repository state.
+
+## Batch 4C — Customer Account authenticated UI audit
+- Status: COMPLETE
+- Menu audited: Customer Relationship Management.
+- Submenu audited: Customer Account (`wwwroot/modules/society-admin/index.html`, `data-module-code=CRM_CUSTOMER_ACCOUNT`).
+- Actual authenticated browser screen was inspected after login; search was exercised with a real consumer (`CON-00000001`) so the selected-consumer overview, account summary, dynamic status/role values and visible tabs were rendered and inspected.
+- Found and fixed the shared i18n root cause where translated DOM text could become the source for later switches. Central canonical-source recovery now recognizes values from every configured dictionary and dynamic text updates are observed through characterData mutations as well as added DOM nodes.
+- Added complete Customer Account vocabulary for all six active languages: en, hi, mr, gu, kn, ta, including search/help text, account labels, tabs, dynamic status/role labels, previous outstanding, logout and authenticated navigation labels.
+- Verified actual rendered UI switching: English -> Hindi -> English, English -> Marathi -> English, English -> Gujarati -> English, English -> Kannada -> English, and English -> Tamil -> English on the authenticated Customer Account screen. No English leftovers were found in the translated UI except intentional proper/data values such as society name, consumer name, IDs, email, dates and wing name.
+- Verified reverse switching after translated DOM re-rendering; the shared observer fix prevents stale previous-language text.
+- `node --check wwwroot/js/i18n.js` passed. HTML cache-busting references updated to `20261005.08` without content-encoding corruption. Temporary browser/audit files removed.
+- Saved state is ready to continue from `wwwroot/modules/customer/index.html`; do not repeat Customer Account unless regression testing requires it.
 
 ## Batch 5 — Full regression / authenticated E2E
 - Status: PENDING
