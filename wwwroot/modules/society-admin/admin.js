@@ -51,7 +51,7 @@ async function init(){
 async function loadSubscription(){
  try{
   const x=await get('/api/subscription/current');
-  $('#subscriptionText').textContent=x.planName+' Â· ₹'+Number(x.amount).toLocaleString('en-IN')+' Â· '+x.paymentStatus+' Â· '+x.daysRemaining+' days remaining';
+  $('#subscriptionText').textContent=x.planName+' · ₹'+Number(x.amount).toLocaleString('en-IN')+' · '+x.paymentStatus+' · '+x.daysRemaining+' days remaining';
   $('#recordSubscriptionPayment').disabled=x.paymentStatus==='Paid';
   $('#recordSubscriptionPayment').dataset.subscriptionId=x.subscriptionId;
  }catch(e){$('#subscriptionText').textContent='No active subscription found.';$('#recordSubscriptionPayment').disabled=true}

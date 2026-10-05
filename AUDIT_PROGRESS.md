@@ -11,7 +11,7 @@
 
 ## Batch 2 — Tenant isolation / API security
 - Status: COMPLETE
-- Society selection is membership-checked by `fn_set_session_society`.
+- Society selection is membership-checked by fn_set_session_society.
 - Society-scoped APIs derive the active society from the authenticated session.
 - Customer/account/document/payment/security object-ID APIs pass the session society into DB routines.
 - Cross-society read test: customer 1 from society 1 returned no account when queried through society 9.
@@ -24,11 +24,17 @@
 - Raw PostgreSQL error text removed from user-facing API responses; server-side logging remains where needed.
 - Central six-language API validation/error translations added.
 - Global mobile/email/required-field JSON validation remains enforced server-side.
-- Unicode/replacement-character scan of `wwwroot`: 0 U+FFFD and 0 `????` runs.
 - Build: 0 warnings, 0 errors.
+- Commit: dc0f008
 
 ## Batch 4 — Module/page UI audit
 - Status: IN PROGRESS
+- 4A Administrator + Unicode: COMPLETE
+  - Account/role/menu UI vocabulary added to centralized localization.
+  - Legacy mojibake fixed in admin subscription and requested workflows.
+  - Recovered clean Unicode i18n baseline; six active languages and zero missing keys/question-mark corruption.
+- 4B Cashier / Customer / Security / Support: IN PROGRESS
+- 4C Dynamic DB statuses, roles, permissions and workflow values: PENDING
 
 ## Batch 5 — Full regression / authenticated E2E
 - Status: PENDING
