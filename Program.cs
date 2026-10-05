@@ -326,10 +326,10 @@ app.MapPost("/api/auth/change-login", async (ChangeLoginRequest request, AuthSer
     var session=await AuthGuard.Get(http,auth,ct);
     if (session is null) return Results.Unauthorized();
     if (string.IsNullOrWhiteSpace(request.CurrentPassword) || string.IsNullOrWhiteSpace(request.NewLogin))
-        return Results.BadRequest(new { message="Login name and current password are required." });
+        return Results.BadRequest(new { code="loginNameRequired", message="Login name and current password are required." });
     if (!await auth.ChangeLoginNameAsync(session.UserId,request.CurrentPassword,request.NewLogin.Trim(),ct))
-        return Results.BadRequest(new { message="Login name change failed. It may already exist or current password is incorrect." });
-    return Results.Ok(new { message="Login name changed successfully." });
+        return Results.BadRequest(new { code="loginNameChangeFailed", message="Login name change failed. It may already exist or current password is incorrect." });
+    return Results.Ok(new { code="loginNameChanged", message="Login name changed successfully." });
 });
 
 app.MapPost("/api/auth/change-password", async (ChangePasswordRequest request, AuthService auth, HttpContext http, CancellationToken ct) =>{
@@ -337,10 +337,10 @@ app.MapPost("/api/auth/change-password", async (ChangePasswordRequest request, A
     if (session is null) return Results.Unauthorized();
     if (string.IsNullOrWhiteSpace(request.CurrentPassword) || string.IsNullOrWhiteSpace(request.NewPassword) ||
         request.NewPassword.Length < 10)
-        return Results.BadRequest(new { message="New password must contain at least 10 characters." });
+        return Results.BadRequest(new { code="passwordMinimum", message="New password must contain at least 10 characters." });
     if (!await auth.ChangePasswordAsync(session.UserId,request.CurrentPassword,request.NewPassword,ct))
-        return Results.BadRequest(new { message="Current password is incorrect." });
-    return Results.Ok(new { message="Password changed successfully." });
+        return Results.BadRequest(new { code="currentPasswordIncorrect", message="Current password is incorrect." });
+    return Results.Ok(new { code="passwordChanged", message="Password changed successfully." });
 });
 
 app.MapPost("/api/auth/logout", async (AuthService auth, HttpContext http, CancellationToken ct) =>
@@ -368,7 +368,7 @@ app.MapPost("/api/security/unprotect-connection", async (ConnectionRequest reque
     var session=await AuthGuard.Get(http,auth,ct);
     if (session is null || session.RoleCode!="SUPER_ADMIN") return Results.Forbid();
     try { return Results.Ok(new { value=protector.Unprotect(request.Value) }); }
-    catch { return Results.BadRequest(new { message="Encrypted value is invalid or was created by another key ring." }); }
+    catch { return Results.BadRequest(new { code="invalidEncryptedValue", message="Encrypted value is invalid or was created by another key ring." }); }
 });
 
 app.MapGet("/api/societies", async (SocietyDb db, AuthService auth, HttpContext http, CancellationToken ct) =>

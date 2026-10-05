@@ -11,7 +11,7 @@
 
 ## Batch 2 — Tenant isolation / API security
 - Status: COMPLETE
-- Society selection is membership-checked by `fn_set_session_society`.
+- Society selection is membership-checked by fn_set_session_society.
 - Society-scoped APIs derive the active society from the authenticated session.
 - Customer/account/document/payment/security object-ID APIs pass the session society into DB routines.
 - Cross-society read test: customer 1 from society 1 returned no account when queried through society 9.
@@ -24,21 +24,24 @@
 - Raw PostgreSQL error text removed from user-facing API responses; server-side logging remains where needed.
 - Central six-language API validation/error translations added.
 - Global mobile/email/required-field JSON validation remains enforced server-side.
-- Unicode/replacement-character scan of `wwwroot`: 0 U+FFFD and 0 `????` runs.
+- Unicode/replacement-character scan of wwwroot: 0 U+FFFD and 0 ???? runs.
 - Build: 0 warnings, 0 errors.
 - Commit: dc0f008
 
 ## Batch 4 — Module/page UI audit
 - Status: IN PROGRESS
-- Completed item: `wwwroot/login.html`
-- Completed item: `wwwroot/index.html`
-- `index.html` fixes: platform/access/operations navigation labels, dashboard headings/cards, platform control/data text, dashboard title, footer text, and dynamic metric/table labels now use centralized i18n keys.
-- Added `wwwroot/js/index.js` so platform dashboard/subscription data re-renders through the central language-change event instead of an inline renderer.
-- Added/verified six-language keys for the dashboard page: 0 missing across en, hi, mr, gu, kn, ta.
-- Verification: `node --check wwwroot/js/index.js` passed; `node --check wwwroot/js/i18n.js` passed; `git diff --check` passed; targeted Unicode check found 0 U+FFFD and 0 `????` runs in i18n resources; old inline dashboard fetch renderer absent.
-- Build attempt: blocked by the currently running Society360 process holding `bin\\Debug\\net8.0\\Society360.exe`; compiler reported file-lock retry warnings rather than source errors. No server process was stopped.
-- Pending next items: `wwwroot/super-admin-security.html`, then `wwwroot/modules/cashier/index.html`, `wwwroot/modules/customer/index.html`, `wwwroot/modules/migration/index.html`, `wwwroot/modules/society-admin/index.html`, followed by frontend JS/CSS module chunks.
-- Important: the existing central `i18n.js` working tree changes are retained and must be verified before the next batch; do not repeat completed page work.
+- Completed item: wwwroot/login.html
+- Completed item: wwwroot/index.html
+- Completed item: wwwroot/super-admin-security.html
+- super-admin-security.html fixes: all headings, labels, buttons, placeholders, security text, role badge, title and dashboard link use centralized i18n keys.
+- Added wwwroot/js/super-admin-security.js; removed page-specific inline application logic and added language-change reapplication.
+- Security/auth API outcomes now expose stable translation codes for login-name change, password change and invalid encrypted-value errors; frontend translates codes centrally.
+- Added permanent project rule: MULTILINGUAL_DEVELOPMENT_RULES.md.
+- Verification: super-admin-security.js and i18n.js node syntax checks passed; page has no inline application script and uses external page JS; all 40 new security-page keys have six-language coverage with 0 missing; targeted i18n Unicode check found 0 U+FFFD and 0 ???? runs; git diff --check passed.
+- Full browser language-switch verification for this authenticated route remains part of Batch 5 because it requires a live authenticated session; this batch did not claim that visual E2E test.
+- Pending next items: wwwroot/modules/cashier/index.html, wwwroot/modules/customer/index.html, wwwroot/modules/migration/index.html, wwwroot/modules/society-admin/index.html, followed by frontend JS/CSS module chunks. Completed pages must not be repeated.
+- Existing central i18n changes remain part of the saved repository state.
 
 ## Batch 5 — Full regression / authenticated E2E
 - Status: PENDING
+- Must verify every authenticated route with English -> each supported language -> English without reload, navigation persistence, reload persistence, dynamic validation/toast/status text, and no stale text/????/undefined.
