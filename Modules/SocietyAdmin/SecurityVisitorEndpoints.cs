@@ -32,7 +32,7 @@ public static class SecurityVisitorEndpoints
     {
         var g=await Check(a,h,c,module,action);if(g is not null)return g;var s=await Session(a,h,c);
         try{await using var cn=await Open();await using var cmd=new NpgsqlCommand(sql,cn);cmd.Parameters.AddWithValue("s",s!.SocietyId!.Value);foreach(var p in args)cmd.Parameters.AddWithValue(p.Item1,p.Item1=="u"?s.UserId:p.Item2);var id=await cmd.ExecuteScalarAsync(c);return Results.Ok(new{success=true,id});}
-        catch(PostgresException e){return Results.BadRequest(new{message=e.MessageText});}
+        catch(PostgresException){return Results.BadRequest(new{message="Operation could not be completed."});}
     }
     public static void MapSecurityVisitorEndpoints(this WebApplication app)
     {

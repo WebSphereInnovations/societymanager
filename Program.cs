@@ -315,9 +315,9 @@ app.MapPost("/api/subscription/payment", async (SubscriptionPaymentRequest reque
         if(!await r.ReadAsync(ct)) return Results.BadRequest(new { message="Payment could not be recorded." });
         return Results.Ok(new { paymentId=r.GetInt64(0),subscriptionId=r.GetInt64(1),status=r.GetString(2) });
     }
-    catch(PostgresException ex)
+    catch(PostgresException)
     {
-        return Results.BadRequest(new { message=ex.MessageText });
+        return Results.BadRequest(new { message="Operation could not be completed." });
     }
 });
 

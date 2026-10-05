@@ -144,9 +144,9 @@ public static class SocietyAdminEndpoints
             await cmd.ExecuteNonQueryAsync(ct);
             return Results.Ok(new {success=true});
         }
-        catch(PostgresException ex)
+        catch(PostgresException)
         {
-            return Results.BadRequest(new {message=ex.MessageText});
+            return Results.BadRequest(new {message="Operation could not be completed."});
         }
     }
 
@@ -201,7 +201,7 @@ public static class SocietyAdminEndpoints
             cmd.Parameters.AddWithValue("description",(object?)x.Description??DBNull.Value);var rights=cmd.Parameters.Add("rights",NpgsqlDbType.Jsonb);rights.Value=JsonSerializer.Serialize(x.Rights??[]);
             cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");await cmd.ExecuteNonQueryAsync(ct);return Results.Ok(new {success=true});
         }
-        catch(PostgresException ex){return Results.BadRequest(new {message=ex.MessageText});}
+        catch(PostgresException){return Results.BadRequest(new {message="Operation could not be completed."});}
     }
 
     static async Task<IResult> MenuCatalog(AuthService auth,HttpContext http,CancellationToken ct)
@@ -225,7 +225,7 @@ public static class SocietyAdminEndpoints
             cmd.Parameters.AddWithValue("parent",(object?)x.ParentModuleCode??DBNull.Value);cmd.Parameters.AddWithValue("order",x.DisplayOrder);cmd.Parameters.AddWithValue("visible",x.Visible);
             cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");await cmd.ExecuteNonQueryAsync(ct);return Results.Ok(new {success=true});
         }
-        catch(PostgresException ex){return Results.BadRequest(new {message=ex.MessageText});}
+        catch(PostgresException){return Results.BadRequest(new {message="Operation could not be completed."});}
     }
 
     static async Task<IResult> SetMenuVisibility(AdminMenuVisibilityRequest x,AuthService auth,HttpContext http,CancellationToken ct)
@@ -238,7 +238,7 @@ public static class SocietyAdminEndpoints
             await using var cmd=new NpgsqlCommand("call society_manager.sp_admin_set_menu_visibility(@id,@visible,@by,@remark)",cn);
             cmd.Parameters.AddWithValue("id",x.ModuleId);cmd.Parameters.AddWithValue("visible",x.Visible);cmd.Parameters.AddWithValue("by",s.UserId);cmd.Parameters.AddWithValue("remark",x.Remark??"");await cmd.ExecuteNonQueryAsync(ct);return Results.Ok(new {success=true});
         }
-        catch(PostgresException ex){return Results.BadRequest(new {message=ex.MessageText});}
+        catch(PostgresException){return Results.BadRequest(new {message="Operation could not be completed."});}
     }
 
     static async Task<IResult> Query(AuthService auth,HttpContext http,CancellationToken ct,string fn,string q,int columns)
