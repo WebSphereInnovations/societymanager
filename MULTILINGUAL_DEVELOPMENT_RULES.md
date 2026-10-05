@@ -22,7 +22,11 @@ Every new key must exist with a non-empty translation in all six resources.
 Statuses, workflows, roles, permissions, categories, types, notifications, validation messages, API messages, table values, empty/loading states, and other database/API-driven display values must be localized from stable codes/keys.
 
 ## 4. Language switching
-Every authenticated and unauthenticated page must respond immediately to the centralized language-change event. Do not require a page reload to apply a language change. Components that render dynamic content must re-render when the language changes.
+- `localStorage['society360-language']` and `Society360I18n.currentLanguage()` are the single active language state.
+- `Society360I18n.setLanguage()` is the only language mutation path; the shared i18n runtime owns the language-selector change handler for every page, including dynamically loaded authenticated modules.
+- Pages must not create their own language store, provider, selector handler, or reload workaround.
+- Every authenticated and unauthenticated page must respond immediately to the centralized language-change event. Do not require a page reload to apply a language change. Components that render dynamic content must re-render when the language changes.
+- DOM text rendered dynamically must retain a canonical translation source/key so switching between non-English languages cannot treat the previous translation as the new source text.
 
 Required verification for every page:
 English -> each supported language -> English, without reload, followed by one reload/persistence check.

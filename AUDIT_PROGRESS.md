@@ -28,6 +28,17 @@
 - Build: 0 warnings, 0 errors.
 - Commit: dc0f008
 
+## Batch 4A — Authenticated i18n propagation root cause
+- Status: COMPLETE
+- Reproduced the shared runtime failure path by inspecting the authenticated selector/state wiring and two authenticated module patterns (`wwwroot/modules/society-admin/index.html` + `admin.js`, and `wwwroot/modules/cashier/index.html`).
+- Root cause: the shared `i18n.js` runtime did not own the authenticated language-selector change path; only some pages wired `#language-select` themselves. This violated the single language-state rule and left modules such as Cashier without a reliable selector -> `Society360I18n.setLanguage()` path.
+- Second root cause: arbitrary DOM text used a per-node WeakMap source only. When authenticated modules replaced DOM nodes with already-translated text, the new node could treat the previous-language text as its source, preventing reliable Hindi/Marathi/Gujarati/etc. -> English reversal and cross-language switching.
+- Fixed centrally in `wwwroot/js/i18n.js`: one delegated selector handler for `#language-select` / `[data-language-selector]`, one localStorage-backed active language state, canonical source-text recovery before translating newly created/re-rendered text nodes, and no reload requirement.
+- Bumped the shared i18n cache-busting reference from `20261004.12` to `20261005.01` on all seven HTML/JS references so authenticated browsers receive the root-cause fix instead of a cached runtime.
+- Updated `MULTILINGUAL_DEVELOPMENT_RULES.md` with the single active language-state, centralized selector handler, and canonical dynamic-text source requirements.
+- Verification: `node --check wwwroot/js/i18n.js` passed; `git diff --check` passed; wwwroot replacement-character/???? scan returned 0; stale i18n cache references returned 0.
+- Browser-authenticated visual E2E could not be freshly claimed in this small batch because no authenticated browser automation session was available; the root-cause code path was verified statically and through the shared runtime implementation. Full authenticated E2E remains Batch 5.
+
 ## Batch 4 — Module/page UI audit
 - Status: IN PROGRESS
 - Completed item: wwwroot/login.html
