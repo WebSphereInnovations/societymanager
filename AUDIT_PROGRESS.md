@@ -106,3 +106,15 @@
 - Fresh unauthenticated HTTP checks after restart: / -> 302 /login.html; /login.html -> 200; /modules/migration/index.html -> 302 /login.html; /super-admin-security.html -> 302 /login.html; /api/support/faq -> 401; /api/health -> online.
 - Full credentialed browser visual E2E and remote Mumbai reachability remain pending because the available remote desktop environment does not provide reliable interactive browser control. Do not mark Batch 5 overall complete until those are actually tested.
 - Next work must begin by reading this progress file and running the mandatory login/auth/i18n regression gate before any new feature/page audit.
+
+## Batch 5C — Production deployment + safe temporary remote access
+- Status: DEPLOYED / LOGIN CREDENTIAL TEST PENDING
+- Built the existing .NET 8 application with the existing project configuration using `dotnet publish -c Release --no-restore` and deployed the published output outside the Git working tree.
+- Restarted the published application with `ASPNETCORE_ENVIRONMENT=Production`, the existing `SOCIETY360_DB_CONNECTION`, and `ASPNETCORE_URLS=http://0.0.0.0:5180`.
+- Runtime logs confirm Production environment and Kestrel listening on `0.0.0.0:5180`; no startup exception was emitted.
+- Local checks after final restart: root -> 302 `/login.html`; login page -> 200; `/api/health` -> online/databaseConfigured=true; unauthenticated protected module -> 302 `/login.html`; unauthenticated `/api/auth/me` -> 401; login endpoint without credentials -> 400 validation response.
+- Existing firewall rule `Society360 LAN 5180` is enabled for inbound TCP 5180 on all profiles; no firewall weakening or database exposure was introduced.
+- Safe temporary remote access configured with Cloudflare Quick Tunnel forwarding only to local `127.0.0.1:5180`; application authentication and protected routes remain enforced. Current temporary URL: `https://john-flow-universal-liberty.trycloudflare.com`.
+- Remote public checks from the server: root -> 302 `/login.html`; login page -> 200; protected module -> 302 `/login.html`; protected FAQ -> 401. The public endpoint is reachable externally, but the Quick Tunnel is temporary and requires the laptop/server and tunnel process to remain running.
+- Friend's actual Mumbai laptop is not available to the remote-control environment, and no interactive browser control is available here; therefore credentialed login/dashboard/logout from that second physical laptop has NOT been falsely marked as tested.
+- Full credentialed post-restart login/dashboard/logout acceptance remains pending until an interactive browser/user-side credential test can be performed.
