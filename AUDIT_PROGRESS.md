@@ -118,3 +118,15 @@
 - Remote public checks from the server: root -> 302 `/login.html`; login page -> 200; protected module -> 302 `/login.html`; protected FAQ -> 401. The public endpoint is reachable externally, but the Quick Tunnel is temporary and requires the laptop/server and tunnel process to remain running.
 - Friend's actual Mumbai laptop is not available to the remote-control environment, and no interactive browser control is available here; therefore credentialed login/dashboard/logout from that second physical laptop has NOT been falsely marked as tested.
 - Full credentialed post-restart login/dashboard/logout acceptance remains pending until an interactive browser/user-side credential test can be performed.
+
+
+## Batch 5D — Exact LAN endpoint / permanent binding fix
+- Root cause of intermittent "No response": the application process was not consistently holding the 5180 listener after manual/restarted process transitions. The project startup script relied on a transient `ASPNETCORE_URLS` environment override rather than storing the listener in application configuration, and there was no persistent Windows startup task.
+- Permanent configuration fixed in `appsettings.json`: Kestrel HTTP endpoint is now `http://0.0.0.0:5180`, preserving the required application URL `http://192.168.1.8:5180/` while allowing authorized LAN devices to connect.
+- `scripts/Start-Society360.ps1` now uses Production environment and Release/no-build startup; host/port are no longer a command-line-only setting and are sourced from Kestrel application configuration.
+- Build: Release build completed with 0 warnings and 0 errors.
+- Startup persistence: Windows Scheduled Task `Society360 Application` created for the current Windows user at logon with automatic restart-on-failure settings. No database exposure was added.
+- After restarting through the persistent startup path, the exact endpoint `http://192.168.1.8:5180/` returned HTTP 302 to `/login.html`; `/login.html` returned HTTP 200; protected module returned HTTP 302 to login. Kestrel listener was observed on `0.0.0.0:5180` during final runtime verification.
+- Existing inbound firewall rule `Society360 LAN 5180` remains enabled and limited to TCP 5180; firewall was not disabled.
+- All Cloudflare Tunnel processes from the earlier temporary remote-access test were stopped. No alternate application URL is being used or advertised; the required endpoint remains only `http://192.168.1.8:5180/`.
+- A second physical authorized LAN device and an interactive browser credential login cannot be tested by the current remote-control environment. Therefore cross-device exact-URL and post-restart credentialed dashboard/logout acceptance remain explicitly pending and are not claimed as complete.
