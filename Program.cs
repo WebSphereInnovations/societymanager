@@ -81,24 +81,43 @@ static string GetClientIp(HttpContext context)
 app.Use(async (context,next) =>
 {
     var path=context.Request.Path.Value ?? "";
-    var protectedArea = path.StartsWith("/modules/society-admin",StringComparison.OrdinalIgnoreCase)
-        || path.StartsWith("/modules/cashier",StringComparison.OrdinalIgnoreCase)
-        || path.StartsWith("/modules/customer",StringComparison.OrdinalIgnoreCase)
-        || path.Equals("/",StringComparison.OrdinalIgnoreCase)
-        || path.Equals("/index.html",StringComparison.OrdinalIgnoreCase);
+    var protectedArea = path.Equals("/",StringComparison.OrdinalIgnoreCase)
+        || path.Equals("/index.html",StringComparison.OrdinalIgnoreCase)
+        || path.StartsWith("/modules/",StringComparison.OrdinalIgnoreCase)
+        || path.Equals("/super-admin-security.html",StringComparison.OrdinalIgnoreCase);
     if(!protectedArea){await next();return;}
+
     var auth=context.RequestServices.GetRequiredService<AuthService>();
     var session=await AuthGuard.Get(context,auth,context.RequestAborted);
     if(session is null){context.Response.Redirect("/login.html");return;}
+
     context.Response.Headers.CacheControl="no-store, no-cache, must-revalidate, max-age=0";
     context.Response.Headers.Pragma="no-cache";
+
     var target=(path.Equals("/",StringComparison.OrdinalIgnoreCase) || path.Equals("/index.html",StringComparison.OrdinalIgnoreCase)) ? "/"
         : path.StartsWith("/modules/society-admin",StringComparison.OrdinalIgnoreCase) ? "/modules/society-admin/index.html"
         : path.StartsWith("/modules/cashier",StringComparison.OrdinalIgnoreCase) ? "/modules/cashier/index.html"
-        : "/modules/customer/index.html";
-    var allowed=(target=="/" && session.RoleCode=="SUPER_ADMIN")
-        || (target.Contains("society-admin") && session.RoleCode!="RESIDENT");
-    if(!allowed){var route=await auth.GetLoginRouteAsync(session.UserId,context.RequestAborted);context.Response.Redirect(route?.RoutePath ?? "/login.html");return;}
+        : path.StartsWith("/modules/customer",StringComparison.OrdinalIgnoreCase) ? "/modules/customer/index.html"
+        : path.StartsWith("/modules/migration",StringComparison.OrdinalIgnoreCase) ? "/modules/migration/index.html"
+        : path.Equals("/super-admin-security.html",StringComparison.OrdinalIgnoreCase) ? "/super-admin-security.html"
+        : "";
+
+    var allowed=target switch
+    {
+        "/" => session.RoleCode=="SUPER_ADMIN",
+        "/modules/society-admin/index.html" => session.RoleCode!="RESIDENT" && session.RoleCode!="GUARD",
+        "/modules/cashier/index.html" => session.RoleCode=="CASHIER" || session.RoleCode=="SOCIETY_ADMIN" || session.RoleCode=="SUPER_ADMIN",
+        "/modules/customer/index.html" => session.RoleCode=="RESIDENT",
+        "/modules/migration/index.html" => session.RoleCode=="SOCIETY_ADMIN" || session.RoleCode=="SUPER_ADMIN",
+        "/super-admin-security.html" => session.RoleCode=="SUPER_ADMIN",
+        _ => false
+    };
+    if(!allowed)
+    {
+        var route=await auth.GetLoginRouteAsync(session.UserId,context.RequestAborted);
+        context.Response.Redirect(route?.RoutePath ?? "/login.html");
+        return;
+    }
     await next();
 });
 app.UseDefaultFiles();
@@ -397,7 +416,8 @@ app.MapGet("/api/security/csrf", (IAntiforgery antiforgery, HttpContext http) =>
 app.MapGet("/api/support/faq", async (string? q, string? lang, AuthService auth, HttpContext http, CancellationToken ct) =>
 {
     var session=await AuthGuard.Get(http,auth,ct);
-    var societyId=session?.SocietyId ?? 0;
+    if (session is null) return Results.Unauthorized();
+    var societyId=session.SocietyId ?? 0;
     var language=(lang ?? "en").Trim().ToLowerInvariant();
     if(language!="en" && language!="hi" && language!="mr" && language!="gu" && language!="kn" && language!="ta") language="en";
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");

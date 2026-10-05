@@ -94,3 +94,15 @@
 - Fresh-session functional auth regression using a temporary DB-created test account: login API 200 with route, auth cookie issued, `/api/auth/me` 200 with session, logout 200, subsequent `/api/auth/me` 401, protected root redirected 302 to `/login.html`; temporary account and its audit/login-status rows were cleaned up.
 - Login page translation coverage check: 32 distinct `data-i18n`/placeholder keys, missing=0 for en/hi/mr/gu/kn/ta. Active runtime language configuration remains exactly `en, hi, mr, gu, kn, ta`.
 - Existing authenticated Customer Account visual language-switch regression remains recorded in Batch 4C. The full all-route Batch 5 authenticated visual sweep is still pending; do not mark the overall localization audit complete until that sweep is performed.
+
+## Batch 5B — Server-side protected static routing + protected FAQ API
+- Status: COMPLETE
+- Expanded the existing server-side route guard so every /modules/* static application path and /super-admin-security.html is authenticated before static-file delivery.
+- Added explicit role routing for dashboard, Society Admin, Cashier, Customer/Resident, Migration and Super Admin Security pages. Unauthorized authenticated roles are redirected to their database-derived login route.
+- Closed an unauthenticated data path in /api/support/faq; it now returns 401 before database access when no valid session exists.
+- No authentication bypass, fake session, frontend-only hiding or public exposure was introduced.
+- Rebuilt after the change: 0 warnings, 0 errors.
+- Restarted the existing application configuration and verified port 5180 is listening.
+- Fresh unauthenticated HTTP checks after restart: / -> 302 /login.html; /login.html -> 200; /modules/migration/index.html -> 302 /login.html; /super-admin-security.html -> 302 /login.html; /api/support/faq -> 401; /api/health -> online.
+- Full credentialed browser visual E2E and remote Mumbai reachability remain pending because the available remote desktop environment does not provide reliable interactive browser control. Do not mark Batch 5 overall complete until those are actually tested.
+- Next work must begin by reading this progress file and running the mandatory login/auth/i18n regression gate before any new feature/page audit.
