@@ -30,11 +30,15 @@
 
 ## Batch 4 — Module/page UI audit
 - Status: IN PROGRESS
-- Current item: `wwwroot/login.html`
-- Completed in this chunk: public login/create-society UI localization gaps.
-- Changes: email/phone/address labels and placeholders, close button title, subscription heading/info, create-account button, login page title, plan duration/unit labels, plan fallback/status messages now use centralized i18n keys.
-- Verification: six-language key coverage for all new keys = 0 missing; inline login script `node --check` passed; `git diff --check` passed.
-- Pending next items: `wwwroot/index.html`, `wwwroot/super-admin-security.html`, then `wwwroot/modules/cashier/index.html`, `wwwroot/modules/customer/index.html`, `wwwroot/modules/migration/index.html`, `wwwroot/modules/society-admin/index.html`, followed by frontend JS/CSS module chunks.
+- Completed item: `wwwroot/login.html`
+- Completed item: `wwwroot/index.html`
+- `index.html` fixes: platform/access/operations navigation labels, dashboard headings/cards, platform control/data text, dashboard title, footer text, and dynamic metric/table labels now use centralized i18n keys.
+- Added `wwwroot/js/index.js` so platform dashboard/subscription data re-renders through the central language-change event instead of an inline renderer.
+- Added/verified six-language keys for the dashboard page: 0 missing across en, hi, mr, gu, kn, ta.
+- Verification: `node --check wwwroot/js/index.js` passed; `node --check wwwroot/js/i18n.js` passed; `git diff --check` passed; targeted Unicode check found 0 U+FFFD and 0 `????` runs in i18n resources; old inline dashboard fetch renderer absent.
+- Build attempt: blocked by the currently running Society360 process holding `bin\\Debug\\net8.0\\Society360.exe`; compiler reported file-lock retry warnings rather than source errors. No server process was stopped.
+- Pending next items: `wwwroot/super-admin-security.html`, then `wwwroot/modules/cashier/index.html`, `wwwroot/modules/customer/index.html`, `wwwroot/modules/migration/index.html`, `wwwroot/modules/society-admin/index.html`, followed by frontend JS/CSS module chunks.
+- Important: the existing central `i18n.js` working tree changes are retained and must be verified before the next batch; do not repeat completed page work.
 
 ## Batch 5 — Full regression / authenticated E2E
 - Status: PENDING
