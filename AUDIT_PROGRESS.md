@@ -80,3 +80,17 @@
 ## Batch 5 — Full regression / authenticated E2E
 - Status: PENDING
 - Must verify every authenticated route with English -> each supported language -> English without reload, navigation persistence, reload persistence, dynamic validation/toast/status text, and no stale text/????/undefined.
+
+
+## Batch 5A — Login/authentication blocker + regression baseline
+- Status: COMPLETE
+- Actual blocker diagnosed: the tracked `scripts/Start-Society360.ps1` had been corrupted by Desktop Commander wrapper output (`[Reading ...]` / `[executed on device ...]`). The script therefore failed PowerShell parsing and prevented clean application restarts. It was restored to a clean launcher that loads the user DB connection string and starts Kestrel on `http://0.0.0.0:5180`.
+- Runtime security was preserved: cookie authentication, server-side session validation, protected-route redirect, role-based routing and SocietyId/session checks were not bypassed or disabled.
+- Shared i18n runtime was hardened against its own MutationObserver reprocessing by adding an apply guard. The guard prevents translation passes from recursively reacting to their own character-data mutations.
+- Login page was audited for missing centralized translation coverage. Added the missing placeholder/title/signup/subscription vocabulary to all six active languages and localized the remaining visible signup/plan runtime strings. Login i18n cache-busting was advanced to `20261005.09` across the existing seven HTML references.
+- Fresh clean build: 0 warnings, 0 errors.
+- Fresh server start through the repaired launcher: Kestrel listening on `0.0.0.0:5180`.
+- HTTP verification: `/login.html` returned 200 locally and through `192.168.1.8:5180`; `/api/health` returned online/databaseConfigured=true; unauthenticated `/modules/society-admin/index.html` returned 302 to `/login.html`.
+- Fresh-session functional auth regression using a temporary DB-created test account: login API 200 with route, auth cookie issued, `/api/auth/me` 200 with session, logout 200, subsequent `/api/auth/me` 401, protected root redirected 302 to `/login.html`; temporary account and its audit/login-status rows were cleaned up.
+- Login page translation coverage check: 32 distinct `data-i18n`/placeholder keys, missing=0 for en/hi/mr/gu/kn/ta. Active runtime language configuration remains exactly `en, hi, mr, gu, kn, ta`.
+- Existing authenticated Customer Account visual language-switch regression remains recorded in Batch 4C. The full all-route Batch 5 authenticated visual sweep is still pending; do not mark the overall localization audit complete until that sweep is performed.

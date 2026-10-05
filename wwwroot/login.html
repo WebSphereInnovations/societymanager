@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Society360 — Login</title>
+<title data-i18n="loginPageTitle">Society360 — Login</title>
 
 <link rel="stylesheet" href="/css/support-assistant.css"><style>
 :root{--navy:#111b3a;--violet:#735fe8;--ink:#18233f;--muted:#78839a;--line:#e6eaf2}
@@ -57,23 +57,23 @@ label{display:block;font-size:10px;font-weight:700;color:#59657c;margin:14px 0 7
     <label data-i18n="administratorName">Administrator name</label><input id="s-admin" required minlength="2" data-i18n-placeholder="fullName">
     <label data-i18n="adminLoginName">Admin login name</label><input id="s-login" required minlength="4" autocomplete="username" data-i18n-placeholder="loginName">
     <label data-i18n="password">Password</label><input id="s-password" required minlength="10" type="password" autocomplete="new-password" data-i18n-placeholder="minimumPassword">
-    <label>Email</label><input id="s-email" type="email" placeholder="admin@example.com">
-    <label>Phone</label><input id="s-phone" placeholder="+91">
-    <label>Address</label><input id="s-address" placeholder="Society address">
+    <label data-i18n="email">Email</label><input id="s-email" type="email" data-i18n-placeholder="adminEmailExample">
+    <label data-i18n="phone">Phone</label><input id="s-phone" data-i18n-placeholder="phoneExample">
+    <label data-i18n="address">Address</label><input id="s-address" data-i18n-placeholder="societyAddressExample">
     <input id="s-plan" type="hidden" value="PRO">
     <div class="signup-message" id="signup-message"></div>
-    <button class="signup-submit" type="submit">Create Society & Admin Account</button>
+    <button class="signup-submit" type="submit" data-i18n="createSocietyAdminAccount">Create Society & Admin Account</button>
    </form>
    <div>
-    <h3 style="font:800 16px Manrope;margin:0 0 12px">Choose subscription</h3>
-    <div class="plans" id="plans"><div class="plan"><b>Loading plans…</b></div></div>
-    <p style="font-size:9px;color:#8791a4;line-height:1.7;margin-top:14px">Plans are annual. Subscription is created immediately with Pending Payment status. No payment gateway is called yet.</p>
+    <h3 style="font:800 16px Manrope;margin:0 0 12px" data-i18n="chooseSubscription">Choose subscription</h3>
+    <div class="plans" id="plans"><div class="plan"><b data-i18n="loadingPlans">Loading plans…</b></div></div>
+    <p style="font-size:9px;color:#8791a4;line-height:1.7;margin-top:14px" data-i18n="annualPlanPendingText">Plans are annual. Subscription is created immediately with Pending Payment status. No payment gateway is called yet.</p>
    </div>
   </div>
  </div>
 </div>
 
-<script src="/js/i18n.js?v=20261005.08"></script>
+<script src="/js/i18n.js?v=20261005.09"></script>
 <script>
 Society360I18n.init();
 document.querySelector('#language-select').addEventListener('change',e=>Society360I18n.setLanguage(e.target.value));
@@ -98,7 +98,7 @@ async function loadPlans(){
   const res=await fetch('/api/public/subscription-plans',{cache:'no-store'});
   if(!res.ok)throw new Error();
   const plans=await res.json();
-  box.innerHTML=plans.map((p,i)=>'<div class="plan '+(i===1?'selected':'')+'" data-plan="'+p.planCode+'"><b>'+p.planName+'</b><strong>₹'+Number(p.price).toLocaleString('en-IN')+'</strong><small>'+p.durationDays+' days · up to '+(p.maxFlats||'—')+' flats · '+(p.maxUsers||'—')+' users</small><ul>'+Object.keys(p.features||{}).slice(0,5).map(x=>'<li>'+Society360I18n.translateText(x.replaceAll('_',' '))+'</li>').join('')+'</ul></div>').join('');
+  box.innerHTML=plans.map((p,i)=>'<div class="plan '+(i===1?'selected':'')+'" data-plan="'+p.planCode+'"><b>'+p.planName+'</b><strong>₹'+Number(p.price).toLocaleString('en-IN')+'</strong><small>'+p.durationDays+' '+Society360I18n.translateText('days')+' · '+Society360I18n.translateText('up to')+' '+(p.maxFlats||'—')+' '+Society360I18n.translateText('flats')+' · '+(p.maxUsers||'—')+' '+Society360I18n.translateText('users')+'</small><ul>'+Object.keys(p.features||{}).slice(0,5).map(x=>'<li>'+Society360I18n.translateText(x.replaceAll('_',' '))+'</li>').join('')+'</ul></div>').join('');
   document.querySelectorAll('.plan').forEach(x=>x.addEventListener('click',()=>{document.querySelectorAll('.plan').forEach(y=>y.classList.remove('selected'));x.classList.add('selected');document.querySelector('#s-plan').value=x.dataset.plan;}));
  }catch{box.innerHTML='<div class="plan"><b>'+Society360I18n.translateText('Plans unavailable')+'</b><small>'+Society360I18n.translateText('Please try again after database setup.')+'</small></div>';}
 }
