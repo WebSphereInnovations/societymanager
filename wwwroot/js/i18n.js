@@ -57,10 +57,12 @@ const en={
 };
 const tr={
  en:{...en},
+ hi:{...en},
  mr:{...en},
  gu:{...en},
  kn:{...en},
- te:{...en}
+ ta:{...en},
+ te:{}
 };
 Object.assign(tr.mr,{
  'loginTitle':'प्रत्येक सोसायटीसाठी एक सुरक्षित ठिकाण.','loginText':'सोसायट्या, रहिवासी, बिलिंग आणि कामकाज एका व्यावसायिक प्लॅटफॉर्मवर व्यवस्थापित करा.','signIn':'साइन इन करा','welcomeBack':'पुन्हा स्वागत आहे. पुढे जाण्यासाठी आपल्या खात्याची माहिती भरा.','loginName':'लॉगिन नाव','password':'पासवर्ड','secureHint':'आपला पासवर्ड सुरक्षित आहे आणि साध्या मजकुरात साठवला जात नाही.','createSociety':'नवीन सोसायटी खाते तयार करा',
@@ -288,10 +290,7 @@ Object.assign(tr.hi,{'Previous Outstanding':'पिछली बकाया र
 const fieldAliases={'full_name':'Consumer Name','customer_code':'Customer Code','phone':'Phone','email':'Email','flat_no':'Flat Number','wing':'Wing','building':'Building','area_sqft':'Area Sq.Ft.','outstanding':'Outstanding','total_billed':'Total Bill Amount','total_paid':'Paid Amount','parking_count':'Parking','vehicle_count':'Vehicles','bill_no':'Bill No','bill_month':'Month','total_amount':'Total Bill Amount','paid_amount':'Paid Amount','balance':'Balance','due_date':'Due Date','status':'Status','payment_no':'Payment No','payment_date':'Payment Date','payment_mode':'Payment Mode','reference_no':'Reference No','complaint_no':'Complaint No','category':'Category','title':'Title','priority':'Priority','created_at':'Created','visitor_name':'Visitor','visitor_type':'Type','purpose':'Purpose','entry_time':'Entry','exit_time':'Exit','slot_no':'Slot','slot_type':'Type','charge':'Charge','assigned_flat':'Flat','account_type_name':'Account Type','last_login_at':'Last Login','login_count':'Login Count','failed_login_count':'Failed Count','last_failed_at':'Last Failed'};
 let current=allowed(localStorage.getItem('society360-language')||'en');
 const sourceTextNodes=new WeakMap();
-const reverseSourceMap=new Map();
-for(const [key,val] of Object.entries(en)){if(typeof val==='string'&&val.trim())reverseSourceMap.set(val.trim(),key);}
-for(const dict of Object.values(tr)){for(const [key,val] of Object.entries(dict||{})){if(typeof val==='string'&&val.trim()&&!reverseSourceMap.has(val.trim()))reverseSourceMap.set(val.trim(),key);}}
-function canonicalSourceText(value){const s=String(value??'').trim();if(!s)return s;if(en[s]!==undefined)return s;return reverseSourceMap.get(s)||s;}
+function canonicalSourceText(value){const s=String(value??'').trim();if(!s)return s;if(en[s]!==undefined)return s;for(const dict of Object.values(tr)){for(const [key,val] of Object.entries(dict||{})){if(typeof val==='string'&&val.trim()===s)return key;}}for(const [key,val] of Object.entries(en)){if(typeof val==='string'&&val.trim()===s)return key;}return s;}
 function translateText(key){if(key==null)return '';const s=String(key);const base=fieldAliases[s]||s;const dict=tr[current]||{};if(dict[base]!==undefined)return dict[base];if(en[base]!==undefined&&current==='en')return en[base];if(s.startsWith('Hello, '))return (dict['Hello']||'Hello')+', '+s.slice(7);if(s.startsWith('Edit Role: '))return (dict['Edit Role: ']||'Edit Role: ')+s.slice(11);if(s.startsWith('Payment accepted. Transaction ID '))return (dict['Payment accepted. Transaction ID ']||'Payment accepted. Transaction ID ')+s.slice(36);if(s.startsWith('Record payment of ₹'))return (dict['Record payment of ₹']||'Record payment of ₹')+s.slice(19);return en[base]||base;}
 function shouldSkip(el){return !el||['SCRIPT','STYLE','NOSCRIPT','OPTION','TEXTAREA'].includes(el.tagName)||el.closest('[data-i18n-ignore]');}
 function translateNodeTree(root){if(!root)return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];let n;while((n=walker.nextNode())){const p=n.parentElement;if(shouldSkip(p))continue;const raw=n.nodeValue||'';const s=raw.trim();if(!s)continue;const detected=canonicalSourceText(s);const source=detected!==s||!sourceTextNodes.has(n)?detected:sourceTextNodes.get(n);if(!sourceTextNodes.has(n)||detected!==s)sourceTextNodes.set(n,source);const translated=translateText(source);if(translated!==source)nodes.push([n,raw,s,translated]);}nodes.forEach(([node,raw,s,t])=>node.nodeValue=raw.replace(s,t));}
