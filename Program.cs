@@ -14,6 +14,7 @@ using Society360.Modules.SocietyAdmin;
 using Society360.Modules.Customer;
 using Society360.Modules.CustomerAccount;
 using Society360.Modules.Cashier;
+using Society360.Modules.Billing;
 using Society360.Modules.Platform;
 using Society360.Security;
 
@@ -129,6 +130,7 @@ app.MapCustomerEndpoints();
 app.MapCustomerAccountEndpoints();
 app.MapCashierEndpoints();
 app.MapPaymentEndpoints();
+app.MapBillingEndpoints();
 app.MapPlatformEndpoints();
 
 app.MapGet("/api/health", (SocietyDb db) => Results.Ok(new

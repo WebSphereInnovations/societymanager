@@ -286,7 +286,90 @@ kn:{'loginPageTitle':'ಸೊಸೈಟಿ360 — ಲಾಗಿನ್','exampleSoci
 ta:{'loginPageTitle':'சொசைட்டி360 — உள்நுழைவு','exampleSociety':'எடுத்துக்காட்டு சங்கம்','email':'மின்னஞ்சல்','phone':'தொலைபேசி','address':'முகவரி','adminEmailExample':'admin@example.com','phoneExample':'+91','societyAddressExample':'சங்க முகவரி','createSocietyAdminAccount':'சங்கம் மற்றும் நிர்வாகி கணக்கை உருவாக்கவும்','chooseSubscription':'சந்தாவைத் தேர்ந்தெடுக்கவும்','loadingPlans':'திட்டங்கள் ஏற்றப்படுகின்றன…','annualPlanPendingText':'திட்டங்கள் ஆண்டுதோறும் வழங்கப்படுகின்றன. சந்தா உடனடியாக உருவாக்கப்பட்டு, கட்டண நிலை நிலுவையில் வைக்கப்படும். தற்போது எந்த கட்டண நுழைவாயிலும் அழைக்கப்படவில்லை.','days':'நாட்கள்','up to':'வரை','flats':'பிளாட்கள்','users':'பயனர்கள்'}
 };
 Object.keys(loginTranslations).forEach(code=>Object.assign(tr[code],loginTranslations[code]));
-Object.assign(tr.hi,{'Previous Outstanding':'पिछली बकाया राशि','Logout':'लॉग आउट'});Object.assign(tr.mr,{'Previous Outstanding':'मागील थकबाकी','Logout':'लॉगआउट'});Object.assign(tr.gu,{'Previous Outstanding':'પાછલી બાકી','Logout':'લૉગઆઉટ'});Object.assign(tr.kn,{'Previous Outstanding':'ಹಿಂದಿನ ಬಾಕಿ','Logout':'ಲಾಗ್‌ಔಟ್'});Object.assign(tr.ta,{'Previous Outstanding':'முந்தைய நிலுவை','Logout':'வெளியேறு'});
+Object.assign(tr.hi,{'Previous Outstanding':'पिछली बकाया राशि','Logout':'लॉग आउट'});
+Object.assign(tr.mr,{'Previous Outstanding':'मागील थकबाकी','Logout':'लॉगआउट'});
+Object.assign(tr.gu,{'Previous Outstanding':'પાછલી બાકી','Logout':'લૉગઆઉટ'});
+Object.assign(tr.kn,{'Previous Outstanding':'ಹಿಂದಿನ ಬಾಕಿ','Logout':'ಲಾಗ್‌ಔಟ್'});
+Object.assign(tr.ta,{'Previous Outstanding':'முந்தைய நிலுவை','Logout':'வெளியேறு'});
+
+const billingTranslations={
+'Billing':{'hi':'बिलिंग','mr':'बिलिंग','gu':'બિલિંગ','kn':'ಬಿಲ್ಲಿಂಗ್','ta':'பில்லிங்'},
+'Billing Configuration':{'hi':'बिलिंग कॉन्फ़िगरेशन','mr':'बिलिंग कॉन्फिगरेशन','gu':'બિલિંગ ગોઠવણી','kn':'ಬಿಲ್ಲಿಂಗ್ ಸಂರಚನೆ','ta':'பில்லிங் உள்ளமைவு'},
+'Billing Process':{'hi':'बिलिंग प्रक्रिया','mr':'बिलिंग प्रक्रिया','gu':'બિલિંગ પ્રક્રિયા','kn':'ಬಿಲ್ಲಿಂಗ್ ಪ್ರಕ್ರಿಯೆ','ta':'பில்லிங் செயல்முறை'},
+'Billing Frequency':{'hi':'बिलिंग आवृत्ति','mr':'बिलिंग वारंवारता','gu':'બિલિંગ આવર્તન','kn':'ಬಿಲ್ಲಿಂಗ್ ಅವಧಿ','ta':'பில்லிங் இடைவெளி'},
+'Monthly':{'hi':'मासिक','mr':'मासिक','gu':'માસિક','kn':'ಮಾಸಿಕ','ta':'மாதாந்திர'},
+'Bi-monthly':{'hi':'द्विमासिक','mr':'द्विमासिक','gu':'દ્વિમાસિક','kn':'ದ್ವೈಮಾಸಿಕ','ta':'இருமாதத்திற்கு ஒருமுறை'},
+'Every 3 Months':{'hi':'हर 3 महीने','mr':'दर 3 महिने','gu':'દર 3 મહિને','kn':'ಪ್ರತಿ 3 ತಿಂಗಳು','ta':'ஒவ்வொரு 3 மாதமும்'},
+'Every 6 Months':{'hi':'हर 6 महीने','mr':'दर 6 महिने','gu':'દર 6 મહિને','kn':'ಪ್ರತಿ 6 ತಿಂಗಳು','ta':'ஒவ்வொரு 6 மாதமும்'},
+'DPC Applicable':{'hi':'DPC लागू','mr':'DPC लागू','gu':'DPC લાગુ','kn':'DPC ಅನ್ವಯ','ta':'DPC பொருந்தும்'},
+'Yes':{'hi':'हाँ','mr':'होय','gu':'હા','kn':'ಹೌದು','ta':'ஆம்'},
+'No':{'hi':'नहीं','mr':'नाही','gu':'ના','kn':'ಇಲ್ಲ','ta':'இல்லை'},
+'DPC Apply On':{'hi':'DPC लागू करने का आधार','mr':'DPC लागू करण्याचा आधार','gu':'DPC લાગુ કરવાનો આધાર','kn':'DPC ಅನ್ವಯಿಸುವ ಆಧಾರ','ta':'DPC பொருந்தும் அடிப்படை'},
+'Arrear only':{'hi':'केवल बकाया','mr':'फक्त थकबाकी','gu':'ફક્ત બાકી','kn':'ಬಾಕಿಗೆ ಮಾತ್ರ','ta':'நிலுவைக்கு மட்டும்'},
+'Arrear + Previous Interest/DPC Arrear':{'hi':'बकाया + पिछला ब्याज/DPC बकाया','mr':'थकबाकी + मागील व्याज/DPC थकबाकी','gu':'બાકી + અગાઉનું વ્યાજ/DPC બાકી','kn':'ಬಾಕಿ + ಹಿಂದಿನ ಬಡ್ಡಿ/DPC ಬಾಕಿ','ta':'நிலுவை + முந்தைய வட்டி/DPC நிலுவை'},
+'DPC Rate':{'hi':'DPC दर','mr':'DPC दर','gu':'DPC દર','kn':'DPC ದರ','ta':'DPC விகிதம்'},
+'Effective From':{'hi':'प्रभावी दिनांक से','mr':'प्रभावी दिनांक','gu':'અમલ તારીખ','kn':'ಜಾರಿಗೆ ಬರುವ ದಿನಾಂಕ','ta':'அமல்படும் தேதி'},
+'Effective To':{'hi':'प्रभावी दिनांक तक','mr':'प्रभावी दिनांकापर्यंत','gu':'અમલ તારીખ સુધી','kn':'ಜಾರಿಗೆ ಕೊನೆ ದಿನಾಂಕ','ta':'அமல்படும் முடிவு தேதி'},
+'Modify Remark':{'hi':'संशोधन टिप्पणी','mr':'बदल टिप्पणी','gu':'ફેરફાર નોંધ','kn':'ಬದಲಾವಣೆ ಟಿಪ್ಪಣಿ','ta':'மாற்றக் குறிப்பு'},
+'Save Configuration':{'hi':'कॉन्फ़िगरेशन सहेजें','mr':'कॉन्फिगरेशन जतन करा','gu':'ગોઠવણી સાચવો','kn':'ಸಂರಚನೆಯನ್ನು ಉಳಿಸಿ','ta':'உள்ளமைவைச் சேமிக்கவும்'},
+'Configuration History':{'hi':'कॉन्फ़िगरेशन इतिहास','mr':'कॉन्फिगरेशन इतिहास','gu':'ગોઠવણી ઇતિહાસ','kn':'ಸಂರಚನೆ ಇತಿಹಾಸ','ta':'உள்ளமைவு வரலாறு'},
+'Old Value':{'hi':'पुराना मान','mr':'जुने मूल्य','gu':'જૂનું મૂલ્ય','kn':'ಹಳೆಯ ಮೌಲ್ಯ','ta':'பழைய மதிப்பு'},
+'New Value':{'hi':'नया मान','mr':'नवीन मूल्य','gu':'નવું મૂલ્ય','kn':'ಹೊಸ ಮೌಲ್ಯ','ta':'புதிய மதிப்பு'},
+'Active':{'hi':'सक्रिय','mr':'सक्रिय','gu':'સક્રિય','kn':'ಸಕ್ರಿಯ','ta':'செயலில்'},
+'Property Type':{'hi':'संपत्ति प्रकार','mr':'मालमत्ता प्रकार','gu':'મિલકત પ્રકાર','kn':'ಆಸ್ತಿ ಪ್ರಕಾರ','ta':'சொத்து வகை'},
+'Charge':{'hi':'शुल्क','mr':'शुल्क','gu':'ચાર્જ','kn':'ಶುಲ್ಕ','ta':'கட்டணம்'},
+'Charge Name':{'hi':'शुल्क नाम','mr':'शुल्क नाव','gu':'ચાર્જ નામ','kn':'ಶುಲ್ಕ ಹೆಸರು','ta':'கட்டணப் பெயர்'},
+'Rate Type':{'hi':'दर प्रकार','mr':'दर प्रकार','gu':'દર પ્રકાર','kn':'ದರ ಪ್ರಕಾರ','ta':'விகித வகை'},
+'Rate':{'hi':'दर','mr':'दर','gu':'દર','kn':'ದರ','ta':'விகிதம்'},
+'Last Payment':{'hi':'अंतिम भुगतान','mr':'शेवटचे पेमेंट','gu':'છેલ્લી ચુકવણી','kn':'ಕೊನೆಯ ಪಾವತಿ','ta':'கடைசி கட்டணம்'},
+'Last Payment Amount':{'hi':'अंतिम भुगतान राशि','mr':'शेवटच्या पेमेंटची रक्कम','gu':'છેલ્લી ચુકવણીની રકમ','kn':'ಕೊನೆಯ ಪಾವತಿ ಮೊತ್ತ','ta':'கடைசி கட்டணத் தொகை'},
+'Last Payment Date':{'hi':'अंतिम भुगतान दिनांक','mr':'शेवटच्या पेमेंटची तारीख','gu':'છેલ્લી ચુકવણી તારીખ','kn':'ಕೊನೆಯ ಪಾವತಿ ದಿನಾಂಕ','ta':'கடைசி கட்டண தேதி'},
+'Per Flat':{'hi':'प्रति फ्लैट','mr':'प्रति फ्लॅट','gu':'ફ્લેટ દીઠ','kn':'ಫ್ಲಾಟ್‌ಗೆ','ta':'ஒரு பிளாட்டிற்கு'},
+'Per Sq.Ft.':{'hi':'प्रति वर्ग फुट','mr':'प्रति चौ.फुट','gu':'ચો.ફુટ દીઠ','kn':'ಚ.ಅಡಿ‌ಗೆ','ta':'சதுர அடிக்கு'},
+'Per Parking':{'hi':'प्रति पार्किंग','mr':'प्रति पार्किंग','gu':'પાર્કિંગ દીઠ','kn':'ಪಾರ್ಕಿಂಗ್‌ಗೆ','ta':'ஒரு பார்க்கிங்கிற்கு'},
+'Fixed':{'hi':'निश्चित','mr':'निश्चित','gu':'નિશ્ચિત','kn':'ನಿಗದಿತ','ta':'நிலையான'},
+'Maintenance':{'hi':'मेंटेनेंस','mr':'देखभाल शुल्क','gu':'મેન્ટેનન્સ','kn':'ನಿರ್ವಹಣೆ','ta':'பராமரிப்பு'},
+'Sinking Fund':{'hi':'सिंकिंग फंड','mr':'सिंकिंग फंड','gu':'સિંકિંગ ફંડ','kn':'ಸಿಂಕಿಂಗ್ ಫಂಡ್','ta':'சிங்கிங் நிதி'},
+'Parking':{'hi':'पार्किंग','mr':'पार्किंग','gu':'પાર્કિંગ','kn':'ಪಾರ್ಕಿಂಗ್','ta':'வாகன நிறுத்தம்'},
+'Other Charges':{'hi':'अन्य शुल्क','mr':'इतर शुल्क','gu':'અન્ય ચાર્જ','kn':'ಇತರೆ ಶುಲ್ಕಗಳು','ta':'பிற கட்டணங்கள்'},
+'Next Billing Month':{'hi':'अगला बिलिंग महीना','mr':'पुढील बिलिंग महिना','gu':'આગામી બિલિંગ મહિનો','kn':'ಮುಂದಿನ ಬಿಲ್ಲಿಂಗ್ ತಿಂಗಳು','ta':'அடுத்த பில்லிங் மாதம்'},
+'Current Applicable Rates':{'hi':'वर्तमान लागू दर','mr':'सध्याचे लागू दर','gu':'હાલના લાગુ દર','kn':'ಪ್ರಸ್ತುತ ಅನ್ವಯಿಸುವ ದರಗಳು','ta':'தற்போதைய பொருந்தும் விகிதங்கள்'},
+'Missing Mandatory Rates':{'hi':'अनिवार्य दर उपलब्ध नहीं','mr':'अनिवार्य दर उपलब्ध नाहीत','gu':'ફરજિયાત દર ગોઠવેલ નથી','kn':'ಕಡ್ಡಾಯ ದರಗಳು ಲಭ್ಯವಿಲ್ಲ','ta':'கட்டாய விகிதங்கள் அமைக்கப்படவில்லை'},
+'Start Billing':{'hi':'बिलिंग शुरू करें','mr':'बिलिंग सुरू करा','gu':'બિલિંગ શરૂ કરો','kn':'ಬಿಲ್ಲಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ','ta':'பில்லிங்கைத் தொடங்கவும்'},
+'Billing Preview':{'hi':'बिलिंग पूर्वावलोकन','mr':'बिलिंग पूर्वदृश्य','gu':'બિલિંગ પૂર્વાવલોકન','kn':'ಬಿಲ್ಲಿಂಗ್ ಪೂರ್ವವೀಕ್ಷಣೆ','ta':'பில்லிங் முன்னோட்டம்'},
+'Finalize Bill':{'hi':'बिल अंतिम करें','mr':'बिल अंतिम करा','gu':'બિલ અંતિમ કરો','kn':'ಬಿಲ್ ಅಂತಿಮಗೊಳಿಸಿ','ta':'பில்லை இறுதிப்படுத்தவும்'},
+'Customer':{'hi':'ग्राहक','mr':'ग्राहक','gu':'ગ્રાહક','kn':'ಗ್ರಾಹಕ','ta':'வாடிக்கையாளர்'},
+'Customer Number':{'hi':'ग्राहक नंबर','mr':'ग्राहक क्रमांक','gu':'ગ્રાહક નંબર','kn':'ಗ್ರಾಹಕ ಸಂಖ್ಯೆ','ta':'வாடிக்கையாளர் எண்'},
+'Bill Month':{'hi':'बिल महीना','mr':'बिल महिना','gu':'બિલ મહિનો','kn':'ಬಿಲ್ ತಿಂಗಳು','ta':'பில் மாதம்'},
+'Total':{'hi':'कुल','mr':'एकूण','gu':'કુલ','kn':'ಒಟ್ಟು','ta':'மொத்தம்'},
+'Payment':{'hi':'भुगतान','mr':'पेमेंट','gu':'ચુકવણી','kn':'ಪಾವತಿ','ta':'கட்டணம்'},
+'Balance':{'hi':'शेष','mr':'शिल्लक','gu':'બાકી','kn':'ಬಾಕಿ','ta':'மீதம்'},
+'Status':{'hi':'स्थिति','mr':'स्थिती','gu':'સ્થિતિ','kn':'ಸ್ಥಿತಿ','ta':'நிலை'},
+'Preview':{'hi':'पूर्वावलोकन','mr':'पूर्वदृश्य','gu':'પૂર્વાવલોકન','kn':'ಪೂರ್ವವೀಕ್ಷಣೆ','ta':'முன்னோட்டம்'},
+'Confirm Finalization':{'hi':'अंतिमकरण की पुष्टि','mr':'अंतिम करण्याची पुष्टी','gu':'અંતિમકરણની પુષ્ટિ','kn':'ಅಂತಿಮಗೊಳಿಸುವ ದೃಢೀಕರಣ','ta':'இறுதிப்படுத்தலை உறுதிப்படுத்தவும்'},
+'Once this billing process is finalized, it cannot be reverted. Are you sure you want to finalize the bill?':{'hi':'एक बार यह बिलिंग प्रक्रिया अंतिम हो जाने के बाद इसे वापस नहीं किया जा सकता। क्या आप बिल को अंतिम करना चाहते हैं?','mr':'एकदा ही बिलिंग प्रक्रिया अंतिम केल्यानंतर ती पूर्ववत करता येणार नाही. बिल अंतिम करायचे आहे का?','gu':'એકવાર આ બિલિંગ પ્રક્રિયા અંતિમ થયા પછી તેને પાછી ફેરવી શકાશે નહીં. શું તમે બિલ અંતિમ કરવા માંગો છો?','kn':'ಈ ಬಿಲ್ಲಿಂಗ್ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಅಂತಿಮಗೊಳಿಸಿದ ನಂತರ ಅದನ್ನು ಹಿಂತಿರುಗಿಸಲಾಗುವುದಿಲ್ಲ. ಬಿಲ್ ಅನ್ನು ಅಂತಿಮಗೊಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?','ta':'இந்த பில்லிங் செயல்முறை இறுதிப்படுத்தப்பட்ட பிறகு அதை மாற்ற முடியாது. பில்லை இறுதிப்படுத்த விரும்புகிறீர்களா?'},
+'Billing completed successfully.':{'hi':'बिलिंग सफलतापूर्वक पूरी हुई।','mr':'बिलिंग यशस्वीपणे पूर्ण झाली.','gu':'બિલિંગ સફળતાપૂર્વક પૂર્ણ થયું.','kn':'ಬಿಲ್ಲಿಂಗ್ ಯಶಸ್ವಿಯಾಗಿ ಪೂರ್ಣಗೊಂಡಿದೆ.','ta':'பில்லிங் வெற்றிகரமாக முடிந்தது.'},
+'Billing could not be completed.':{'hi':'बिलिंग पूरी नहीं हो सकी।','mr':'बिलिंग पूर्ण करता आली नाही.','gu':'બિલિંગ પૂર્ણ થઈ શક્યું નથી.','kn':'ಬಿಲ್ಲಿಂಗ್ ಪೂರ್ಣಗೊಳಿಸಲಾಗಲಿಲ್ಲ.','ta':'பில்லிங்கை முடிக்க முடியவில்லை.'},
+'Please configure all mandatory rates before starting billing.':{'hi':'बिलिंग शुरू करने से पहले सभी अनिवार्य दर कॉन्फ़िगर करें।','mr':'बिलिंग सुरू करण्यापूर्वी सर्व अनिवार्य दर कॉन्फिगर करा.','gu':'બિલિંગ શરૂ કરતા પહેલાં બધા ફરજિયાત દર ગોઠવો.','kn':'ಬಿಲ್ಲಿಂಗ್ ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ಎಲ್ಲಾ ಕಡ್ಡಾಯ ದರಗಳನ್ನು ಸಂರಚಿಸಿ.','ta':'பில்லிங்கைத் தொடங்குவதற்கு முன் அனைத்து கட்டாய விகிதங்களையும் அமைக்கவும்.'}
+};
+Object.entries(billingTranslations).forEach(([key,vals])=>Object.entries(vals).forEach(([code,value])=>{tr[code][key]=value;}));
+const billingExtraTranslations={
+'Configure billing frequency, DPC and effective settings for this society.':{'hi':'इस सोसायटी के लिए बिलिंग आवृत्ति, DPC और प्रभावी सेटिंग कॉन्फ़िगर करें।','mr':'या सोसायटीसाठी बिलिंग वारंवारता, DPC आणि प्रभावी सेटिंग्ज कॉन्फिगर करा.','gu':'આ સોસાયટી માટે બિલિંગ આવર્તન, DPC અને અમલ સેટિંગ ગોઠવો.','kn':'ಈ ಸೊಸೈಟಿಗೆ ಬಿಲ್ಲಿಂಗ್ ಅವಧಿ, DPC ಮತ್ತು ಜಾರಿಗೆ ಬರುವ ಸಂರಚನೆಗಳನ್ನು ಹೊಂದಿಸಿ.','ta':'இந்த சங்கத்திற்கான பில்லிங் இடைவெளி, DPC மற்றும் அமல்படும் அமைப்புகளை அமைக்கவும்.'},
+'Changes are versioned and previous settings remain in history.':{'hi':'परिवर्तन संस्करण के साथ सुरक्षित हैं और पिछली सेटिंग इतिहास में रहती हैं।','mr':'बदल आवृत्तीनुसार जतन केले जातात आणि मागील सेटिंग्ज इतिहासात राहतात.','gu':'ફેરફારો આવૃત્તિ સાથે સંગ્રહિત થાય છે અને અગાઉની સેટિંગ ઇતિહાસમાં રહે છે.','kn':'ಬದಲಾವಣೆಗಳನ್ನು ಆವೃತ್ತಿಯೊಂದಿಗೆ ಉಳಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ಹಿಂದಿನ ಸಂರಚನೆ ಇತಿಹಾಸದಲ್ಲಿ ಉಳಿಯುತ್ತದೆ.','ta':'மாற்றங்கள் பதிப்புகளுடன் சேமிக்கப்படும் மற்றும் முந்தைய அமைப்புகள் வரலாற்றில் இருக்கும்.'},
+'Rate Master':{'hi':'दर मास्टर','mr':'दर मास्टर','gu':'દર માસ્ટર','kn':'ದರ ಮಾಸ್ಟರ್','ta':'விகித மாஸ்டர்'},
+'Rates are society-specific and effective-date driven.':{'hi':'दर सोसायटी-विशिष्ट हैं और प्रभावी दिनांक के अनुसार लागू होते हैं।','mr':'दर सोसायटीनुसार आहेत आणि प्रभावी दिनांकानुसार लागू होतात.','gu':'દર સોસાયટી-વિશિષ્ટ છે અને અમલ તારીખ મુજબ લાગુ થાય છે.','kn':'ದರಗಳು ಸೊಸೈಟಿ-ನಿರ್ದಿಷ್ಟವಾಗಿದ್ದು ಜಾರಿಗೆ ಬರುವ ದಿನಾಂಕದಂತೆ ಅನ್ವಯಿಸುತ್ತವೆ.','ta':'விகிதங்கள் சங்கத்திற்கே உரியவை மற்றும் அமல்படும் தேதிப்படி பயன்படுத்தப்படும்.'},
+'Save Rate':{'hi':'दर सहेजें','mr':'दर जतन करा','gu':'દર સાચવો','kn':'ದರ ಉಳಿಸಿ','ta':'விகிதத்தைச் சேமிக்கவும்'},
+'Prepare, review and finalize the next billing month from PostgreSQL.':{'hi':'PostgreSQL से अगले बिलिंग महीने की तैयारी, समीक्षा और अंतिमकरण करें।','mr':'PostgreSQL मधून पुढील बिलिंग महिन्याची तयारी, तपासणी आणि अंतिम प्रक्रिया करा.','gu':'PostgreSQLમાંથી આગામી બિલિંગ મહિનાની તૈયારી, સમીક્ષા અને અંતિમકરણ કરો.','kn':'PostgreSQL ನಿಂದ ಮುಂದಿನ ಬಿಲ್ಲಿಂಗ್ ತಿಂಗಳನ್ನು ಸಿದ್ಧಪಡಿಸಿ, ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಅಂತಿಮಗೊಳಿಸಿ.','ta':'PostgreSQL இலிருந்து அடுத்த பில்லிங் மாதத்தைத் தயாரித்து, மதிப்பாய்வு செய்து இறுதிப்படுத்தவும்.'},
+'Missing mandatory rates block billing.':{'hi':'अनिवार्य दर गायब होने पर बिलिंग रुक जाएगी।','mr':'अनिवार्य दर नसल्यास बिलिंग थांबेल.','gu':'ફરજિયાત દર ન હોય તો બિલિંગ અટકશે.','kn':'ಕಡ್ಡಾಯ ದರಗಳು ಇಲ್ಲದಿದ್ದರೆ ಬಿಲ್ಲಿಂಗ್ ನಿಲ್ಲುತ್ತದೆ.','ta':'கட்டாய விகிதங்கள் இல்லையெனில் பில்லிங் நிறுத்தப்படும்.'},
+'No billing rates are configured.':{'hi':'कोई बिलिंग दर कॉन्फ़िगर नहीं है।','mr':'कोणतेही बिलिंग दर कॉन्फिगर केलेले नाहीत.','gu':'કોઈ બિલિંગ દર ગોઠવેલ નથી.','kn':'ಯಾವುದೇ ಬಿಲ್ಲಿಂಗ್ ದರಗಳನ್ನು ಸಂರಚಿಸಲಾಗಿಲ್ಲ.','ta':'எந்த பில்லிங் விகிதங்களும் அமைக்கப்படவில்லை.'},
+'All mandatory rates are configured.':{'hi':'सभी अनिवार्य दर कॉन्फ़िगर हैं।','mr':'सर्व अनिवार्य दर कॉन्फिगर केले आहेत.','gu':'બધા ફરજિયાત દર ગોઠવેલા છે.','kn':'ಎಲ್ಲಾ ಕಡ್ಡಾಯ ದರಗಳನ್ನು ಸಂರಚಿಸಲಾಗಿದೆ.','ta':'அனைத்து கட்டாய விகிதங்களும் அமைக்கப்பட்டுள்ளன.'},
+'Billing Run':{'hi':'बिलिंग रन','mr':'बिलिंग रन','gu':'બિલિંગ રન','kn':'ಬಿಲ್ಲಿಂಗ್ ರನ್','ta':'பில்லிங் ரன்'},
+'Billing preparation completed successfully.':{'hi':'बिलिंग तैयारी सफलतापूर्वक पूरी हुई।','mr':'बिलिंग तयारी यशस्वीपणे पूर्ण झाली.','gu':'બિલિંગ તૈયારી સફળતાપૂર્વક પૂર્ણ થઈ.','kn':'ಬಿಲ್ಲಿಂಗ್ ಸಿದ್ಧತೆ ಯಶಸ್ವಿಯಾಗಿ ಪೂರ್ಣಗೊಂಡಿದೆ.','ta':'பில்லிங் தயாரிப்பு வெற்றிகரமாக முடிந்தது.'},
+'Configuration saved successfully.':{'hi':'कॉन्फ़िगरेशन सफलतापूर्वक सहेजा गया।','mr':'कॉन्फिगरेशन यशस्वीपणे जतन केले.','gu':'ગોઠવણી સફળતાપૂર્વક સાચવાઈ.','kn':'ಸಂರಚನೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.','ta':'உள்ளமைவு வெற்றிகரமாக சேமிக்கப்பட்டது.'},
+'Rate saved successfully.':{'hi':'दर सफलतापूर्वक सहेजी गई।','mr':'दर यशस्वीपणे जतन केला.','gu':'દર સફળતાપૂર્વક સાચવાયો.','kn':'ದರವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.','ta':'விகிதம் வெற்றிகரமாக சேமிக்கப்பட்டது.'},
+'Please complete the required rate fields.':{'hi':'कृपया आवश्यक दर फ़ील्ड भरें।','mr':'कृपया आवश्यक दर फील्ड भरा.','gu':'કૃપા કરીને જરૂરી દર ફીલ્ડ ભરો.','kn':'ದಯವಿಟ್ಟು ಅಗತ್ಯ ದರ ಕ್ಷೇತ್ರಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.','ta':'தேவையான விகித புலங்களை நிரப்பவும்.'}
+};
+Object.entries(billingExtraTranslations).forEach(([key,vals])=>Object.entries(vals).forEach(([code,value])=>{tr[code][key]=value;}));
 const fieldAliases={'full_name':'Consumer Name','customer_code':'Customer Code','phone':'Phone','email':'Email','flat_no':'Flat Number','wing':'Wing','building':'Building','area_sqft':'Area Sq.Ft.','outstanding':'Outstanding','total_billed':'Total Bill Amount','total_paid':'Paid Amount','parking_count':'Parking','vehicle_count':'Vehicles','bill_no':'Bill No','bill_month':'Month','total_amount':'Total Bill Amount','paid_amount':'Paid Amount','balance':'Balance','due_date':'Due Date','status':'Status','payment_no':'Payment No','payment_date':'Payment Date','payment_mode':'Payment Mode','reference_no':'Reference No','complaint_no':'Complaint No','category':'Category','title':'Title','priority':'Priority','created_at':'Created','visitor_name':'Visitor','visitor_type':'Type','purpose':'Purpose','entry_time':'Entry','exit_time':'Exit','slot_no':'Slot','slot_type':'Type','charge':'Charge','assigned_flat':'Flat','account_type_name':'Account Type','last_login_at':'Last Login','login_count':'Login Count','failed_login_count':'Failed Count','last_failed_at':'Last Failed'};
 let current=allowed(localStorage.getItem('society360-language')||'en');
 const sourceTextNodes=new WeakMap();
@@ -294,7 +377,7 @@ const reverseSourceMap=new Map();
 for(const [key,val] of Object.entries(en)){if(typeof val==='string'&&val.trim())reverseSourceMap.set(val.trim(),key);}
 for(const dict of Object.values(tr)){for(const [key,val] of Object.entries(dict||{})){if(typeof val==='string'&&val.trim()&&!reverseSourceMap.has(val.trim()))reverseSourceMap.set(val.trim(),key);}}
 function canonicalSourceText(value){const s=String(value??'').trim();if(!s)return s;if(en[s]!==undefined)return s;return reverseSourceMap.get(s)||s;}
-function translateText(key){if(key==null)return '';const s=String(key);const base=fieldAliases[s]||s;const dict=tr[current]||{};if(dict[base]!==undefined)return dict[base];if(en[base]!==undefined&&current==='en')return en[base];if(s.startsWith('Hello, '))return (dict['Hello']||'Hello')+', '+s.slice(7);if(s.startsWith('Edit Role: '))return (dict['Edit Role: ']||'Edit Role: ')+s.slice(11);if(s.startsWith('Payment accepted. Transaction ID '))return (dict['Payment accepted. Transaction ID ']||'Payment accepted. Transaction ID ')+s.slice(36);if(s.startsWith('Record payment of ₹'))return (dict['Record payment of ₹']||'Record payment of ₹')+s.slice(19);return en[base]||base;}
+function translateBillingServiceText(s){const m=s.match(/^Bill (.+) generated for (\d{6}) - Amount INR ([0-9,.]+)$/);if(!m)return null;const p={en:`Bill ${m[1]} generated for ${m[2]} - Amount ₹${m[3]}`,hi:`बिल ${m[1]} ${m[2]} के लिए बनाया गया - राशि ₹${m[3]}`,mr:`बिल ${m[1]} ${m[2]} साठी तयार केले - रक्कम ₹${m[3]}`,gu:`બિલ ${m[1]} ${m[2]} માટે બનાવાયું - રકમ ₹${m[3]}`,kn:`${m[2]}ಗಾಗಿ ಬಿಲ್ ${m[1]} ರಚಿಸಲಾಗಿದೆ - ಮೊತ್ತ ₹${m[3]}`,ta:`${m[2]}க்கான பில் ${m[1]} உருவாக்கப்பட்டது - தொகை ₹${m[3]}`};return p[current]||p.en;}\nfunction translateText(key){if(key==null)return '';const s=String(key);const billingService=translateBillingServiceText(s);if(billingService)return billingService;const base=fieldAliases[s]||s;const dict=tr[current]||{};if(dict[base]!==undefined)return dict[base];if(en[base]!==undefined&&current==='en')return en[base];if(s.startsWith('Hello, '))return (dict['Hello']||'Hello')+', '+s.slice(7);if(s.startsWith('Edit Role: '))return (dict['Edit Role: ']||'Edit Role: ')+s.slice(11);if(s.startsWith('Payment accepted. Transaction ID '))return (dict['Payment accepted. Transaction ID ']||'Payment accepted. Transaction ID ')+s.slice(36);if(s.startsWith('Record payment of ₹'))return (dict['Record payment of ₹']||'Record payment of ₹')+s.slice(19);return en[base]||base;}
 function shouldSkip(el){return !el||['SCRIPT','STYLE','NOSCRIPT','OPTION','TEXTAREA'].includes(el.tagName)||el.closest('[data-i18n-ignore]');}
 function translateNodeTree(root){if(!root)return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];let n;while((n=walker.nextNode())){const p=n.parentElement;if(shouldSkip(p))continue;const raw=n.nodeValue||'';const s=raw.trim();if(!s)continue;const detected=canonicalSourceText(s);const source=detected!==s||!sourceTextNodes.has(n)?detected:sourceTextNodes.get(n);if(!sourceTextNodes.has(n)||detected!==s)sourceTextNodes.set(n,source);const translated=translateText(source);if(translated!==source)nodes.push([n,raw,s,translated]);}nodes.forEach(([node,raw,s,t])=>node.nodeValue=raw.replace(s,t));}
 function translateAttributes(root){(root||document).querySelectorAll?.('[data-i18n],[data-i18n-placeholder],[data-i18n-title],[data-ca-i18n],[data-ca-placeholder]').forEach(el=>{const key=el.getAttribute('data-i18n')||el.getAttribute('data-ca-i18n');if(key)el.textContent=translateText(key);const p=el.getAttribute('data-i18n-placeholder')||el.getAttribute('data-ca-placeholder');if(p){if(!el.hasAttribute('data-s360-source-placeholder'))el.setAttribute('data-s360-source-placeholder',p);el.setAttribute('placeholder',translateText(el.getAttribute('data-s360-source-placeholder')));}const title=el.getAttribute('data-i18n-title');if(title){if(!el.hasAttribute('data-s360-source-title'))el.setAttribute('data-s360-source-title',title);el.setAttribute('title',translateText(el.getAttribute('data-s360-source-title')));}});}

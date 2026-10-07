@@ -7,6 +7,7 @@ function table(id,data,columns,opts={}){const el=$('#'+id);if(el._tab){el._tab.d
 function debounce(fn,ms=280){let t;return (...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
 const moduleViewMap={APP_DASHBOARD:'home',SA_DASHBOARD:'home',SA_SOCIETY_PROFILE:'configuration',SA_BUILDINGS:'flats',SA_WINGS:'flats',SA_FLATS:'flats',SA_RESIDENTS:'customers',SA_FAMILY:'customers',CRM_CUSTOMER_ACCOUNT:'customers',CRM_CUSTOMER_INTERACTION:'customers',MIS_CONSUMER_MASTER:'customers',SA_BILLING_DASH:'bills',SA_BILL_GENERATION:'bills',SA_BILL_REGISTER:'bills',SA_BILL_ADJUSTMENT:'bills',SA_REBATE:'configuration',SA_DPC:'configuration',SA_CHARGE_CONFIG:'configuration',SA_RATE_PLANS:'configuration',SA_TAX_CONFIG:'configuration',SA_COLLECTION:'collection',SA_PAYMENT_ENTRY:'collection',SA_RECEIPTS:'collection',SA_REVERSAL:'collection',SA_PARKING:'parking',SA_VEHICLES:'parking',SA_PARKING_ASSIGN:'parking',SA_COMPLAINTS:'complaints',SA_VISITORS:'visitors',SA_SECURITY:'security',SA_REPORTS:'security',SA_MIGRATION:'module-workspace',SA_AUDIT:'security',ADM_ACCOUNTS:'accounts',ADMINISTRATOR:'accounts',CASH_DASHBOARD:'home',CASH_CUSTOMER:'customers',CASH_ACCEPT_PAYMENT:'collection',CASH_RECEIPTS:'collection',CASH_ALLOCATION:'collection',CASH_REVERSAL:'collection',CASH_ADJUSTMENT:'bills',CASH_BILL_LOOKUP:'bills',NOTIFICATION_CENTER:'module-workspace'};
 ['BILL_RANGE','BILL_DUMMY_CYCLE','BILL_ERROR_CORRECTION','BILL_COMPUTATION','BILL_DOWNLOAD','BILL_REVERT','BILL_TRACKER','BILL_ADJUSTMENT','BILL_TARIFF','BILL_DUMMY','BILL_ESTIMATE'].forEach(x=>moduleViewMap[x]='bills');
+moduleViewMap.BILLING='billing-configuration';moduleViewMap.BILLING_CONFIGURATION='billing-configuration';moduleViewMap.BILLING_PROCESS='billing-process';
 ['COL_ACCEPT_PAYMENT','COL_SERVICE_PAYMENT','COL_BANK_DETAILS','COL_DISHONORED'].forEach(x=>moduleViewMap[x]='collection');
 ['SA_RATE','SA_WAIVER','SA_TAX','SA_EFFECTIVE'].forEach(x=>moduleViewMap[x]='configuration');
 ['PARK_SLOT','PARK_ASSIGN','PARK_VEHICLE','PARK_CHARGE'].forEach(x=>moduleViewMap[x]='parking');
@@ -43,6 +44,7 @@ async function init(){
   $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');$('#heading').textContent='Hello, '+session.displayName;
   wire();
   window.customerAccount360?.init();
+  window.billingModule?.init();
   await Promise.allSettled([loadDashboard(),loadSubscription(),buildSystemMenu()]);
  }catch(e){
   if(e?.message==='AUTH_REQUIRED') location.href='/login';
@@ -66,7 +68,7 @@ function show(view,label){
    $('#moduleCode').textContent=(label||view).toUpperCase();
    $('#moduleInfo').textContent='This menu item is part of the Society360 module catalog and is society-scoped. Use the linked operational workspace below for the supported workflow.';
  }
- if(view==='customers')loadCustomers('');if(view==='flats')loadFlats('');if(view==='bills')loadBills('');if(view==='collection')loadCollection();if(view==='complaints')loadComplaints('');if(view==='visitors')loadVisitors('');if(view==='parking')loadParking('');if(view==='configuration')loadConfig();if(view==='security')loadSecurity()}
+ if(view==='customers')loadCustomers('');if(view==='flats')loadFlats('');if(view==='bills')loadBills('');if(view==='billing-configuration')window.billingModule?.loadConfiguration?.();if(view==='billing-process')window.billingModule?.refreshProcess?.();if(view==='collection')loadCollection();if(view==='complaints')loadComplaints('');if(view==='visitors')loadVisitors('');if(view==='parking')loadParking('');if(view==='configuration')loadConfig();if(view==='security')loadSecurity()}
 function wire(){
  document.querySelectorAll('.side nav details').forEach(x=>{
   x.open=false;

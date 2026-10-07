@@ -1,0 +1,5 @@
+$ErrorActionPreference='Stop'
+$cs=[Environment]::GetEnvironmentVariable('SOCIETY360_DB_CONNECTION','User');$m=[regex]::Match($cs,'(?i)(?:^|;)Password=([^;]*)');$env:PGPASSWORD=$m.Groups[1].Value
+try {
+ & 'C:\Program Files\PostgreSQL\18\bin\psql.exe' -h 127.0.0.1 -p 5432 -U society_manager -d society_manager -v ON_ERROR_STOP=1 -c "BEGIN; select society_manager.sp_billing_finalize(1,1,1,true) as finalized_run; select count(*) as bills_inside_transaction from society_manager.t_bill where society_id=1 and bill_month=to_date('20260901','YYYYMMDD'); select count(*) as processed_payments_inside_transaction from society_manager.t_payment where society_id=1 and processed_billing_month='202609'; ROLLBACK; select count(*) as bills_after_rollback from society_manager.t_bill where society_id=1 and bill_month=to_date('20260901','YYYYMMDD');"
+} finally {Remove-Item Env:PGPASSWORD -ErrorAction SilentlyContinue}
