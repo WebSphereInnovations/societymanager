@@ -27,7 +27,7 @@ public static class BillingEndpoints
             await Query(a,h,c,"BILLING_CONFIGURATION","fn_billing_charge_types"));
 
         app.MapGet("/api/billing/rates", async (long? propertyTypeId,AuthService a,HttpContext h,CancellationToken c) =>
-            await Query(a,h,c,"BILLING_CONFIGURATION","fn_billing_rates",("property",propertyTypeId??(object)DBNull.Value)));
+            await Query(a,h,c,"BILLING_CONFIGURATION","fn_billing_rates",("property",propertyTypeId??(object)DBNull.Value),("asOf",DateOnly.FromDateTime(DateTime.UtcNow.Date))));
 
         app.MapGet("/api/billing/next-month", async (AuthService a,HttpContext h,CancellationToken c) =>
             await Scalar(a,h,c,"BILLING_PROCESS","select society_manager.fn_billing_get_next_month(@s)"));

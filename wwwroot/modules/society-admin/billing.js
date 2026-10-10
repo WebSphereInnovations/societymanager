@@ -45,13 +45,13 @@
 
   async function loadConfiguration() {
     const all = await Promise.all([
-      api('/api/billing/config'),
-      api('/api/billing/config/history'),
-      api('/api/billing/frequencies'),
-      api('/api/billing/dpc-options'),
-      api('/api/billing/property-types'),
-      api('/api/billing/charge-types'),
-      api('/api/billing/rates')
+      api('/api/billing/config').catch(()=>[]),
+      api('/api/billing/config/history').catch(()=>[]),
+      api('/api/billing/frequencies').catch(()=>[]),
+      api('/api/billing/dpc-options').catch(()=>[]),
+      api('/api/billing/property-types').catch(()=>[]),
+      api('/api/billing/charge-types').catch(()=>[]),
+      api('/api/billing/rates').catch(()=>[])
     ]);
     const [config,history,frequencies,dpcOptions,types,charges,rates] = all;
     propertyTypes = types || [];
