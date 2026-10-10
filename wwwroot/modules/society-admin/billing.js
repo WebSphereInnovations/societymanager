@@ -106,33 +106,38 @@
   }
 
   async function saveConfig() {
+    const dpcRateText=$('#billingDpcRate').value.trim();
     const payload={
       frequencyMonths:Number($('#billingFrequency').value),
       dpcApplicable:$('#billingDpcApplicable').value==='true',
       dpcApplyOn:$('#billingDpcApplyOn').value,
-      dpcRate:Number($('#billingDpcRate').value||0),
+      dpcRate:Number(dpcRateText||0),
       dpcCalculationType:'Percentage',
       effectiveFrom:$('#billingEffectiveFrom').value,
       effectiveTo:$('#billingEffectiveTo').value||null,
       remark:$('#billingConfigRemark').value||''
     };
+    if(!payload.frequencyMonths||!payload.dpcApplyOn||!payload.effectiveFrom||!Number.isFinite(payload.dpcRate)||payload.dpcRate<0){
+      window.Society360Toast?.warning('Please complete the required billing configuration fields.'); return;
+    }
     await api('/api/billing/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     window.Society360Toast?.success('Configuration saved successfully.');
     await loadConfiguration(); await refreshProcess();
   }
 
   async function saveRate() {
+    const rateText=$('#billingRateValue').value.trim();
     const payload={
       id:0,
       propertyTypeId:Number($('#billingPropertyType').value),
       chargeTypeId:Number($('#billingChargeType').value),
       rateType:$('#billingRateType').value,
-      rate:Number($('#billingRateValue').value||0),
+      rate:Number(rateText),
       effectiveFrom:$('#billingRateFrom').value,
       effectiveTo:$('#billingRateTo').value||null,
       remark:$('#billingRateRemark').value||''
     };
-    if(!payload.propertyTypeId||!payload.chargeTypeId||!payload.effectiveFrom||!Number.isFinite(payload.rate)||payload.rate<0){
+    if(!payload.propertyTypeId||!payload.chargeTypeId||!payload.effectiveFrom||rateText===''||!Number.isFinite(payload.rate)||payload.rate<0){
       window.Society360Toast?.warning('Please complete the required rate fields.'); return;
     }
     await api('/api/billing/rate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});

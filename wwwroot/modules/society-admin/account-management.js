@@ -1,5 +1,6 @@
 (function(){
 'use strict';
+const accountLabel=x=>Society360I18n.translateText(x.module_name||x.module_code||'');
 async function loadAccountTypes(){
  const rows=await get('/api/society-admin/accounts/types');$('#accountType').innerHTML=rows.map(x=>'<option value="'+x.role_code+'">'+x.role_name+'</option>').join('');
 }

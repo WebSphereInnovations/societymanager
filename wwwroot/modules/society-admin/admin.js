@@ -62,7 +62,7 @@ async function loadDashboard(){const x=await get('/api/society-admin/dashboard')
 function show(view,label){
  const target=document.getElementById(view)?view:'module-workspace';
  $$('.view').forEach(x=>x.classList.toggle('active',x.id===target));
- $('.side nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===view));
+ $$('.side nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===view));
  if(target==='module-workspace'){
    $('#moduleTitle').textContent=label||view;
    $('#moduleCode').textContent=(label||view).toUpperCase();
@@ -79,11 +79,11 @@ function wire(){
  });
  $$('[data-view]').forEach(x=>{if(x.closest('.side nav'))return;x.addEventListener('click',()=>show(x.dataset.view,x.querySelector('span')?.textContent||x.textContent.trim()))});
  $('#logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST'});location.href='/login'};
- $('#recordSubscriptionPayment').onclick=async()=>{
+ $('#recordSubscriptionPayment')?.addEventListener('click',async()=>{
   const b=$('#recordSubscriptionPayment');const subscriptionId=Number(b.dataset.subscriptionId||0);if(!subscriptionId)return;
   const x=await get('/api/subscription/current');if(!confirm('Record payment of ₹'+Number(x.amount).toLocaleString('en-IN')+' as '+$('#paymentMode').value+'?'))return;
   const r=await fetch('/api/subscription/payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subscriptionId,amount:x.amount,paymentMode:$('#paymentMode').value,referenceNo:$('#paymentReference').value})});
-  const d=await r.json();if(!r.ok){alert(d.message||'Payment failed');return}alert('Subscription payment recorded successfully.');loadSubscription(); };
+  const d=await r.json();if(!r.ok){alert(d.message||'Payment failed');return}alert('Subscription payment recorded successfully.');loadSubscription(); });
  $('#flatSearch').oninput=debounce(e=>loadFlats(e.target.value));
  $('#billSearch').oninput=debounce(e=>loadBills(e.target.value));$('#complaintSearch').oninput=debounce(e=>loadComplaints(e.target.value));
  $('#visitorSearch').oninput=debounce(e=>loadVisitors(e.target.value));$('#parkingSearch').oninput=debounce(e=>loadParking(e.target.value));
