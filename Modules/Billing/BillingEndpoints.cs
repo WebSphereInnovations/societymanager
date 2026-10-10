@@ -1,4 +1,4 @@
-﻿using Npgsql;
+using Npgsql;
 using Society360.Data;
 using Society360.Security;
 
@@ -23,6 +23,9 @@ public static class BillingEndpoints
         app.MapGet("/api/billing/property-types", async (AuthService a,HttpContext h,CancellationToken c) =>
             await Query(a,h,c,"BILLING_CONFIGURATION","fn_billing_property_types"));
 
+        app.MapGet("/api/billing/charge-types", async (AuthService a,HttpContext h,CancellationToken c) =>
+            await Query(a,h,c,"BILLING_CONFIGURATION","fn_billing_charge_types"));
+
         app.MapGet("/api/billing/rates", async (long? propertyTypeId,AuthService a,HttpContext h,CancellationToken c) =>
             await Query(a,h,c,"BILLING_CONFIGURATION","fn_billing_rates",("property",propertyTypeId??(object)DBNull.Value)));
 
@@ -46,13 +49,14 @@ public static class BillingEndpoints
 
         app.MapPost("/api/billing/rate", async (BillingRateRequest x,AuthService a,HttpContext h,CancellationToken c) =>
             await Call(a,h,c,"BILLING_CONFIGURATION",
-                "select society_manager.sp_billing_save_rate(@s,@id,@property,@code,@name,@type,@rate,@from,@to,@u,@remark)",
+                "select society_manager.sp_billing_save_rate(@s,@id,@property,@chargeType,@type,@rate,@from,@to,@u,@remark)",
                 new[]
                 {
-                    ("id",(object)x.Id),("property",(object)x.PropertyTypeId),("code",(object)x.ChargeCode),
-                    ("name",(object)x.ChargeName),("type",(object)x.RateType),("rate",(object)x.Rate),
-                    ("from",(object)x.EffectiveFrom),("to",(object?)x.EffectiveTo??DBNull.Value),
-                    ("u",(object)0L),("remark",(object)(x.Remark??""))
+                    ("id",(object)x.Id),("property",(object)x.PropertyTypeId),
+                    ("chargeType",(object)x.ChargeTypeId),("type",(object)x.RateType),
+                    ("rate",(object)x.Rate),("from",(object)x.EffectiveFrom),
+                    ("to",(object?)x.EffectiveTo??DBNull.Value),("u",(object)0L),
+                    ("remark",(object)(x.Remark??""))
                 },x.Id>0?"EDIT":"ADD"));
 
         app.MapPost("/api/billing/start", async (AuthService a,HttpContext h,CancellationToken c) =>
@@ -170,12 +174,12 @@ public static class BillingEndpoints
             "Billing month is already finalized" => "This billing month has already been finalized.",
             "Prepared billing run not found" => "Billing preparation was not found. Please start billing again.",
             "Billing month already exists" => "This billing month already exists.",
+            "Charge type is not configured for this society" => "Charge type is not configured for this society.",
             _ when message.Contains("Rate",StringComparison.OrdinalIgnoreCase) => message,
             _ => "Billing operation could not be completed."
         };
 }
 
 public sealed record BillingConfigRequest(int FrequencyMonths,bool DpcApplicable,string DpcApplyOn,decimal DpcRate,string DpcCalculationType,DateOnly EffectiveFrom,DateOnly? EffectiveTo,string? Remark);
-public sealed record BillingRateRequest(long Id,long PropertyTypeId,string ChargeCode,string ChargeName,string RateType,decimal Rate,DateOnly EffectiveFrom,DateOnly? EffectiveTo,string? Remark);
+public sealed record BillingRateRequest(long Id,long PropertyTypeId,long ChargeTypeId,string RateType,decimal Rate,DateOnly EffectiveFrom,DateOnly? EffectiveTo,string? Remark);
 public sealed record BillingFinalizeRequest(long RunId,bool Confirm);
-
