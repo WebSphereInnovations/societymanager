@@ -5,29 +5,75 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Society360 — Society Admin</title>
 <link href="/lib/tabulator/tabulator.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/modules/society-admin/admin.css"><link rel="stylesheet" href="/modules/society-admin/billing.css?v=20261007.01"><link rel="stylesheet" href="/modules/society-admin/admin-accounts.css?v=20261004.2"><link rel="stylesheet" href="/modules/society-admin/consumer-account.css?v=20261004.1"><link rel="stylesheet" href="/css/support-assistant.css">
+<link rel="stylesheet" href="/modules/society-admin/admin.css"><link rel="stylesheet" href="/modules/society-admin/dashboard.css?v=20261010.04"><link rel="stylesheet" href="/modules/society-admin/billing.css?v=20261007.01"><link rel="stylesheet" href="/modules/society-admin/admin-accounts.css?v=20261004.2"><link rel="stylesheet" href="/modules/society-admin/consumer-account.css?v=20261004.1"><link rel="stylesheet" href="/css/support-assistant.css">
 </head>
 <body>
 <div class="ambient a"></div><div class="ambient b"></div>
-<aside class="side">
+<div id="mobileMenuBackdrop" class="mobile-menu-backdrop" aria-hidden="true"></div><aside class="side">
  <div class="logo"><b>3</b><div><strong>Society<span>360</span></strong><small>Society Admin</small></div></div>
  <div class="society"><small>ACTIVE SOCIETY</small><strong id="societyName">Loading...</strong></div>
  <nav id="dbMenu"></nav>
  <div class="user"><div id="avatar">SA</div><div><b id="userName">Society Admin</b><small>Society Admin</small></div></div>
 </aside>
 <main>
-<header><div><small class="crumb">SOCIETY360 / SOCIETY ADMIN</small><h1 id="heading">Hello, User</h1><p>Manage your society operations from one connected workspace.</p></div>
+<header><div><button type="button" id="mobileMenuToggle" class="mobile-menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button><small class="crumb">SOCIETY360 / SOCIETY ADMIN</small><h1 id="heading">Hello, User</h1><p>Manage your society operations from one connected workspace.</p></div>
 <div class="head-actions"><select id="language-select"></select><button id="logout">Logout</button></div></header>
-<section id="home" class="view active">
- <div class="hero"><div><span class="eyebrow">SOCIETY CONTROL CENTER</span><h2>Everything your society team needs, in one place.</h2><p>Billing, residents, collection, complaints, visitors and parking are managed in one place.</p></div><div class="hero-mark">360</div></div>
- <div class="cards">
-  <article><small>Total flats</small><strong id="totalFlats">—</strong><span>Registered units</span></article>
-  <article><small>Occupied</small><strong id="occupiedFlats">—</strong><span>Current occupancy</span></article>
-  <article><small>Collected</small><strong id="collected">—</strong><span>This month</span></article>
-  <article><small>Outstanding</small><strong id="outstanding">—</strong><span>Across open bills</span></article>
-  <article><small>Complaints</small><strong id="openComplaints">—</strong><span>Need attention</span></article>
-  <article><small>Visitors inside</small><strong id="insideVisitors">—</strong><span>Live security view</span></article> </div>
- <div class="quick"><button data-view="customers">Customer Search →</button><button data-view="flats">Flat Search →</button><button data-view="bills">Billing Grid →</button><button data-view="collection">Collection Grid →</button></div>
+<section id="home" class="view active dashboard-view">
+ <div class="dash-hero">
+  <div class="dash-hero-copy">
+   <span class="dash-eyebrow" data-i18n="Society overview"></span>
+   <h2 data-i18n="Your society, at a glance"></h2>
+   <p data-i18n="A trusted operational and financial overview, calculated from your society records."></p>
+   <div class="dash-hero-meta"><span class="dash-live-dot"></span><span data-i18n="Database-backed insights"></span><span class="dash-meta-sep">•</span><span id="dashboardPeriodLabel">—</span></div>
+  </div>
+  <div class="dash-hero-art" aria-hidden="true"><div class="dash-orbit dash-orbit-one"></div><div class="dash-orbit dash-orbit-two"></div><div class="dash-orb"><b>360</b><small data-i18n="Connected operations"></small></div><span class="dash-float dash-float-one">₹<b id="heroCollected">—</b><small data-i18n="Collected in period"></small></span><span class="dash-float dash-float-two"><b id="heroOccupancy">—</b><small data-i18n="Occupancy rate"></small></span></div>
+ </div>
+ <div class="dash-toolbar panel">
+  <div class="dash-toolbar-title"><strong data-i18n="Dashboard filters"></strong><small data-i18n="Choose a reporting period and narrow the data"></small></div>
+  <div class="dash-filters">
+   <label><span data-i18n="Period"></span><select id="dashPreset"><option value="month" data-i18n="This month"></option><option value="week" data-i18n="This week"></option><option value="quarter" data-i18n="This quarter"></option><option value="year" data-i18n="This year"></option><option value="financial-year" data-i18n="Financial year"></option><option value="custom" data-i18n="Custom range"></option></select></label>
+   <label><span data-i18n="From date"></span><input id="dashFrom" type="date"></label>
+   <label><span data-i18n="To date"></span><input id="dashTo" type="date"></label>
+   <label><span data-i18n="Building"></span><select id="dashBuilding"><option value="" data-i18n="All buildings"></option></select></label>
+   <label><span data-i18n="Unit type"></span><select id="dashUnitType"><option value="" data-i18n="All unit types"></option></select></label>
+   <label><span data-i18n="Customer type"></span><select id="dashCustomerType"><option value="" data-i18n="All customer types"></option></select></label>
+   <label><span data-i18n="Payment mode"></span><select id="dashPaymentMode"><option value="" data-i18n="All payment modes"></option></select></label>
+   <label><span data-i18n="Bill status"></span><select id="dashBillStatus"><option value="" data-i18n="All bill statuses"></option></select></label>
+   <div class="dash-filter-actions"><button id="dashApply" class="primary" data-i18n="Apply filters"></button><button id="dashReset" class="dash-reset" data-i18n="Reset"></button></div>
+  </div>
+ </div>
+ <div class="dash-status-row"><span id="dashboardStatus" role="status" aria-live="polite"></span><span><span data-i18n="Last updated"></span>: <time id="dashboardUpdated">—</time> <button id="dashboardRefresh" class="dash-refresh" data-i18n="Refresh"></button></span></div>
+ <div id="dashboardError" class="dash-error" hidden role="alert"></div>
+ <div id="dashboardKpis" class="dash-kpis" aria-live="polite">
+  <article class="dash-kpi kpi-customer"><div class="dash-kpi-head"><span data-i18n="Customers"></span><span class="dash-kpi-icon">♙</span></div><strong id="kpiCustomers">—</strong><div class="dash-kpi-foot"><span id="kpiCustomersDetail">—</span><button data-dash-drill="customers" data-i18n="View records"></button></div></article>
+  <article class="dash-kpi kpi-property"><div class="dash-kpi-head"><span data-i18n="Properties & units"></span><span class="dash-kpi-icon">⌂</span></div><strong id="kpiFlats">—</strong><div class="dash-kpi-foot"><span id="kpiFlatsDetail">—</span><button data-dash-drill="flats" data-i18n="View units"></button></div></article>
+  <article class="dash-kpi kpi-billed"><div class="dash-kpi-head"><span data-i18n="Billed amount"></span><span class="dash-kpi-icon">▤</span></div><strong id="kpiBilled">—</strong><div class="dash-kpi-foot"><span id="kpiBillsDetail">—</span><button data-dash-drill="bills" data-i18n="View bills"></button></div></article>
+  <article class="dash-kpi kpi-collected"><div class="dash-kpi-head"><span data-i18n="Collections received"></span><span class="dash-kpi-icon">₹</span></div><strong id="kpiCollected">—</strong><div class="dash-kpi-foot"><span id="kpiCollectionDetail">—</span><button data-dash-drill="collection" data-i18n="View collections"></button></div></article>
+  <article class="dash-kpi kpi-outstanding"><div class="dash-kpi-head"><span data-i18n="Current outstanding"></span><span class="dash-kpi-icon">◷</span></div><strong id="kpiOutstanding">—</strong><div class="dash-kpi-foot"><span data-i18n="Open bill balances"></span><button data-dash-drill="outstanding" data-i18n="View pending"></button></div></article>
+  <article class="dash-kpi kpi-overdue"><div class="dash-kpi-head"><span data-i18n="Overdue amount"></span><span class="dash-kpi-icon">!</span></div><strong id="kpiOverdue">—</strong><div class="dash-kpi-foot"><span id="kpiOverdueDetail">—</span><button data-dash-drill="overdue" data-i18n="View overdue"></button></div></article>
+  <article class="dash-kpi kpi-occupancy"><div class="dash-kpi-head"><span data-i18n="Occupancy rate"></span><span class="dash-kpi-icon">◉</span></div><strong id="kpiOccupancy">—</strong><div class="dash-progress"><span id="kpiOccupancyProgress"></span></div><div class="dash-kpi-foot"><span id="kpiOccupancyDetail">—</span><button data-dash-drill="flats" data-i18n="View units"></button></div></article>
+  <article class="dash-kpi kpi-operations"><div class="dash-kpi-head"><span data-i18n="Open complaints"></span><span class="dash-kpi-icon">◇</span></div><strong id="kpiComplaints">—</strong><div class="dash-kpi-foot"><span id="kpiOperationsDetail">—</span><button data-dash-drill="complaints" data-i18n="View complaints"></button></div></article>
+ </div>
+ <div class="dash-chart-grid">
+  <article class="dash-panel dash-trend-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="FINANCIAL PERFORMANCE"></span><h3 data-i18n="Billing & collection trend"></h3><p data-i18n="Monthly totals from valid bills and successful payments"></p></div><span class="dash-chart-badge" data-i18n="Selected period"></span></div><div id="dashboardTrend" class="dash-trend-chart"><div class="dash-empty" data-i18n="Loading chart"></div></div><div class="dash-legend"><span><i class="legend-billed"></i><span data-i18n="Billed"></span></span><span><i class="legend-collected"></i><span data-i18n="Collected"></span></span></div></article>
+  <article class="dash-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="PROPERTY"></span><h3 data-i18n="Occupancy breakdown"></h3><p data-i18n="Active units by current occupancy status"></p></div></div><div id="dashboardOccupancy" class="dash-donut-wrap"><div class="dash-empty" data-i18n="Loading chart"></div></div></article>
+  <article class="dash-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="COLLECTIONS"></span><h3 data-i18n="Collections by payment mode"></h3><p data-i18n="Successful payments in the selected period"></p></div></div><div id="dashboardPaymentModes" class="dash-donut-wrap"><div class="dash-empty" data-i18n="Loading chart"></div></div></article>
+  <article class="dash-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="BILLING"></span><h3 data-i18n="Bill status"></h3><p data-i18n="Valid bills by recorded status"></p></div></div><div id="dashboardBillStatuses" class="dash-breakdown"><div class="dash-empty" data-i18n="Loading chart"></div></div></article>
+  <article class="dash-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="CUSTOMERS"></span><h3 data-i18n="Customer categories"></h3><p data-i18n="Current customer mix"></p></div></div><div id="dashboardCustomerTypes" class="dash-breakdown"><div class="dash-empty" data-i18n="Loading chart"></div></div></article>
+  <article class="dash-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="PROPERTY"></span><h3 data-i18n="Unit type distribution"></h3><p data-i18n="Active units grouped by configured type"></p></div></div><div id="dashboardUnitTypes" class="dash-breakdown"><div class="dash-empty" data-i18n="Loading chart"></div></div></article>
+  <article class="dash-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="OPERATIONS"></span><h3 data-i18n="Complaint workflow"></h3><p data-i18n="Complaints created during the selected period"></p></div></div><div id="dashboardComplaintStatuses" class="dash-breakdown"><div class="dash-empty" data-i18n="Loading chart"></div></div></article>
+  <article class="dash-panel dash-ops-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="OPERATIONS"></span><h3 data-i18n="Operational snapshot"></h3><p data-i18n="Other modules with available live records"></p></div></div><div class="dash-ops-grid"><button data-dash-drill="visitors"><span data-i18n="Visitors inside"></span><strong id="kpiVisitors">—</strong></button><button data-dash-drill="parking"><span data-i18n="Active parking slots"></span><strong id="kpiParking">—</strong></button><button data-dash-drill="assignedParking"><span data-i18n="Assigned parking"></span><strong id="kpiAssignedParking">—</strong></button><button data-dash-drill="migration"><span data-i18n="Migration batches"></span><strong id="kpiMigration">—</strong></button><button data-dash-drill="customers"><span data-i18n="Active customers"></span><strong id="kpiActiveCustomers">—</strong></button><button data-dash-drill="documents"><span data-i18n="Customer documents"></span><strong id="kpiCustomerDocuments">—</strong></button><button data-dash-drill="documents"><span data-i18n="Society documents"></span><strong id="kpiSocietyDocuments">—</strong></button><div class="dash-ops-static"><span data-i18n="Published notices"></span><strong id="kpiNotices">—</strong></div><button data-dash-drill="notifications"><span data-i18n="Pending notifications"></span><strong id="kpiNotifications">—</strong></button><button data-dash-drill="tickets"><span data-i18n="Open IT tickets"></span><strong id="kpiTickets">—</strong></button><button data-dash-drill="securityIncidents"><span data-i18n="Open security incidents"></span><strong id="kpiSecurityIncidents">—</strong></button><button data-dash-drill="serviceCharges"><span data-i18n="Pending service charges"></span><strong id="kpiServiceCharges">—</strong></button><button data-dash-drill="dishonoredCheques"><span data-i18n="Dishonoured cheques"></span><strong id="kpiDishonored">—</strong></button><button data-dash-drill="securityGuards"><span data-i18n="Active guards"></span><strong id="kpiGuards">—</strong></button></div></article>
+ </div>
+ <div class="dash-footnote"><span data-i18n="Financial values exclude draft, cancelled, void and failed records where applicable."></span><span data-i18n="Outstanding is based on bill total less recorded paid amount; it is not an audited cash balance."></span></div>
+ <div id="dashboardDrillModal" class="dash-modal" hidden role="dialog" aria-modal="true" aria-labelledby="dashboardDrillTitle">
+  <div class="dash-modal-backdrop" data-dash-modal-close></div>
+  <div class="dash-modal-card">
+   <div class="dash-modal-head"><div><span class="dash-section-kicker" data-i18n="FILTERED RECORDS"></span><h3 id="dashboardDrillTitle"></h3><p id="dashboardDrillSubtitle"></p></div><button type="button" id="dashboardDrillClose" class="dash-modal-close" aria-label="Close">×</button></div>
+   <div id="dashboardDrillState" class="dash-modal-state" role="status" aria-live="polite"></div>
+   <div id="dashboardDrillTableWrap" class="dash-modal-table-wrap"></div>
+   <div class="dash-modal-footer"><span id="dashboardDrillCount"></span><button type="button" id="dashboardDrillOpenModule" class="dash-reset" data-i18n="Open module"></button></div>
+  </div>
+ </div>
 </section><section id="customers" class="view">
  <div class="ca-shell">
   <div class="ca-hero"><div><span class="ca-kicker" data-ca-i18n="Customer Account"></span><h2 data-ca-i18n="Consumer 360° Account"></h2><p data-ca-i18n="Search one consumer and open the complete account, financial and service history."></p></div><div class="ca-secure"><span>●</span><span data-ca-i18n="Selected society"></span></div></div>
@@ -173,5 +219,5 @@
 <footer><span>Society360 — Society Admin</span><span id="clock"></span></footer>
 </main>
 <script src="/lib/tabulator/tabulator.min.js"></script>
-<script src="/js/i18n.js?v=20261007.01"></script><script src="/modules/society-admin/customer-account.js?v=20261004.4"></script><script src="/modules/society-admin/billing.js?v=20261007.01"></script><script src="/modules/society-admin/admin.js?v=20261007.01"></script><script src="/modules/society-admin/account-management.js?v=20261004.4"></script><script src="/modules/society-admin/requested-workflows.js?v=20261004.4"></script><script src="/modules/society-admin/security-visitor.js?v=20261004.4"></script><script src="/js/support-assistant.js?v=20261004.4"></script>
+<script src="/js/i18n.js?v=20261010.04"></script><script src="/modules/society-admin/customer-account.js?v=20261004.4"></script><script src="/modules/society-admin/billing.js?v=20261007.01"></script><script src="/modules/society-admin/dashboard.js?v=20261010.06"></script><script src="/modules/society-admin/admin.js?v=20261010.03"></script><script src="/modules/society-admin/account-management.js?v=20261004.4"></script><script src="/modules/society-admin/requested-workflows.js?v=20261004.4"></script><script src="/modules/society-admin/security-visitor.js?v=20261004.4"></script><script src="/js/support-assistant.js?v=20261004.4"></script>
 </body></html>

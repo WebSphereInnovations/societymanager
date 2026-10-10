@@ -27,6 +27,46 @@ public static class SocietyAdminEndpoints
             return Results.Ok(new {totalFlats=r.GetInt64(0),occupiedFlats=r.GetInt64(1),billed=r.GetDecimal(2),collected=r.GetDecimal(3),outstanding=r.GetDecimal(4),openComplaints=r.GetInt64(5),insideVisitors=r.GetInt64(6),parkingSlots=r.GetInt64(7)});
         });
 
+        app.MapGet("/api/society-admin/dashboard/analytics", async (
+            DateOnly? from, DateOnly? to, long? buildingId, string? unitType, string? customerType,
+            string? paymentMode, string? billStatus, AuthService auth, HttpContext http, CancellationToken ct) =>
+        {
+            var session = await AuthGuard.Get(http, auth, ct);
+            if (session is null) return Results.Unauthorized();
+            if (session.SocietyId is null) return Results.BadRequest(new { message = "Select a society first." });
+            if (!await auth.HasPermissionAsync(session.UserId, "APP_DASHBOARD", "VIEW", ct)) return Results.Forbid();
+
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var toDate = to ?? today;
+            var fromDate = from ?? new DateOnly(toDate.Year, toDate.Month, 1);
+            if (fromDate > toDate) return Results.BadRequest(new { message = "Start date must be on or before end date." });
+            if (toDate.DayNumber - fromDate.DayNumber > 366 * 5)
+                return Results.BadRequest(new { message = "Choose a reporting period of five years or less." });
+
+            await using var cn = new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+            await cn.OpenAsync(ct);
+            await using var cmd = new NpgsqlCommand(
+                "select society_manager.fn_dashboard_analytics(@society,@from,@to,@building,@unit_type,@customer_type,@payment_mode,@bill_status)", cn);
+            cmd.Parameters.AddWithValue("society", session.SocietyId.Value);
+            cmd.Parameters.AddWithValue("from", fromDate);
+            cmd.Parameters.AddWithValue("to", toDate);
+            cmd.Parameters.Add("building", NpgsqlTypes.NpgsqlDbType.Bigint).Value = (object?)buildingId ?? DBNull.Value;
+            cmd.Parameters.Add("unit_type", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object?)unitType ?? DBNull.Value;
+            cmd.Parameters.Add("customer_type", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object?)customerType ?? DBNull.Value;
+            cmd.Parameters.Add("payment_mode", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object?)paymentMode ?? DBNull.Value;
+            cmd.Parameters.Add("bill_status", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object?)billStatus ?? DBNull.Value;
+            var value = await cmd.ExecuteScalarAsync(ct);
+            if (value is null or DBNull) return Results.Problem("Dashboard analytics are unavailable.", statusCode: 503);
+            var json = value is JsonDocument document ? document.RootElement.Clone() : JsonDocument.Parse(value.ToString()!).RootElement.Clone();
+            http.Response.Headers.CacheControl = "no-store";
+            return Results.Ok(json);
+        });
+
+        app.MapGet("/api/society-admin/dashboard/drilldown", async (
+            string type, string? label, DateOnly? from, DateOnly? to, long? buildingId, string? unitType,
+            string? customerType, string? paymentMode, string? billStatus, AuthService auth, HttpContext http, CancellationToken ct) =>
+            await DashboardDrilldown(type,label,from,to,buildingId,unitType,customerType,paymentMode,billStatus,auth,http,ct));
+
         app.MapGet("/api/society-admin/customers", async (string? q, AuthService auth, HttpContext http, CancellationToken ct) =>
             await Query(auth,http,ct,"fn_society_admin_customer_search",q??"",7));
         app.MapGet("/api/society-admin/flats", async (string? q, AuthService auth, HttpContext http, CancellationToken ct) =>
@@ -241,6 +281,150 @@ public static class SocietyAdminEndpoints
         catch(PostgresException){return Results.BadRequest(new {message="Operation could not be completed."});}
     }
 
+    static async Task<IResult> DashboardDrilldown(
+        string type,string? label,DateOnly? from,DateOnly? to,long? buildingId,string? unitType,
+        string? customerType,string? paymentMode,string? billStatus,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var session=await AuthGuard.Get(http,auth,ct);
+        if(session is null)return Results.Unauthorized();
+        if(session.SocietyId is null)return Results.BadRequest(new {message="Select a society first."});
+        var kind=(type??"").Trim().ToLowerInvariant();
+        var permission=kind switch
+        {
+            "customers"=>"SOC_CUSTOMER",
+            "flats" or "units"=>"FLATS",
+            "bills" or "outstanding" or "overdue"=>"BILLING",
+            "collection"=>"COLLECTION",
+            "complaints"=>"COMPLAINTS",
+            "visitors"=>"VISITORS",
+            "parking" or "assignedparking"=>"PARKING",
+            _=>null
+        };
+        if(permission is null)return Results.BadRequest(new {message="Unsupported dashboard drill-down."});
+        if(!await auth.HasPermissionAsync(session.UserId,permission,"VIEW",ct))
+            return Results.Json(new {message="You do not have permission to view these records."},statusCode:403);
+        var today=DateOnly.FromDateTime(DateTime.Now);
+        var toDate=to??today;
+        var fromDate=from??new DateOnly(toDate.Year,toDate.Month,1);
+        if(fromDate>toDate)return Results.BadRequest(new {message="Start date must be on or before end date."});
+        if(toDate.DayNumber-fromDate.DayNumber>366*5)return Results.BadRequest(new {message="Choose a reporting period of five years or less."});
+
+        var sql=kind switch
+        {
+            "customers"=>@"SELECT c.customer_id,c.customer_code,c.full_name,c.customer_type,c.phone,c.email,c.is_active
+                FROM m_customer c
+                WHERE c.society_id=@society
+                  AND (@label IS NULL OR c.customer_type=@label)
+                  AND (@customer_type IS NULL OR c.customer_type=@customer_type)
+                  AND ((@building IS NULL AND @unit_type IS NULL) OR EXISTS (
+                    SELECT 1 FROM m_customer_flat cf JOIN m_flat f ON f.flat_id=cf.flat_id
+                    WHERE cf.customer_id=c.customer_id AND (cf.end_date IS NULL OR cf.end_date>=current_date)
+                      AND f.society_id=@society AND f.is_active
+                      AND (@building IS NULL OR f.building_id=@building)
+                      AND (@unit_type IS NULL OR f.unit_type=@unit_type)))
+                ORDER BY c.full_name LIMIT 250",
+            "flats" or "units"=>@"SELECT f.flat_id,f.flat_no,COALESCE(w.wing_name,w.wing_code,'') AS wing,
+                    COALESCE(b.building_name,b.building_code,'') AS building,f.unit_type,f.area_sqft,
+                    f.occupancy_status,COALESCE(c.full_name,'') AS owner_name,COALESCE(c.phone,'') AS owner_phone
+                FROM m_flat f LEFT JOIN m_wing w ON w.wing_id=f.wing_id
+                LEFT JOIN m_building b ON b.building_id=f.building_id
+                LEFT JOIN m_customer_flat cf ON cf.flat_id=f.flat_id AND cf.is_primary
+                LEFT JOIN m_customer c ON c.customer_id=cf.customer_id
+                WHERE f.society_id=@society AND f.is_active
+                  AND (@building IS NULL OR f.building_id=@building)
+                  AND (@unit_type IS NULL OR f.unit_type=@unit_type)
+                  AND (@customer_type IS NULL OR c.customer_type=@customer_type)
+                  AND (@label IS NULL OR (@kind='flats' AND upper(f.occupancy_status)=upper(@label)) OR (@kind='units' AND upper(f.unit_type)=upper(@label)))
+                ORDER BY f.flat_no LIMIT 250",
+            "bills" or "outstanding" or "overdue"=>@"SELECT b.bill_id,b.bill_no,b.bill_month,f.flat_no,
+                    COALESCE(c.full_name,'') AS customer_name,b.total_amount,b.paid_amount,
+                    GREATEST(COALESCE(b.total_amount,0)-COALESCE(b.paid_amount,0),0) AS balance,b.due_date,b.status
+                FROM t_bill b JOIN m_flat f ON f.flat_id=b.flat_id
+                LEFT JOIN m_customer_flat cf ON cf.flat_id=f.flat_id AND cf.is_primary
+                LEFT JOIN m_customer c ON c.customer_id=cf.customer_id
+                WHERE b.society_id=@society AND f.is_active
+                  AND (@kind<>'bills' OR (b.bill_date>=@from AND b.bill_date<@to+1))
+                  AND upper(COALESCE(b.status,'')) NOT IN ('DRAFT','CANCELLED','CANCELED','VOID','DELETED')
+                  AND (@kind='bills' OR upper(COALESCE(b.status,'')) NOT IN ('PAID','SETTLED'))
+                  AND (@bill_status IS NULL OR b.status=@bill_status)
+                  AND (@label IS NULL OR @kind<>'bills' OR upper(b.status)=upper(@label))
+                  AND (@kind<>'outstanding' OR GREATEST(COALESCE(b.total_amount,0)-COALESCE(b.paid_amount,0),0)>0)
+                  AND (@kind<>'overdue' OR (GREATEST(COALESCE(b.total_amount,0)-COALESCE(b.paid_amount,0),0)>0 AND b.due_date<current_date))
+                  AND (@building IS NULL OR f.building_id=@building)
+                  AND (@unit_type IS NULL OR f.unit_type=@unit_type)
+                  AND (@customer_type IS NULL OR c.customer_type=@customer_type)
+                ORDER BY b.bill_date DESC,b.bill_id DESC LIMIT 250",
+            "collection"=>@"SELECT p.payment_id,p.payment_no,p.payment_date::date AS payment_date,f.flat_no,
+                    COALESCE(c.full_name,'') AS customer_name,p.amount,p.payment_mode,p.reference_no
+                FROM t_payment p JOIN m_flat f ON f.flat_id=p.flat_id
+                LEFT JOIN m_customer c ON c.customer_id=p.customer_id
+                WHERE p.society_id=@society AND p.payment_date::date BETWEEN @from AND @to
+                  AND upper(COALESCE(p.status,'')) IN ('SUCCESS','PAID','COMPLETED','SETTLED')
+                  AND (@label IS NULL OR p.payment_mode=@label)
+                  AND (@payment_mode IS NULL OR p.payment_mode=@payment_mode)
+                  AND (@building IS NULL OR f.building_id=@building)
+                  AND (@unit_type IS NULL OR f.unit_type=@unit_type)
+                  AND (@customer_type IS NULL OR c.customer_type=@customer_type)
+                ORDER BY p.payment_date DESC,p.payment_id DESC LIMIT 250",
+            "complaints"=>@"SELECT x.complaint_id,x.complaint_no,f.flat_no,COALESCE(c.full_name,'') AS customer_name,
+                    x.category,x.title,x.priority,x.status,x.created_at
+                FROM t_complaint x LEFT JOIN m_flat f ON f.flat_id=x.flat_id
+                LEFT JOIN m_customer c ON c.customer_id=x.customer_id
+                WHERE x.society_id=@society
+                  AND ((@label IS NULL AND x.status NOT IN ('Closed','Resolved'))
+                    OR (@label IS NOT NULL AND x.created_at>=@from::timestamp AND x.created_at<(@to+1)::timestamp AND upper(x.status)=upper(@label)))
+                  AND (@building IS NULL OR f.building_id=@building)
+                  AND (@unit_type IS NULL OR f.unit_type=@unit_type)
+                  AND (@customer_type IS NULL OR c.customer_type=@customer_type)
+                ORDER BY x.created_at DESC LIMIT 250",
+            "visitors"=>@"SELECT v.visitor_entry_id AS visitor_id,v.visitor_name,v.phone,f.flat_no,v.visitor_type,
+                    v.purpose,v.status,v.entry_at AS entry_time,v.exit_at AS exit_time
+                FROM t_visitor_entry v LEFT JOIN m_flat f ON f.flat_id=v.flat_id
+                WHERE v.society_id=@society
+                  AND ((@label IS NULL AND v.status='Inside')
+                    OR (@label IS NOT NULL AND v.entry_at>=@from::timestamp AND v.entry_at<(@to+1)::timestamp AND upper(v.status)=upper(@label)))
+                  AND (@building IS NULL OR f.building_id=@building)
+                  AND (@unit_type IS NULL OR f.unit_type=@unit_type)
+                ORDER BY v.entry_at DESC LIMIT 250",
+            "parking" or "assignedparking"=>@"SELECT s.parking_slot_id AS slot_id,s.slot_no,s.slot_type,s.charge,COALESCE(f.flat_no,'') AS assigned_flat,
+                    COALESCE(c.full_name,'') AS customer_name,
+                    CASE WHEN a.assignment_id IS NULL THEN 'Available' ELSE 'Assigned' END AS status
+                FROM m_parking_slot s LEFT JOIN t_parking_assignment a ON a.parking_slot_id=s.parking_slot_id AND a.is_active
+                LEFT JOIN m_flat f ON f.flat_id=a.flat_id LEFT JOIN m_customer c ON c.customer_id=a.customer_id
+                WHERE s.society_id=@society AND s.is_active
+                  AND (@kind<>'assignedparking' OR a.assignment_id IS NOT NULL)
+                  AND (@label IS NULL OR (CASE WHEN a.assignment_id IS NULL THEN 'Available' ELSE 'Assigned' END)=@label)
+                  AND ((@building IS NULL AND @unit_type IS NULL) OR
+                    (f.flat_id IS NOT NULL AND (@building IS NULL OR f.building_id=@building) AND (@unit_type IS NULL OR f.unit_type=@unit_type)))
+                ORDER BY s.slot_no LIMIT 250",
+            _=>throw new InvalidOperationException("Unsupported dashboard drill-down.")
+        };
+
+        await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
+        await cn.OpenAsync(ct);
+        await using var cmd=new NpgsqlCommand(sql,cn);
+        cmd.Parameters.AddWithValue("society",session.SocietyId.Value);
+        cmd.Parameters.AddWithValue("kind",kind);
+        cmd.Parameters.Add("label",NpgsqlDbType.Varchar).Value=(object?)label??DBNull.Value;
+        cmd.Parameters.Add("from",NpgsqlDbType.Date).Value=fromDate;
+        cmd.Parameters.Add("to",NpgsqlDbType.Date).Value=toDate;
+        cmd.Parameters.Add("building",NpgsqlDbType.Bigint).Value=(object?)buildingId??DBNull.Value;
+        cmd.Parameters.Add("unit_type",NpgsqlDbType.Varchar).Value=(object?)unitType??DBNull.Value;
+        cmd.Parameters.Add("customer_type",NpgsqlDbType.Varchar).Value=(object?)customerType??DBNull.Value;
+        cmd.Parameters.Add("payment_mode",NpgsqlDbType.Varchar).Value=(object?)paymentMode??DBNull.Value;
+        cmd.Parameters.Add("bill_status",NpgsqlDbType.Varchar).Value=(object?)billStatus??DBNull.Value;
+        await using var reader=await cmd.ExecuteReaderAsync(ct);
+        var rows=new List<Dictionary<string,object?>>();
+        while(await reader.ReadAsync(ct))
+        {
+            var row=new Dictionary<string,object?>();
+            for(var i=0;i<reader.FieldCount;i++)row[reader.GetName(i)]=reader.IsDBNull(i)?null:reader.GetValue(i);
+            rows.Add(row);
+        }
+        http.Response.Headers.CacheControl="no-store";
+        return Results.Ok(rows);
+    }
+
     static async Task<IResult> Query(AuthService auth,HttpContext http,CancellationToken ct,string fn,string q,int columns)
     {
         var session=await AuthGuard.Get(http,auth,ct);
@@ -250,10 +434,10 @@ public static class SocietyAdminEndpoints
         {
             "fn_society_admin_customer_search"=>"SOC_CUSTOMER",
             "fn_society_admin_flat_search"=>"FLATS",
-            "fn_society_admin_bill_list"=>"BILLING_MANAGEMENT",
-            "fn_society_admin_complaints"=>"CRM_COMPLAINT",
-            "fn_society_admin_visitors"=>"SEC_VISITOR",
-            "fn_society_admin_parking"=>"PARKING_MANAGEMENT",
+            "fn_society_admin_bill_list"=>"BILLING",
+            "fn_society_admin_complaints"=>"COMPLAINTS",
+            "fn_society_admin_visitors"=>"VISITORS",
+            "fn_society_admin_parking"=>"PARKING",
             _=>"DASHBOARD"
         };
         if(!await auth.HasPermissionAsync(session.UserId,module,"VIEW",ct)) return Results.Forbid();
@@ -277,7 +461,7 @@ public static class SocietyAdminEndpoints
     {
         var session=await AuthGuard.Get(http,auth,ct);
         if(session is null) return Results.Unauthorized();
-        if(session.SocietyId is null || !await auth.HasPermissionAsync(session.UserId,"COLLECTION_MANAGEMENT","VIEW",ct)) return Results.Forbid();
+        if(session.SocietyId is null || !await auth.HasPermissionAsync(session.UserId,"COLLECTION","VIEW",ct)) return Results.Forbid();
         await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
         await cn.OpenAsync(ct);
         await using var cmd=new NpgsqlCommand("select * from society_manager.fn_society_admin_collection(@society_id,@from_date,@to_date)",cn);

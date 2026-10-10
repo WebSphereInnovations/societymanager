@@ -35,13 +35,14 @@ async function buildSystemMenu(){
  });
 }
 
+function refreshShellLanguage(){if(!session)return;$('#heading').textContent=Society360I18n.translateText('Hello')+', '+session.displayName;const subtitle=document.querySelector('header p');if(subtitle)subtitle.textContent=Society360I18n.translateText('Manage your society operations from one connected workspace.');$('#mobileMenuToggle')?.setAttribute('aria-label',Society360I18n.translateText('Toggle navigation'))}
 async function init(){
  try{
   const me=await get('/api/auth/me');session=me.session;
   if(session.roleCode!=='SOCIETY_ADMIN'&&session.roleCode!=='SUPER_ADMIN'){location.href='/';return}
   const society=me.societies.find(x=>x.societyId===session.societyId)||me.societies[0];
   $('#societyName').textContent=society?.societyName||'Society';
-  $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');$('#heading').textContent='Hello, '+session.displayName;
+  $('#userName').textContent=session.displayName;$('#avatar').textContent=session.displayName.split(' ').map(x=>x[0]).slice(0,2).join('');refreshShellLanguage();
   wire();
   window.customerAccount360?.init();
   window.billingModule?.init();
@@ -58,7 +59,7 @@ async function loadSubscription(){
   $('#recordSubscriptionPayment').dataset.subscriptionId=x.subscriptionId;
  }catch(e){$('#subscriptionText').textContent='No active subscription found.';$('#recordSubscriptionPayment').disabled=true}
 }
-async function loadDashboard(){const x=await get('/api/society-admin/dashboard');$('#totalFlats').textContent=x.totalFlats;$('#occupiedFlats').textContent=x.occupiedFlats;$('#collected').textContent=money(x.collected);$('#outstanding').textContent=money(x.outstanding);$('#openComplaints').textContent=x.openComplaints;$('#insideVisitors').textContent=x.insideVisitors}
+async function loadDashboard(){if(window.societyDashboard?.load){await window.societyDashboard.load();return}const x=await get('/api/society-admin/dashboard');$('#totalFlats').textContent=x.totalFlats;$('#occupiedFlats').textContent=x.occupiedFlats;$('#collected').textContent=money(x.collected);$('#outstanding').textContent=money(x.outstanding);$('#openComplaints').textContent=x.openComplaints;$('#insideVisitors').textContent=x.insideVisitors}
 function show(view,label){
  const target=document.getElementById(view)?view:'module-workspace';
  $$('.view').forEach(x=>x.classList.toggle('active',x.id===target));
@@ -69,7 +70,13 @@ function show(view,label){
    $('#moduleInfo').textContent='This menu item is part of the Society360 module catalog and is society-scoped. Use the linked operational workspace below for the supported workflow.';
  }
  if(view==='customers')loadCustomers('');if(view==='flats')loadFlats('');if(view==='bills')loadBills('');if(view==='billing-configuration')window.billingModule?.loadConfiguration?.();if(view==='billing-process')window.billingModule?.refreshProcess?.();if(view==='collection')loadCollection();if(view==='complaints')loadComplaints('');if(view==='visitors')loadVisitors('');if(view==='parking')loadParking('');if(view==='configuration')loadConfig();if(view==='security')loadSecurity()}
+window.societyAdminShow=show;
+function closeMobileMenu(){const side=$('.side'),backdrop=$('#mobileMenuBackdrop'),toggle=$('#mobileMenuToggle');side?.classList.remove('mobile-open');backdrop?.classList.remove('visible');toggle?.setAttribute('aria-expanded','false');}
 function wire(){
+ const mobileToggle=$('#mobileMenuToggle'),mobileBackdrop=$('#mobileMenuBackdrop');
+ mobileToggle?.addEventListener('click',()=>{const open=!$('.side')?.classList.contains('mobile-open');$('.side')?.classList.toggle('mobile-open',open);mobileBackdrop?.classList.toggle('visible',open);mobileToggle.setAttribute('aria-expanded',String(open));});
+ mobileBackdrop?.addEventListener('click',closeMobileMenu);
+ document.addEventListener('click',e=>{if(e.target.closest('#dbMenu button'))closeMobileMenu();});
  document.querySelectorAll('.side nav details').forEach(x=>{
   x.open=false;
   x.addEventListener('toggle',()=>{
@@ -88,7 +95,7 @@ function wire(){
  $('#billSearch').oninput=debounce(e=>loadBills(e.target.value));$('#complaintSearch').oninput=debounce(e=>loadComplaints(e.target.value));
  $('#visitorSearch').oninput=debounce(e=>loadVisitors(e.target.value));$('#parkingSearch').oninput=debounce(e=>loadParking(e.target.value));
  $('#language-select').value=Society360I18n.currentLanguage();$('#language-select').onchange=e=>Society360I18n.setLanguage(e.target.value);
- window.addEventListener('society360-language-changed',()=>{buildSystemMenu();tableRegistry.forEach(x=>{try{x.table.setColumns(x.columns.map(c=>({...c,title:Society360I18n.translateText(c.title)})))}catch{}});window.customerAccount360?.refreshLanguage?.();});
+ window.addEventListener('society360-language-changed',()=>{refreshShellLanguage();buildSystemMenu();tableRegistry.forEach(x=>{try{x.table.setColumns(x.columns.map(c=>({...c,title:Society360I18n.translateText(c.title)})))}catch{}});window.customerAccount360?.refreshLanguage?.();});
  setInterval(()=>$('#clock').textContent=new Date().toLocaleString(Society360I18n.locale()),1000);
 }
 async function loadCustomers(q){

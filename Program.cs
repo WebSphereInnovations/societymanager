@@ -530,6 +530,21 @@ if (args.Contains("--apply-mis-filter-options", StringComparer.OrdinalIgnoreCase
     Console.WriteLine("MIS filter options schema applied."); return;
 }
 
+if (args.Contains("--apply-dashboard-analytics", StringComparer.OrdinalIgnoreCase))
+{
+    var cs = Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
+    if (string.IsNullOrWhiteSpace(cs)) throw new InvalidOperationException("SOCIETY360_DB_CONNECTION is not configured.");
+    await using var connection = new NpgsqlConnection(cs);
+    await connection.OpenAsync();
+    await using var transaction = await connection.BeginTransactionAsync();
+    var sql = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "Database", "041_dashboard_analytics.sql"));
+    await using var command = new NpgsqlCommand(sql, connection, transaction);
+    await command.ExecuteNonQueryAsync();
+    await transaction.CommitAsync();
+    Console.WriteLine("Dashboard analytics schema applied.");
+    return;
+}
+
 if (args.Contains("--apply-requested-submenu-hardening", StringComparer.OrdinalIgnoreCase))
 {
     var cs=Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION");
