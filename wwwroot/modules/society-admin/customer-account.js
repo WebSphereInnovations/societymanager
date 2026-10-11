@@ -19,7 +19,7 @@
   const currentLang = () => window.Society360I18n?.current || localStorage.getItem('society360-language') || 'en';
 
   function applyLanguage(){
-    currentLanguage = ['en','mr','gu','kn','te'].includes(currentLang()) ? currentLang() : 'en';
+    currentLanguage = ['en','hi','mr','gu','kn','ta'].includes(currentLang()) ? currentLang() : 'en';
     qa('[data-ca-i18n]').forEach(el => el.textContent = t(el.dataset.caI18n));
     qa('[data-ca-placeholder]').forEach(el => el.placeholder = t(el.dataset.caPlaceholder));
     const search=q('#caSearchInput'); if(search) search.placeholder=[t('Consumer ID'),t('Name'),t('Flat Number'),t('Mobile Number'),t('Email')].join(' / ');
@@ -82,6 +82,7 @@
       {title:t('Occupancy'),field:'occupancy_status',headerFilter:'input',formatter:c=>statusText(c.getValue())},
       {title:t('Primary'),field:'is_primary',formatter:c=>c.getValue()?'✓':'—'}
     ]});
+    window.ensureTableExportToolbar?.(el,'caFlatsTable');
   }
 
   function renderDuesCards(c){
@@ -154,7 +155,31 @@
     const el=q('#'+cfg.table);if(!el)return;
     if(el._tab){el._tab.destroy()}
     el._tab=new Tabulator(el,{data,layout:'fitDataStretch',responsiveLayout:'collapse',placeholder:t('No records found'),height:'auto',columns:columnsFor(section)});
+    attachAccountExport(cfg.table,section);
     renderPager(section);
+  }
+  function attachAccountExport(tableId,section){
+    const el=q('#'+tableId);if(!el||!window.ensureTableExportToolbar)return;
+    window.ensureTableExportToolbar(el,tableId);
+    const old=el.previousElementSibling?.querySelector('.s360-export-xlsx');if(!old||old.dataset.accountExportSection===section)return;
+    const button=old.cloneNode(true);old.replaceWith(button);button.dataset.accountExportSection=section;
+    button.addEventListener('click',()=>exportAccountSectionXlsx(section,button));
+  }
+  async function exportAccountSectionXlsx(section,button){
+    const st=sectionState[section],cfg=sectionMap[section];if(!st||!cfg||!consumerId)return;
+    const rows=[];let total=Number(st.total||0),page=1;
+    button.disabled=true;button.textContent=t('Exporting…');
+    try{
+      while(rows.length<total&&page<=500){
+        const u='/api/customer-account/'+consumerId+'/section/'+section+'?page='+page+'&pageSize=100&search='+encodeURIComponent(st.search||'');
+        const result=await api(u),part=result.rows||[];total=Number(result.total||0);rows.push(...part);
+        if(!part.length)break;page++;
+      }
+      if(!rows.length){window.Society360I18n?.toast?.(t('No matching records to export.'),'info');return}
+      const columns=columnsFor(section).filter(c=>c.field&&!String(c.field).startsWith('__')).map(c=>({field:c.field,title:c.title}));
+      await window.exportTabulatorXlsx?.(cfg.table,button,rows,columns,'CRM_CUSTOMER_ACCOUNT','CustomerAccount-'+section);
+    }catch(e){window.Society360I18n?.toast?.(t(e.message||'Excel export failed.'),'error')}
+    finally{button.disabled=false;button.textContent=t('Export to Excel')}
   }
   function renderPager(section){
     const cfg=sectionMap[section],st=sectionState[section];const el=q('#'+cfg.pager);if(!el)return;

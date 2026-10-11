@@ -1,4 +1,6 @@
 using System.Text.Json;
+using System.Globalization;
+using ClosedXML.Excel;
 using Npgsql;
 using NpgsqlTypes;
 using Society360.Data;
@@ -123,7 +125,102 @@ public static class SocietyAdminEndpoints
         app.MapGet("/api/society-admin/menu-catalog", async (AuthService auth,HttpContext http,CancellationToken ct) => await MenuCatalog(auth,http,ct));
         app.MapPost("/api/society-admin/menu-catalog/save", async (AdminMenuRequest x,AuthService auth,HttpContext http,CancellationToken ct) => await SaveMenu(x,auth,http,ct));
         app.MapPost("/api/society-admin/menu-catalog/visibility", async (AdminMenuVisibilityRequest x,AuthService auth,HttpContext http,CancellationToken ct) => await SetMenuVisibility(x,auth,http,ct));
+        app.MapPost("/api/society-admin/export/xlsx", async (TableExportRequest x,AuthService auth,HttpContext http,CancellationToken ct) => await ExportTableXlsx(x,auth,http,ct));
 
+    }
+
+    static async Task<IResult> ExportTableXlsx(TableExportRequest x,AuthService auth,HttpContext http,CancellationToken ct)
+    {
+        var session=await AuthGuard.Get(http,auth,ct);
+        if(session is null)return Results.Unauthorized();
+        if(session.SocietyId is null)return Results.BadRequest(new {message="Select a society first."});
+        var module=x.ModuleCode.Trim().ToUpperInvariant() switch
+        {
+            "SA_BILL_REGISTER" or "SA_BILL_GENERATION" or "BILLING" => "BILLING",
+            "SA_FLATS" or "FLATS" => "FLATS",
+            "SA_RESIDENTS" or "SOC_CUSTOMER" => "SOC_CUSTOMER",
+            "SA_COLLECTION" or "COLLECTION" => "COLLECTION",
+            "COL_ACCEPT_PAYMENT" => "COL_ACCEPT_PAYMENT",
+            "COL_SERVICE_PAYMENT" => "COL_SERVICE_PAYMENT",
+            "COL_BANK_DETAILS" => "COL_BANK_DETAILS",
+            "COL_DISHONORED" => "COL_DISHONORED",
+            "CRM_CUSTOMER_ACCOUNT" => "CRM_CUSTOMER_ACCOUNT",
+            "SA_COMPLAINTS" or "COMPLAINTS" => "COMPLAINTS",
+            "SA_VISITORS" or "VISITORS" => "VISITORS",
+            "SA_PARKING" or "PARKING" => "PARKING",
+            "ADM_ACCOUNTS" => "ADM_ACCOUNTS",
+            _ => null
+        };
+        if(module is null)return Results.BadRequest(new {message="Export is not enabled for this table."});
+        if(!await auth.HasPermissionAsync(session.UserId,module,"EXPORT",ct))return Results.Forbid();
+        if(x.Columns is null || x.Columns.Count==0 || x.Columns.Count>100 || x.Rows is null || x.Rows.Count>50000)
+            return Results.BadRequest(new {message="The export selection is invalid or too large."});
+        try
+        {
+            using var workbook=new XLWorkbook();
+            var sheetName=new string((x.SheetName??"Data").Where(ch=>!Path.GetInvalidFileNameChars().Contains(ch) && ch!='[' && ch!=']' && ch!=':' && ch!='*' && ch!='?' && ch!='/' && ch!='\\').Take(31).ToArray());
+            if(string.IsNullOrWhiteSpace(sheetName))sheetName="Data";
+            var ws=workbook.Worksheets.Add(sheetName);
+            for(var col=0;col<x.Columns.Count;col++)
+            {
+                ws.Cell(1,col+1).Value=x.Columns[col].Title??x.Columns[col].Key;
+            }
+            var header=ws.Range(1,1,1,x.Columns.Count);
+            header.Style.Fill.BackgroundColor=XLColor.FromHtml("#253A70");
+            header.Style.Font.FontColor=XLColor.White;
+            header.Style.Font.Bold=true;
+            header.Style.Alignment.Vertical=XLAlignmentVerticalValues.Center;
+            ws.Row(1).Height=24;
+            for(var ri=0;ri<x.Rows.Count;ri++)
+            {
+                var row=x.Rows[ri];
+                for(var ci=0;ci<x.Columns.Count;ci++)
+                {
+                    var col=x.Columns[ci];
+                    if(string.IsNullOrWhiteSpace(col.Key) || !row.TryGetValue(col.Key,out var value) || value.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)continue;
+                    var cell=ws.Cell(ri+2,ci+1);
+                    switch(value.ValueKind)
+                    {
+                        case JsonValueKind.Number:
+                            if(value.TryGetInt64(out var i64))cell.Value=i64;
+                            else if(value.TryGetDecimal(out var dec))cell.Value=dec;
+                            else cell.Value=value.GetDouble();
+                            break;
+                        case JsonValueKind.True: cell.Value=true; break;
+                        case JsonValueKind.False: cell.Value=false; break;
+                        case JsonValueKind.String:
+                            var text=value.GetString()??"";
+                            var dateField=col.Key.Contains("date",StringComparison.OrdinalIgnoreCase)||col.Key.Contains("month",StringComparison.OrdinalIgnoreCase)||col.Key.EndsWith("_at",StringComparison.OrdinalIgnoreCase);
+                            if(dateField && DateTime.TryParse(text,CultureInfo.InvariantCulture,DateTimeStyles.RoundtripKind,out var date))
+                            {
+                                cell.Value=date;
+                                cell.Style.DateFormat.Format=text.Contains('T')?"yyyy-mm-dd hh:mm":"yyyy-mm-dd";
+                            }
+                            else
+                            {
+                                cell.Value=text;
+                                cell.Style.NumberFormat.Format="@";
+                            }
+                            break;
+                        default: cell.Value=value.ToString(); break;
+                    }
+                }
+            }
+            if(x.Rows.Count>0)ws.Range(1,1,x.Rows.Count+1,x.Columns.Count).SetAutoFilter();
+            ws.SheetView.FreezeRows(1);
+            ws.Columns().AdjustToContents();
+            foreach(var col in ws.ColumnsUsed())if(col.Width>42)col.Width=42;
+            using var stream=new MemoryStream();
+            workbook.SaveAs(stream);
+            var safeName=new string((x.FileName??"Society360-Export").Where(ch=>char.IsLetterOrDigit(ch)||ch is '-' or '_' or ' ').Take(90).ToArray()).Trim();
+            if(string.IsNullOrWhiteSpace(safeName))safeName="Society360-Export";
+            http.Response.Headers.CacheControl="no-store";
+            return Results.File(stream.ToArray(),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",safeName+".xlsx");
+        }
+        catch(Exception ex)
+        {
+            return Results.Problem("Excel export could not be generated.",statusCode:500,extensions:new Dictionary<string,object?>{{"detail",ex.GetType().Name}});
+        }
     }
 
     static async Task<IResult> AccountList(string q,AuthService auth,HttpContext http,CancellationToken ct)
@@ -328,8 +425,12 @@ public static class SocietyAdminEndpoints
                     f.occupancy_status,COALESCE(c.full_name,'') AS owner_name,COALESCE(c.phone,'') AS owner_phone
                 FROM m_flat f LEFT JOIN m_wing w ON w.wing_id=f.wing_id
                 LEFT JOIN m_building b ON b.building_id=f.building_id
-                LEFT JOIN m_customer_flat cf ON cf.flat_id=f.flat_id AND cf.is_primary
-                LEFT JOIN m_customer c ON c.customer_id=cf.customer_id
+                LEFT JOIN LATERAL (
+                    SELECT mc.full_name,mc.phone,mc.customer_type FROM m_customer_flat cf
+                    JOIN m_customer mc ON mc.customer_id=cf.customer_id
+                    WHERE cf.flat_id=f.flat_id AND cf.is_primary
+                    ORDER BY mc.customer_id LIMIT 1
+                ) c ON true
                 WHERE f.society_id=@society AND f.is_active
                   AND (@building IS NULL OR f.building_id=@building)
                   AND (@unit_type IS NULL OR f.unit_type=@unit_type)
@@ -340,8 +441,12 @@ public static class SocietyAdminEndpoints
                     COALESCE(c.full_name,'') AS customer_name,b.total_amount,b.paid_amount,
                     GREATEST(COALESCE(b.total_amount,0)-COALESCE(b.paid_amount,0),0) AS balance,b.due_date,b.status
                 FROM t_bill b JOIN m_flat f ON f.flat_id=b.flat_id
-                LEFT JOIN m_customer_flat cf ON cf.flat_id=f.flat_id AND cf.is_primary
-                LEFT JOIN m_customer c ON c.customer_id=cf.customer_id
+                LEFT JOIN LATERAL (
+                    SELECT mc.full_name,mc.customer_type FROM m_customer_flat cf
+                    JOIN m_customer mc ON mc.customer_id=cf.customer_id
+                    WHERE cf.flat_id=f.flat_id AND cf.is_primary
+                    ORDER BY mc.customer_id LIMIT 1
+                ) c ON true
                 WHERE b.society_id=@society AND f.is_active
                   AND (@kind<>'bills' OR (b.bill_date>=@from AND b.bill_date<@to+1))
                   AND upper(COALESCE(b.status,'')) NOT IN ('DRAFT','CANCELLED','CANCELED','VOID','DELETED')
@@ -389,7 +494,11 @@ public static class SocietyAdminEndpoints
             "parking" or "assignedparking"=>@"SELECT s.parking_slot_id AS slot_id,s.slot_no,s.slot_type,s.charge,COALESCE(f.flat_no,'') AS assigned_flat,
                     COALESCE(c.full_name,'') AS customer_name,
                     CASE WHEN a.assignment_id IS NULL THEN 'Available' ELSE 'Assigned' END AS status
-                FROM m_parking_slot s LEFT JOIN t_parking_assignment a ON a.parking_slot_id=s.parking_slot_id AND a.is_active
+                FROM m_parking_slot s LEFT JOIN LATERAL (
+                    SELECT pa.assignment_id,pa.flat_id,pa.customer_id FROM t_parking_assignment pa
+                    WHERE pa.parking_slot_id=s.parking_slot_id AND pa.society_id=s.society_id AND pa.is_active
+                    ORDER BY pa.start_date DESC NULLS LAST,pa.assignment_id DESC LIMIT 1
+                ) a ON true
                 LEFT JOIN m_flat f ON f.flat_id=a.flat_id LEFT JOIN m_customer c ON c.customer_id=a.customer_id
                 WHERE s.society_id=@society AND s.is_active
                   AND (@kind<>'assignedparking' OR a.assignment_id IS NOT NULL)
@@ -424,6 +533,9 @@ public static class SocietyAdminEndpoints
         http.Response.Headers.CacheControl="no-store";
         return Results.Ok(rows);
     }
+
+    public sealed record TableExportColumn(string Key,string Title);
+    public sealed record TableExportRequest(string ModuleCode,string FileName,string SheetName,List<TableExportColumn> Columns,List<Dictionary<string,JsonElement>> Rows);
 
     static async Task<IResult> Query(AuthService auth,HttpContext http,CancellationToken ct,string fn,string q,int columns)
     {

@@ -4,7 +4,8 @@ const $=s=>document.querySelector(s);
 const money=n=>new Intl.NumberFormat(window.Society360I18n?.locale?.()||'en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(Number(n||0));
 const number=n=>new Intl.NumberFormat(window.Society360I18n?.locale?.()||'en-IN',{maximumFractionDigits:1}).format(Number(n||0));
 const tr=s=>window.Society360I18n?.translateText?.(String(s??''))??String(s??'');
-const colors=['#7968e8','#28b99a','#4d91d7','#e7a94e','#df7180','#8d6bc7','#54b6c6','#a1b66a','#b48b6b'];
+const colors=['#6d5ce7','#169b7d','#4d91d7','#bd842b','#c94f61','#875ec5','#28a9b8','#7f9f54','#b07c55'];
+const trendColors={billed:'#6d5ce7',collected:'#169b7d'};
 let lastData=null,requestController=null,requestSequence=0,filterOptionsReady=false;
 const todayLocal=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
 const dateAdd=(value,days)=>{const d=new Date(value+'T12:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)};
@@ -108,34 +109,46 @@ function render(data){
  setStatus((s.totalCustomers+s.totalFlats+s.billsCount)===0?'Dashboard loaded — no matching records for this selection.':'Dashboard data loaded from the database');
 }
 function drawTrend(rows){
- const root=$('#dashboardTrend');if(!rows.length){root.innerHTML='<div class="dash-empty-state">'+t('No billing or collection records in this period.')+'</div>';return}
- const W=760,H=220,L=48,R=14,T=14,B=31,innerW=W-L-R,innerH=H-T-B;
- const max=Math.max(1,...rows.map(x=>Math.max(Number(x.billed||0),Number(x.collected||0))));
+ const root=$('#dashboardTrend');
+ if(!root)return;
+ if(!rows.length||!rows.some(r=>Number(r.billed||0)!==0||Number(r.collected||0)!==0)){root.innerHTML='<div class="dash-empty-state">'+t('No billing or collection records in this period.')+'</div>';return;}
+ const W=960,H=238,L=76,R=22,T=18,B=42,innerW=W-L-R,innerH=H-T-B;
+ const values=rows.flatMap(r=>[Number(r.billed||0),Number(r.collected||0)]);
+ const max=Math.max(1,...values);
  const x=i=>L+(rows.length===1?innerW/2:i*innerW/(rows.length-1));
  const y=v=>T+innerH-(Number(v||0)/max)*innerH;
- let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+t('Monthly billing and collection trend')+'">';
- for(let i=0;i<4;i++){const yy=T+i*innerH/3;svg+='<line class="chart-gridline" x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'"/><text class="chart-axis-label" x="'+(L-8)+'" y="'+(yy+4)+'" text-anchor="end">'+shortMoney(max*(1-i/3))+'</text>'}
- for(const [key,color,label] of [['billed','#7968e8','Billed'],['collected','#28b99a','Collected']]){
-  const points=rows.map((r,i)=>x(i)+','+y(r[key])).join(' ');
-  svg+='<polyline fill="none" stroke="'+color+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="'+points+'"/>';
-  rows.forEach((r,i)=>{const value=Number(r[key]||0);svg+='<circle cx="'+x(i)+'" cy="'+y(value)+'" r="4" fill="'+color+'" stroke="#fff" stroke-width="2"><title>'+t(r.label||r.month)+' · '+t(label)+': '+money(value)+'</title></circle>'});
+ const step=Math.max(1,Math.ceil(rows.length/8));
+ let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+t('Billing and collection trends')+'" preserveAspectRatio="xMidYMid meet">';
+ for(let i=0;i<5;i++){
+  const val=max*(1-i/4),yy=T+i*innerH/4;
+  svg+='<line class="chart-gridline" x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'"/><text class="chart-axis-label" x="'+(L-10)+'" y="'+(yy+4)+'" text-anchor="end">'+escapeHtml(shortMoney(val))+'</text>';
  }
- rows.forEach((r,i)=>{svg+='<text class="chart-axis-label" x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle">'+escapeHtml(t(r.label||r.month))+'</text>'});
+ const billed=rows.map((r,i)=>x(i)+','+y(r.billed)).join(' ');
+ const collected=rows.map((r,i)=>x(i)+','+y(r.collected)).join(' ');
+ svg+='<polyline class="trend-line-billed" fill="none" stroke="'+trendColors.billed+'" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="'+billed+'"/>';
+ svg+='<polyline class="trend-line-collected" fill="none" stroke="'+trendColors.collected+'" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="'+collected+'"/>';
+ rows.forEach((r,i)=>{
+  const b=Number(r.billed||0),c=Number(r.collected||0),label=t(r.label||r.month);
+  svg+='<circle class="trend-point trend-point-billed" cx="'+x(i)+'" cy="'+y(b)+'" r="4.3" fill="'+trendColors.billed+'" stroke="#fff" stroke-width="2"><title>'+escapeHtml(label+' · '+t('Billed')+': '+money(b))+'</title></circle>';
+  svg+='<circle class="trend-point trend-point-collected" cx="'+x(i)+'" cy="'+y(c)+'" r="4.3" fill="'+trendColors.collected+'" stroke="#fff" stroke-width="2"><title>'+escapeHtml(label+' · '+t('Collected')+': '+money(c))+'</title></circle>';
+  if(i%step===0||i===rows.length-1)svg+='<text class="chart-axis-label" x="'+x(i)+'" y="'+(H-13)+'" text-anchor="middle">'+escapeHtml(label)+'</text>';
+ });
  svg+='</svg>';root.innerHTML=svg;
 }
 function shortMoney(v){v=Number(v||0);if(v>=10000000)return '₹'+number(v/10000000)+'Cr';if(v>=100000)return '₹'+number(v/100000)+'L';if(v>=1000)return '₹'+number(v/1000)+'k';return '₹'+number(v)}
 function drawDonut(selector,rows,valueKey,detailKey,centerLabel,drillType){
- const root=$(selector);const valid=rows.filter(r=>Number(r[valueKey]||0)>0);const total=valid.reduce((a,r)=>a+Number(r[valueKey]||0),0);
+ const root=$(selector);const valid=rows.filter(r=>Number(r[valueKey]||0)>0);const total=valid.reduce((sum,r)=>sum+Number(r[valueKey]||0),0);
  if(!valid.length||!total){root.innerHTML='<div class="dash-empty-state">'+t('No records for this selection.')+'</div>';return}
  let acc=0;const stops=valid.map((r,i)=>{const start=acc;acc+=Number(r[valueKey]||0)/total*100;return colors[i%colors.length]+' '+start+'% '+acc+'%'}).join(',');
  const center=drillType==='flats'?number(total):drillType==='collection'?money(total):number(total);
- const legend=valid.map((r,i)=>'<button type="button" data-dash-drill="'+drillType+'" data-dash-label="'+escapeAttr(r.label)+'" title="'+escapeAttr(t(r.label)+': '+(drillType==='collection'?money(r[valueKey]):number(r[valueKey])))+'"><i style="background:'+colors[i%colors.length]+'"></i><span class="legend-label">'+escapeHtml(t(r.label))+'</span><b>'+escapeHtml(drillType==='collection'?money(r[valueKey]):number(r[valueKey]))+'</b><small>'+number(Number(r[valueKey]||0)/total*100)+'%</small></button>').join('');
+ const periodText=drillType==='collection'?($('#dashboardPeriodLabel')?.textContent||''):t('Current snapshot');
+ const legend=valid.map((r,i)=>{const value=Number(r[valueKey]||0);const formatted=drillType==='collection'?money(value):number(value);const percent=number(value/total*100);const tooltip=t(r.label)+': '+formatted+' ('+percent+'%) · '+periodText;return '<button type="button" data-dash-drill="'+drillType+'" data-dash-label="'+escapeAttr(r.label)+'" title="'+escapeAttr(tooltip)+'"><i style="background:'+colors[i%colors.length]+'"></i><span class="legend-label">'+escapeHtml(t(r.label))+'</span><b>'+escapeHtml(formatted)+'</b><small>'+percent+'%</small></button>'}).join('');
  root.innerHTML='<div class="dash-donut" style="background:conic-gradient('+stops+')"><div class="dash-donut-center"><b>'+escapeHtml(center)+'</b><small>'+t(centerLabel)+'</small></div></div><div class="dash-chart-legend">'+legend+'</div>';
 }
 function drawBars(selector,rows,valueKey,detailKey,drillType){
  const root=$(selector);const valid=rows.filter(r=>Number(r[valueKey]||0)>=0);if(!valid.length||valid.every(r=>Number(r[valueKey]||0)===0)){root.innerHTML='<div class="dash-empty-state">'+t('No records for this selection.')+'</div>';return}
- const max=Math.max(1,...valid.map(r=>Number(r[valueKey]||0)));
- root.innerHTML=valid.map((r,i)=>{const value=Number(r[valueKey]||0);return '<div class="dash-bar-row"><button type="button" data-dash-drill="'+drillType+'" data-dash-label="'+escapeAttr(r.label)+'" title="'+escapeAttr(t(r.label)+': '+number(value))+'"><span class="dash-bar-label">'+escapeHtml(t(r.label))+'</span><span class="dash-bar-track"><span class="dash-bar-fill" style="display:block;width:'+Math.max(value>0?2:0,value/max*100)+'%;background:'+colors[i%colors.length]+'"></span></span><span class="dash-bar-value">'+number(value)+'</span></button></div>'}).join('');
+ const max=Math.max(1,...valid.map(r=>Number(r[valueKey]||0)));const total=valid.reduce((sum,r)=>sum+Number(r[valueKey]||0),0);const periodText=drillType==='bills'?($('#dashboardPeriodLabel')?.textContent||''):t('Current snapshot');
+ root.innerHTML=valid.map((r,i)=>{const value=Number(r[valueKey]||0);const percent=number(total?value/total*100:0);const tooltip=t(r.label)+': '+number(value)+' ('+percent+'%) · '+periodText;return '<div class="dash-bar-row"><button type="button" data-dash-drill="'+drillType+'" data-dash-label="'+escapeAttr(r.label)+'" title="'+escapeAttr(tooltip)+'"><span class="dash-bar-label">'+escapeHtml(t(r.label))+'</span><span class="dash-bar-track"><span class="dash-bar-fill" style="display:block;width:'+Math.max(value>0?2:0,value/max*100)+'%;background:'+colors[i%colors.length]+'"></span></span><span class="dash-bar-value">'+number(value)+'</span></button></div>'}).join('');
 }
 function escapeHtml(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function escapeAttr(v){return escapeHtml(v).replace(/'/g,'&#39;')}

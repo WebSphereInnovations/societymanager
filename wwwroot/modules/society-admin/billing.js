@@ -19,11 +19,32 @@
   function table(id, data, columns) {
     const el = $(id); if (!el || !window.Tabulator) return;
     if (el._tab) el._tab.destroy();
-    el._tab = new Tabulator(el, {
-      data, layout:'fitColumns', height:'430px', pagination:true, paginationSize:15,
-      headerFilterPlaceholder:t('Search'),
-      columns:columns.map(c=>({...c,title:t(c.title)}))
+    const linkFields = new Set(['customer_name','customer_number','flat_no','full_name','customer_phone','phone','customer_email','email','owner_name','owner_phone','owner_email']);
+    const localizedColumns = columns.map(c => {
+      const base = {...c, title:t(c.title)};
+      if (!linkFields.has(c.field)) return base;
+      base.formatter = cell => {
+        const row = cell.getRow().getData(), ref = window.customerReferenceFor?.(row, c.field), value = cell.getValue();
+        if (!ref || value == null || value === '') return c.formatter ? c.formatter(cell) : String(value ?? '—');
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 's360-customer-link';
+        button.title = t('Open Customer Account'); button.textContent = String(value);
+        return button;
+      };
+      base.cellClick = (event, cell) => {
+        const ref = window.customerReferenceFor?.(cell.getRow().getData(), c.field);
+        if (ref) { event.preventDefault(); event.stopPropagation(); window.openCustomerAccountReference?.(ref.type, ref.id); }
+        else if (c.cellClick) c.cellClick(event, cell);
+      };
+      return base;
     });
+    el._tab = new Tabulator(el, {
+      data, layout:'fitColumns', height:'430px', pagination:true, paginationSize:25,
+      paginationSizeSelector:[10,25,50,100], paginationCounter:'rows', paginationButtonCount:5,
+      headerFilterPlaceholder:t('Search'), placeholder:t('No matching records'), columns:localizedColumns
+    });
+    el._tab.__s360SourceColumns=localizedColumns.map((c,i)=>({...c,title:columns[i].title}));
+    if(window.ensureTableExportToolbar)window.ensureTableExportToolbar(el,id);
   }
 
   function bindChargeTypeOptions() {

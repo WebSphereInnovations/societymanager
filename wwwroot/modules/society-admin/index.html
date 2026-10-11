@@ -1,23 +1,23 @@
 
 <!doctype html>
 <html lang="en">
-<head><link rel="stylesheet" href="/css/menu-icons.css?v=20261004.1">
+<head><link rel="icon" href="data:,"><link rel="stylesheet" href="/css/menu-icons.css?v=20261004.1">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Society360 — Society Admin</title>
-<link href="/lib/tabulator/tabulator.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/modules/society-admin/admin.css"><link rel="stylesheet" href="/modules/society-admin/dashboard.css?v=20261010.04"><link rel="stylesheet" href="/modules/society-admin/billing.css?v=20261007.01"><link rel="stylesheet" href="/modules/society-admin/admin-accounts.css?v=20261004.2"><link rel="stylesheet" href="/modules/society-admin/consumer-account.css?v=20261004.1"><link rel="stylesheet" href="/css/support-assistant.css">
+<link href="/lib/tabulator/tabulator.min.css" rel="stylesheet"><link rel="stylesheet" href="/css/tabulator-theme.css?v=20261011.01">
+<link rel="stylesheet" href="/modules/society-admin/admin.css?v=20261011.04"><link rel="stylesheet" href="/modules/society-admin/dashboard.css?v=20261011.03"><link rel="stylesheet" href="/modules/society-admin/billing.css?v=20261007.01"><link rel="stylesheet" href="/modules/society-admin/admin-accounts.css?v=20261004.2"><link rel="stylesheet" href="/modules/society-admin/consumer-account.css?v=20261004.1"><link rel="stylesheet" href="/css/support-assistant.css">
 </head>
 <body>
 <div class="ambient a"></div><div class="ambient b"></div>
 <div id="mobileMenuBackdrop" class="mobile-menu-backdrop" aria-hidden="true"></div><aside class="side">
  <div class="logo"><b>3</b><div><strong>Society<span>360</span></strong><small>Society Admin</small></div></div>
- <div class="society"><small>ACTIVE SOCIETY</small><strong id="societyName">Loading...</strong></div>
+ <div class="society"><small id="activeSocietyLabel" data-i18n="ACTIVE SOCIETY">ACTIVE SOCIETY</small><strong id="societyName">Loading...</strong></div>
  <nav id="dbMenu"></nav>
- <div class="user"><div id="avatar">SA</div><div><b id="userName">Society Admin</b><small>Society Admin</small></div></div>
+ <div class="user"><div id="avatar">SA</div><div><b id="userName">Society Admin</b><small id="userRoleLabel" data-i18n="Society Admin">Society Admin</small></div></div>
 </aside>
 <main>
 <header><div><button type="button" id="mobileMenuToggle" class="mobile-menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button><small class="crumb">SOCIETY360 / SOCIETY ADMIN</small><h1 id="heading">Hello, User</h1><p>Manage your society operations from one connected workspace.</p></div>
-<div class="head-actions"><select id="language-select"></select><button id="logout">Logout</button></div></header>
+<div class="head-actions"><div class="nav-preferences"><button type="button" id="navSettingsToggle" class="nav-settings-toggle" aria-expanded="false" aria-controls="navSettingsPanel" data-i18n="Navigation settings">Navigation settings</button><div id="navSettingsPanel" class="nav-settings-panel" hidden><label for="navigationLayoutSelect"><span data-i18n="Navigation layout">Navigation layout</span><select id="navigationLayoutSelect"><option value="left" data-i18n="Left sidebar">Left sidebar</option><option value="right" data-i18n="Right sidebar">Right sidebar</option><option value="top" data-i18n="Top navigation">Top navigation</option></select></label><button type="button" id="navCollapseToggle" data-i18n="Collapse sidebar">Collapse sidebar</button></div></div><select id="language-select" aria-label="Language"></select><button id="logout" data-i18n="Logout">Logout</button></div></header>
 <section id="home" class="view active dashboard-view">
  <div class="dash-hero">
   <div class="dash-hero-copy">
@@ -55,7 +55,11 @@
   <article class="dash-kpi kpi-operations"><div class="dash-kpi-head"><span data-i18n="Open complaints"></span><span class="dash-kpi-icon">◇</span></div><strong id="kpiComplaints">—</strong><div class="dash-kpi-foot"><span id="kpiOperationsDetail">—</span><button data-dash-drill="complaints" data-i18n="View complaints"></button></div></article>
  </div>
  <div class="dash-chart-grid">
-  <article class="dash-panel dash-trend-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="FINANCIAL PERFORMANCE"></span><h3 data-i18n="Billing & collection trend"></h3><p data-i18n="Monthly totals from valid bills and successful payments"></p></div><span class="dash-chart-badge" data-i18n="Selected period"></span></div><div id="dashboardTrend" class="dash-trend-chart"><div class="dash-empty" data-i18n="Loading chart"></div></div><div class="dash-legend"><span><i class="legend-billed"></i><span data-i18n="Billed"></span></span><span><i class="legend-collected"></i><span data-i18n="Collected"></span></span></div></article>
+  <article class="dash-panel dash-trend-card dash-trend-combined">
+   <div class="dash-panel-head dash-combined-trend-head"><div><span class="dash-section-kicker" data-i18n="BILLING AND COLLECTIONS"></span><h3 data-i18n="Billing & Collection Trends"></h3><p data-i18n="Compare billed and collected amounts over the selected period"></p></div><span class="dash-chart-badge" data-i18n="Selected period"></span></div>
+   <div id="dashboardTrend" class="dash-trend-chart dash-combined-trend-chart"><div class="dash-empty" data-i18n="Loading chart"></div></div>
+   <div class="dash-legend dash-combined-legend"><span><i class="legend-billed"></i><span data-i18n="Billed"></span></span><span><i class="legend-collected"></i><span data-i18n="Collected"></span></span></div>
+  </article>
   <article class="dash-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="PROPERTY"></span><h3 data-i18n="Occupancy breakdown"></h3><p data-i18n="Active units by current occupancy status"></p></div></div><div id="dashboardOccupancy" class="dash-donut-wrap"><div class="dash-empty" data-i18n="Loading chart"></div></div></article>
   <article class="dash-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="COLLECTIONS"></span><h3 data-i18n="Collections by payment mode"></h3><p data-i18n="Successful payments in the selected period"></p></div></div><div id="dashboardPaymentModes" class="dash-donut-wrap"><div class="dash-empty" data-i18n="Loading chart"></div></div></article>
   <article class="dash-panel"><div class="dash-panel-head"><div><span class="dash-section-kicker" data-i18n="BILLING"></span><h3 data-i18n="Bill status"></h3><p data-i18n="Valid bills by recorded status"></p></div></div><div id="dashboardBillStatuses" class="dash-breakdown"><div class="dash-empty" data-i18n="Loading chart"></div></div></article>
@@ -219,5 +223,5 @@
 <footer><span>Society360 — Society Admin</span><span id="clock"></span></footer>
 </main>
 <script src="/lib/tabulator/tabulator.min.js"></script>
-<script src="/js/i18n.js?v=20261010.04"></script><script src="/modules/society-admin/customer-account.js?v=20261004.4"></script><script src="/modules/society-admin/billing.js?v=20261007.01"></script><script src="/modules/society-admin/dashboard.js?v=20261010.06"></script><script src="/modules/society-admin/admin.js?v=20261010.03"></script><script src="/modules/society-admin/account-management.js?v=20261004.4"></script><script src="/modules/society-admin/requested-workflows.js?v=20261004.4"></script><script src="/modules/society-admin/security-visitor.js?v=20261004.4"></script><script src="/js/support-assistant.js?v=20261004.4"></script>
+<script src="/js/i18n.js?v=20261011.22"></script><script src="/js/tabulator-defaults.js?v=20261011.06"></script><script src="/modules/society-admin/customer-account.js?v=20261004.4"></script><script src="/modules/society-admin/billing.js?v=20261011.05"></script><script src="/modules/society-admin/dashboard.js?v=20261011.09"></script><script src="/modules/society-admin/admin.js?v=20261011.23"></script><script src="/modules/society-admin/navigation-layout.js?v=20261010.03"></script><script src="/modules/society-admin/account-management.js?v=20261004.4"></script><script src="/modules/society-admin/requested-workflows.js?v=20261011.23"></script><script src="/modules/society-admin/security-visitor.js?v=20261011.11"></script><script src="/js/support-assistant.js?v=20261004.4"></script>
 </body></html>

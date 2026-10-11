@@ -11,4 +11,10 @@
     <PackageReference Include="Npgsql" Version="10.0.0" />
   </ItemGroup>
 
+  <!-- Development/test artifacts are not application content and must not be recursively copied into builds. -->
+  <ItemGroup>
+    <Content Remove="artifacts\**;.chrome-*\**;tmp-chrome-test\**;logs\**" />
+    <None Remove="artifacts\**;.chrome-*\**;tmp-chrome-test\**;logs\**" />
+  </ItemGroup>
+
 </Project>

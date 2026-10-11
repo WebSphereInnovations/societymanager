@@ -47,7 +47,7 @@
 .dash-kpi-foot button{border:0;background:transparent;padding:2px 0;color:var(--kpi-color,#7160e8);font-size:9px;font-weight:800;white-space:nowrap;cursor:pointer}
 .kpi-customer{--kpi-color:#6555d8;--kpi-wash:rgba(113,96,232,.1)}.kpi-property{--kpi-color:#258bba;--kpi-wash:rgba(48,163,208,.1)}.kpi-billed{--kpi-color:#b47a25;--kpi-wash:rgba(233,177,78,.13)}.kpi-collected{--kpi-color:#139a7c;--kpi-wash:rgba(32,185,155,.12)}.kpi-outstanding{--kpi-color:#cb6c39;--kpi-wash:rgba(239,143,81,.12)}.kpi-overdue{--kpi-color:#c74d5d;--kpi-wash:rgba(220,90,111,.11)}.kpi-occupancy{--kpi-color:#4d6fd2;--kpi-wash:rgba(91,125,226,.11)}.kpi-operations{--kpi-color:#8a62c9;--kpi-wash:rgba(150,107,210,.11)}
 .dash-progress{height:5px;margin-top:12px;border-radius:8px;background:#edf0f7;overflow:hidden}.dash-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#6b5be4,#37c9a9);border-radius:8px;transition:width .25s ease}
-.dash-chart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:14px}
+.dash-chart-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
 .dash-panel{min-width:0;padding:18px}
 .dash-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .dash-section-kicker{font-size:8px;color:#958be5;letter-spacing:1.1px}
@@ -141,3 +141,70 @@
 .dash-modal-empty{display:grid;place-items:center;min-height:140px;padding:22px;color:#8d99ad;text-align:center;font-size:11px}
 .dash-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 22px 18px;color:#8792a6;font-size:10px}
 @media(max-width:560px){.dash-modal{padding:8px}.dash-modal-card{max-height:94vh;border-radius:15px}.dash-modal-head{padding:15px 14px 12px}.dash-modal-table-wrap{margin:10px 10px 0}.dash-modal-footer{padding:11px 14px 14px}.dash-modal-table th,.dash-modal-table td{padding:9px 10px}}
+/* Dashboard visual polish: restrained semantic tints, consistent chart colors, and clearer hierarchy. */
+.dashboard-view{--dash-purple:#6d5ce7;--dash-blue:#2787bd;--dash-amber:#bd842b;--dash-green:#169b7d;--dash-orange:#c96b3a;--dash-red:#c94f61;--dash-indigo:#4f70d4;--dash-plum:#875ec5}
+.dash-kpi{border-color:color-mix(in srgb,var(--kpi-color,#7160e8) 14%,#fff);background:linear-gradient(145deg,#fff 0%,color-mix(in srgb,var(--kpi-color,#7160e8) 4%,#fff) 100%);box-shadow:0 10px 25px rgba(29,43,82,.055),inset 0 1px 0 rgba(255,255,255,.95)}
+.dash-kpi:after{content:"";position:absolute;left:17px;right:17px;top:0;height:3px;border-radius:0 0 5px 5px;background:var(--kpi-color,#7160e8);opacity:.72}
+.dash-kpi:hover{border-color:color-mix(in srgb,var(--kpi-color,#7160e8) 34%,#fff);box-shadow:0 16px 34px rgba(29,43,82,.12)}
+.kpi-customer{--kpi-color:var(--dash-purple);--kpi-wash:rgba(109,92,231,.14)}
+.kpi-property{--kpi-color:var(--dash-blue);--kpi-wash:rgba(39,135,189,.13)}
+.kpi-billed{--kpi-color:var(--dash-amber);--kpi-wash:rgba(189,132,43,.15)}
+.kpi-collected{--kpi-color:var(--dash-green);--kpi-wash:rgba(22,155,125,.14)}
+.kpi-outstanding{--kpi-color:var(--dash-orange);--kpi-wash:rgba(201,107,58,.14)}
+.kpi-overdue{--kpi-color:var(--dash-red);--kpi-wash:rgba(201,79,97,.13)}
+.kpi-occupancy{--kpi-color:var(--dash-indigo);--kpi-wash:rgba(79,112,212,.13)}
+.kpi-operations{--kpi-color:var(--dash-plum);--kpi-wash:rgba(135,94,197,.13)}
+.dash-toolbar{background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(247,248,255,.97));border-color:#e4e7f6}
+.dash-panel{background:linear-gradient(145deg,#fff 0%,#fcfcff 100%);box-shadow:0 12px 30px rgba(29,43,82,.065)}
+.dash-section-kicker{color:#7160d9}
+.dash-chart-badge{border-color:#ddd8ff;background:linear-gradient(120deg,#f6f3ff,#eff9ff);color:#6252c8}
+.dash-progress span{background:linear-gradient(90deg,#4f70d4 0%,#6d5ce7 52%,#20b99b 100%)}
+.legend-billed{background:#6d5ce7}.legend-collected{background:#169b7d}
+.dash-bar-fill{background:linear-gradient(90deg,#5d76d6,#7c68e8)}
+.dash-chart-legend button:focus-visible,.dash-ops-grid button:focus-visible{outline:3px solid rgba(109,92,231,.35);outline-offset:3px;border-radius:8px}
+@media(prefers-reduced-motion:reduce){.dash-kpi,.dash-bar-fill,.dash-progress span{transition:none!important}}
+
+/* Compact financial trend cards: four-up on wide desktop, two-up on tablet, one-up on phones. */
+.dash-chart-grid>.dash-panel{min-height:274px;padding:15px;border-radius:16px}
+.dash-trend-card{position:relative;overflow:hidden;box-shadow:0 10px 26px rgba(29,43,82,.07)}
+.dash-trend-card:before{content:"";position:absolute;left:15px;right:15px;top:0;height:3px;border-radius:0 0 6px 6px;opacity:.82}
+.trend-billing{background:linear-gradient(145deg,#fff 0%,#faf9ff 100%);border-color:rgba(109,92,231,.16)}
+.trend-billing:before{background:linear-gradient(90deg,#6d5ce7,#8d7ff0)}
+.trend-collection{background:linear-gradient(145deg,#fff 0%,#f8fffc 100%);border-color:rgba(22,155,125,.16)}
+.trend-collection:before{background:linear-gradient(90deg,#169b7d,#42bea3)}
+.trend-badge-billing{border-color:#ddd8ff;background:#f6f3ff;color:#5f50cf}
+.trend-badge-collection{border-color:#d4eee6;background:#effbf7;color:#137c67}
+.dash-trend-chart{min-height:180px;margin-top:10px}
+.dash-trend-chart svg{height:180px}
+.dash-trend-chart .trend-point{cursor:help;filter:drop-shadow(0 2px 2px rgba(29,43,82,.14))}
+.dash-trend-card .dash-legend{margin-top:0;padding-top:1px}
+.dash-trend-card .dash-legend span{font-weight:700}
+.dash-panel:not(.dash-trend-card) .dash-section-kicker{color:#6f62c9}
+.dash-ops-panel{grid-column:1/-1}
+@media(min-width:1500px){.dash-chart-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:1180px){.dash-chart-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:800px){.dash-chart-grid{grid-template-columns:1fr}.dash-ops-panel{grid-column:auto}.dash-chart-grid>.dash-panel{min-height:260px}.dash-trend-chart,.dash-trend-chart svg{height:180px;min-height:180px}}
+@media(max-width:560px){.dash-chart-grid>.dash-panel{padding:13px 12px}.dash-trend-chart,.dash-trend-chart svg{height:172px;min-height:172px}.dash-trend-card .dash-panel-head{gap:7px}.dash-trend-card .dash-chart-badge{display:inline-flex;padding:5px 7px;font-size:7px}}
+
+/* Unified billed-vs-collected trend: one compact, readable comparison chart. */
+.dash-chart-grid>.dash-trend-combined{grid-column:span 2;min-height:0;padding:17px 19px;background:linear-gradient(135deg,#fff 0%,#fbfaff 55%,#f7fffc 100%);border-color:#dfe4f2}
+.dash-combined-trend-head{align-items:center;gap:12px}
+.dash-combined-trend-head h3{font-size:17px;color:#17233f;letter-spacing:-.2px}
+.dash-combined-trend-head p{font-size:12px;color:#52617b}
+.dash-combined-trend-chart{height:238px;min-height:238px;margin-top:5px}
+.dash-combined-trend-chart svg{display:block;width:100%;height:100%;overflow:visible}
+.dash-combined-trend-chart .chart-axis-label{fill:#34415c;font-size:12px;font-weight:600}
+.dash-combined-trend-chart .chart-gridline{stroke:#dfe5f0;stroke-width:1;stroke-dasharray:3 4}
+.dash-combined-trend-chart .trend-point{cursor:help}
+.dash-combined-legend{display:flex;align-items:center;justify-content:center;gap:26px;margin-top:0;padding:5px 0 1px;color:#273650;font-size:12px;font-weight:700}
+.dash-combined-legend span{display:inline-flex;align-items:center;gap:8px}
+.dash-combined-legend i{display:inline-block;width:11px;height:11px;border-radius:50%}
+.dash-combined-legend .legend-billed{background:#6d5ce7}
+.dash-combined-legend .legend-collected{background:#169b7d}
+@media(max-width:800px){.dash-chart-grid>.dash-trend-combined{grid-column:auto}.dash-combined-trend-head h3{font-size:15px}.dash-combined-trend-head p{font-size:11px}.dash-combined-trend-chart{height:220px;min-height:220px}.dash-combined-trend-chart .chart-axis-label{font-size:13px}.dash-combined-legend{gap:20px;font-size:12px}}
+@media(max-width:480px){.dash-combined-trend-head{align-items:flex-start}.dash-combined-trend-head .dash-chart-badge{display:none}.dash-combined-trend-chart{height:210px;min-height:210px}.dash-combined-trend-chart .chart-axis-label{font-size:14px}.dash-combined-legend{justify-content:flex-start;gap:18px}}
+
+/* Long native-language filter actions must wrap instead of expanding the Dashboard canvas. */
+.dash-filters,.dash-filter-actions{min-width:0;max-width:100%}
+.dash-filter-actions button{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:1180px){.dash-filter-actions{flex-wrap:wrap}.dash-filter-actions button{flex:1 1 92px}}
