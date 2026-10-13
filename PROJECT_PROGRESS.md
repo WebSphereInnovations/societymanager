@@ -2,6 +2,7 @@
 
 Last updated: 2026-10-13 (IST)
 Resume baseline: `main` at `c76bc2eb88be924f9bf879fef3ca75dd087df433` before this checkpoint.
+Latest verified GitHub checkpoint: `b1a12be2be16080880d6dd6111ae94fbc3b5ed53`.
 
 ## Stage status
 
@@ -14,7 +15,7 @@ Resume baseline: `main` at `c76bc2eb88be924f9bf879fef3ca75dd087df433` before thi
 | 5. Chrome login and Dashboard | PASS | Clean Chrome profile submitted login; `/api/auth/me` returned 200; Dashboard rendered. Authenticated dashboard analytics returned 200 (22 customers, 21 flats, 20 overdue bills); bills returned 22 rows; parking returned 13 rows. |
 | 6. Access control smoke test | PASS | Unauthenticated direct module navigation redirects to login (302); protected API requests without a session return 401. |
 | 7. Responsive menu | PASS | At 390px viewport, waited for the drawer transition to finish, then used a real Chrome mouse event. Sidebar moved offscreen when closed and opened on toggle. The earlier short-wait probe was a timing false negative. |
-| 8. GitHub checkpoint | IN PROGRESS | Source baseline is already pushed to the existing repository. This checkpoint commits only the progress/ignore-rule changes; generated browser profiles, logs, screenshots, credentials, and diagnostic outputs are not staged. |
+| 8. GitHub checkpoint | PASS | Commit `b1a12be2be16080880d6dd6111ae94fbc3b5ed53` was pushed to `origin/main` and verified through GitHub. Only the progress/ignore-rule files were committed; local browser profiles, logs, screenshots, credentials, and diagnostic outputs were not staged. |
 | 9. New public repository / permanent hosting | BLOCKED | `Society360.github.io` was not found under the checked owners, and the connected GitHub toolset has no repository-creation action. The intended owner must be authorized. GitHub Pages is static hosting; it cannot run this ASP.NET Core API/PostgreSQL backend by itself. A persistent backend host and database host must be provisioned before claiming the app is laptop-independent online. |
 
 ## Verified runtime

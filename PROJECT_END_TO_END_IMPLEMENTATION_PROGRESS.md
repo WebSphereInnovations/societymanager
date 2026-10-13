@@ -410,7 +410,7 @@ All use the admin.js table() helper and therefore are good candidates for the fi
 
 ### Git safety and deployment boundary
 - [x] Added ignore rules for local browser profiles, temporary probes, screenshots, generated QA JSON, and local login-test scripts. Existing artifacts were preserved.
-- [ ] Commit/push this progress checkpoint to the existing `WebSphereInnovations/societymanager` repository, then verify the resulting remote commit.
+- [x] Committed and pushed this progress checkpoint to `WebSphereInnovations/societymanager`; remote HEAD verified as `b1a12be2be16080880d6dd6111ae94fbc3b5ed53`.
 - [ ] Create/authorize the intended `Society360.github.io` repository under its actual owner. The repository was not found under the checked owners and no repository-creation action is available through the connected GitHub toolset.
 - [ ] Provision a persistent ASP.NET Core backend host and database host. GitHub Pages alone is static hosting and cannot run the existing server-side API/database application.
 - [ ] Continue outstanding route-by-route CRUD, full localization coverage, and second-society tenant-isolation tests; prior checkpoint limitations remain in force.

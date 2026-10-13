@@ -23,3 +23,5 @@ scripts/login-ui.ps1
 scripts/login-js.ps1
 scripts/login-inspect.ps1
 scripts/cdp_browser_login_from_config.py
+tmp_*.py
+tmp_*.js
