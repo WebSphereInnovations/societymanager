@@ -414,3 +414,24 @@ All use the admin.js table() helper and therefore are good candidates for the fi
 - [ ] Create/authorize the intended `Society360.github.io` repository under its actual owner. The repository was not found under the checked owners and no repository-creation action is available through the connected GitHub toolset.
 - [ ] Provision a persistent ASP.NET Core backend host and database host. GitHub Pages alone is static hosting and cannot run the existing server-side API/database application.
 - [ ] Continue outstanding route-by-route CRUD, full localization coverage, and second-society tenant-isolation tests; prior checkpoint limitations remain in force.
+
+## GitHub Pages public URL deployment checkpoint - 2026-10-13 (IST)
+- [x] Opened the exact requested URL `https://websphereinnovations.github.io/` in the authorized Chrome 155 session and waited for `document.readyState=complete`.
+- [x] Recorded the real Chrome result: GitHub Pages title `Site not found — GitHub Pages`, HTTP page text `404` / `There isn't a GitHub Pages site here.` This URL is NOT live as of this check.
+- [x] Confirmed the existing local application API remains healthy at the required LAN URL `http://192.168.1.8:5180/api/health` (HTTP 200; `status=online`, `databaseConfigured=true`).
+- [x] Confirmed the existing application is ASP.NET Core (`Microsoft.NET.Sdk.Web`, .NET 8) and its login/dashboard scripts use same-origin `/api/...` routes. Merely copying `wwwroot` to GitHub Pages would break real login and database calls.
+- [ ] Public root-site repository `WebSphereInnovations.github.io` has not been created/configured. Existing `WebSphereInnovations/societymanager` is present on `main`.
+- [ ] Publicly reachable HTTPS backend and database connectivity are not provisioned. GitHub Pages serves static HTML/CSS/JS and does not run the ASP.NET Core API/database; therefore the requested public login/database end-to-end acceptance cannot pass until the backend has a real reachable host/API origin.
+- [ ] Do not mark this deployment complete or provide the URL as ready until Pages is configured, backend origin/security/CORS/cookies are correctly set, and Chrome verifies real login, authenticated dashboard/API, unauthenticated protection, and responsive UI at the exact public URL.
+- Safety decision: did not publish a static-only shell that would appear live while login and real database operations fail. No existing source, DB, local artifacts, or untracked QA files were deleted.
+
+## Live deployment execution update - 2026-10-13 (IST)
+- [x] Re-read the current end-to-end checkpoint, inspected Git history and working tree, and confirmed `main` / `origin/main` are aligned at `3da2d046c47dd2fcaec57b82c6f6708a70da7e4c` before this update.
+- [x] Verified connected GitHub access is admin/push-capable for `WebSphereInnovations/societymanager`; the repository list currently exposes that repository only under the owner. The required user-site repository `WebSphereInnovations.github.io` is absent (GitHub API lookup returned 404).
+- [x] Rechecked exact public URL: `https://websphereinnovations.github.io/` returns HTTP 404 / GitHub Pages “Site not found” in the live check. It is not deployed.
+- [x] Rechecked existing LAN backend health: `http://192.168.1.8:5180/api/health` returns HTTP 200 and `databaseConfigured=true`; this is private-LAN availability, not public hosting.
+- [x] Confirmed local worktree includes one modified tracked progress file plus numerous pre-existing untracked QA artifacts/scripts. All untracked artifacts are being preserved and excluded from this checkpoint commit.
+- [ ] Public deployment is blocked by two missing infrastructure capabilities: (1) create/configure the owner-level `WebSphereInnovations.github.io` Pages repository/site—the connected GitHub action set has no repository-creation/Pages-settings action; (2) provision and authorize a public HTTPS ASP.NET Core host and managed PostgreSQL target. The Render deployment connector is available to connect but is not installed/authorized in this session; no hosting service or credentials are currently connected.
+- [ ] Do not point the production frontend at the LAN API, expose database credentials, or publish a static-only frontend that falsely suggests login/data work. GitHub Pages cannot run the existing ASP.NET Core API or PostgreSQL.
+- [ ] Next unblock: connect/authorize the Render provider (or another approved host) and create the owner-level Pages repository/site using the account's GitHub settings/API permissions. Then deploy the existing backend, securely migrate/restore data only after a reviewed plan, configure HTTPS/CORS/auth cookie or token behavior, publish the existing frontend with the real public API origin, and rerun the full Chrome acceptance matrix.
+- Status: deployment NOT complete; no production DB changes were made; no login credentials were changed; no source code was replaced with a demo.
