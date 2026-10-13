@@ -3,3 +3,23 @@ obj/
 .vs/
 *.user
 *.suo
+
+# Local-only browser profiles, build outputs, and generated QA artifacts
+.chrome-*/
+artifacts/
+logs/
+tmp-chrome-test/
+tmp-*.py
+tmp-*.js
+chrome-*.txt
+scripts/__pycache__/
+scripts/downloads_test/
+scripts/downloads_customer_xlsx_fix_20261011/
+scripts/downloads_multi_page_export_20261011/
+scripts/*.png
+scripts/*_results*.json
+scripts/*pre_resume*.json
+scripts/login-ui.ps1
+scripts/login-js.ps1
+scripts/login-inspect.ps1
+scripts/cdp_browser_login_from_config.py

@@ -391,3 +391,26 @@ All use the admin.js table() helper and therefore are good candidates for the fi
 - [ ] Continue six-language positive/error coverage for each remaining route; current batch exposed that some dynamically generated labels still need broader dictionary coverage beyond the two fixed keys.
 - [ ] Definitive two-society tenant-isolation test remains blocked by lack of a second authorized society account.
 - [ ] Physical laptop screen-sharing remains unavailable; Chrome/CDP mouse/DOM/viewport evidence is genuine authorized Chrome-session testing, but is not claimed as physical screen sharing.
+
+
+## Resume checkpoint — 2026-10-13 (IST)
+
+### Workspace recovery and runtime verification
+- [x] Reconnected to the online Sandman workstation and resumed from the saved repository checkpoint without resetting or cleaning the working tree.
+- [x] Confirmed baseline `main` / `origin/main` commit `c76bc2eb88be924f9bf879fef3ca75dd087df433`; tracked source files had no pending diffs before this checkpoint. Many local browser profiles and QA outputs were untracked; they were preserved and were not bulk-staged.
+- [x] .NET 8 Release compilation passed in isolated output with 0 warnings / 0 errors.
+- [x] Created a fresh publish bundle in `C:\Society360Publish20261013` using an isolated build output path. The application was restarted from that publish directory without changing the required port or database contents.
+- [x] Post-publish `/api/health` returned HTTP 200 with `databaseConfigured=true`; the app listener remained on `0.0.0.0:5180`.
+- [x] Authenticated Chrome session survived the publish restart: `/api/auth/me` returned HTTP 200 and the Society Admin Dashboard was active.
+- [x] Post-publish read-only API smoke tests: dashboard analytics HTTP 200 (22 customers, 21 flats, 20 overdue bills), bills HTTP 200 (22 rows), parking HTTP 200 (13 rows).
+- [x] Unauthenticated direct navigation to the protected Society Admin module redirects to `/login.html` (HTTP 302). Unauthenticated protected API probes return HTTP 401.
+- [x] Direct PostgreSQL SELECT-only verification confirmed database/schema `society_manager`, 92 tables, 291 routines; row counts: `m_society=6`, `m_customer=42`, `m_flat=41`, `t_bill=40`, `t_payment=20`. No business records were written or deleted.
+- [x] Chrome responsive menu verified at 390px with a real mouse event after allowing the CSS transition to settle: closed sidebar translated fully offscreen; toggle opened the drawer. The earlier immediate probe was a transition-timing false negative, not a confirmed application defect.
+- [x] Dashboard's empty chart state for a selected period with no billing/collection rows was accurate; the previous test harness's old SVG selector was not a valid failure signal for the current combined chart markup.
+
+### Git safety and deployment boundary
+- [x] Added ignore rules for local browser profiles, temporary probes, screenshots, generated QA JSON, and local login-test scripts. Existing artifacts were preserved.
+- [ ] Commit/push this progress checkpoint to the existing `WebSphereInnovations/societymanager` repository, then verify the resulting remote commit.
+- [ ] Create/authorize the intended `Society360.github.io` repository under its actual owner. The repository was not found under the checked owners and no repository-creation action is available through the connected GitHub toolset.
+- [ ] Provision a persistent ASP.NET Core backend host and database host. GitHub Pages alone is static hosting and cannot run the existing server-side API/database application.
+- [ ] Continue outstanding route-by-route CRUD, full localization coverage, and second-society tenant-isolation tests; prior checkpoint limitations remain in force.
