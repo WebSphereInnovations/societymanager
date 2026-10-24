@@ -648,7 +648,8 @@ public static class SocietyAdminEndpoints
                              FILTER (WHERE upper(lh.status) IN ('FAILURE', 'FAILED')) AS last_failed_at
                     FROM society_manager.t_user_login_history lh
                    WHERE lh.user_id = u.user_id
-                     AND lh.society_id = u.society_id
+                   -- m_user is filtered to the active society below and user IDs are unique.
+                   -- Avoid requiring the optional history society_id migration for this read.
               ) h ON TRUE
              WHERE u.society_id = @society
                AND u.role_code NOT IN ('SUPER_ADMIN', 'RESIDENT')
