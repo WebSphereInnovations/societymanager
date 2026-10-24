@@ -73,7 +73,7 @@ async function exportTabulatorXlsx(id,button,overrideRows,overrideColumns,reques
  const columns=(Array.isArray(overrideColumns)?overrideColumns:table.getColumns().map(c=>({field:c.getField(),title:c.getDefinition().title}))).filter(c=>c.field&&!String(c.field).startsWith('__'));
  if(!columns.length){window.Society360I18n?.toast?.('No exportable columns are available.','error');return}
  const activeCode=$('#dbMenu button.active')?.dataset.moduleCode||'';
- const moduleByTable={flatTable:'FLATS',billTable:'BILLING',collectionTable:'COLLECTION',complaintTable:'COMPLAINTS',visitorTable:'VISITORS',parkingTable:'PARKING',loginSecurityTable:'ADM_ACCOUNTS',chargeConfigTable:'BILLING',interestConfigTable:'BILLING',billingConfigHistoryTable:'BILLING',billingRateTable:'BILLING',billingPreviewTable:'BILLING',accountsTable:'ADM_ACCOUNTS'};
+ const moduleByTable={flatTable:'FLATS',billTable:'BILLING',collectionTable:'COLLECTION',complaintTable:'COMPLAINTS',visitorTable:'VISITORS',parkingTable:'PARKING',loginSecurityTable:'ADM_ACCOUNTS',chargeConfigTable:'BILLING',interestConfigTable:'BILLING',billingConfigHistoryTable:'BILLING',billingRateTable:'BILLING',rateMasterTable:'BILLING',billingPreviewTable:'BILLING',accountsTable:'ADM_ACCOUNTS'};
  const moduleCode=requestedModuleCode||moduleByTable[id]||activeCode;
  const exportName=requestedFileName||id;
  const original=button.textContent;button.disabled=true;button.textContent=Society360I18n.translateText('Exporting…');

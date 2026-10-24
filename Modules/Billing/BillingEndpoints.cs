@@ -48,17 +48,29 @@ public static class BillingEndpoints
                 },"EDIT"));
 
         app.MapPost("/api/billing/rate", async (BillingRateRequest x,AuthService a,HttpContext h,CancellationToken c) =>
-            await Call(a,h,c,"BILLING_CONFIGURATION",
+        {
+            if(x.Id<0||x.PropertyTypeId<=0||x.ChargeTypeId<=0)return Results.BadRequest(new{message="Select a valid property type and charge type."});
+            if(x.RateType is not ("PER_FLAT" or "PER_SQFT" or "PER_PARKING" or "FIXED"))return Results.BadRequest(new{message="Select a supported rate type."});
+            if(x.Rate<0)return Results.BadRequest(new{message="Rate cannot be negative."});
+            if(x.EffectiveTo is not null&&x.EffectiveTo.Value<x.EffectiveFrom)return Results.BadRequest(new{message="Effective To must be on or after Effective From."});
+            return await Call(a,h,c,"BILLING_CONFIGURATION",
                 "select society_manager.sp_billing_save_rate(@s,@id,@property,@chargeType,@type,@rate,@from,@to,@u,@remark)",
-                new[]
-                {
+                new[]{
                     ("id",(object)x.Id),("property",(object)x.PropertyTypeId),
                     ("chargeType",(object)x.ChargeTypeId),("type",(object)x.RateType),
                     ("rate",(object)x.Rate),("from",(object)x.EffectiveFrom),
                     ("to",(object?)x.EffectiveTo??DBNull.Value),("u",(object)0L),
-                    ("remark",(object)(x.Remark??""))
-                },x.Id>0?"EDIT":"ADD"));
+                    ("remark",(object?)(string.IsNullOrWhiteSpace(x.Remark)?null:x.Remark.Trim())??DBNull.Value)
+                },x.Id>0?"EDIT":"ADD");
+        });
 
+        app.MapPost("/api/billing/rate/deactivate", async (BillingRateDeactivateRequest x,AuthService a,HttpContext h,CancellationToken c) =>
+        {
+            if(x.Id<=0)return Results.BadRequest(new{message="Select a valid rate to deactivate."});
+            return await Call(a,h,c,"BILLING_CONFIGURATION",
+                "select society_manager.sp_billing_set_rate_active(@s,@id,false,@u,@remark)",
+                new[]{("id",(object)x.Id),("u",(object)0L),("remark",(object)(string.IsNullOrWhiteSpace(x.Remark)?"Deactivated from Rate Master":x.Remark.Trim()))},"EDIT");
+        });
         app.MapPost("/api/billing/start", async (AuthService a,HttpContext h,CancellationToken c) =>
             await Call(a,h,c,"BILLING_PROCESS",
                 "select society_manager.sp_billing_prepare(@s,@u)",
@@ -182,4 +194,5 @@ public static class BillingEndpoints
 
 public sealed record BillingConfigRequest(int FrequencyMonths,bool DpcApplicable,string DpcApplyOn,decimal DpcRate,string DpcCalculationType,DateOnly EffectiveFrom,DateOnly? EffectiveTo,string? Remark);
 public sealed record BillingRateRequest(long Id,long PropertyTypeId,long ChargeTypeId,string RateType,decimal Rate,DateOnly EffectiveFrom,DateOnly? EffectiveTo,string? Remark);
+public sealed record BillingRateDeactivateRequest(long Id,string? Remark);
 public sealed record BillingFinalizeRequest(long RunId,bool Confirm);
