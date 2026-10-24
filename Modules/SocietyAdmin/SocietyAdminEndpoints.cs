@@ -623,9 +623,40 @@ public static class SocietyAdminEndpoints
         if(session.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN") || session.SocietyId is null) return Results.Forbid();
         await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));
         await cn.OpenAsync(ct);
-        await using var cmd=new NpgsqlCommand("select * from society_manager.fn_login_security_overview(@society)",cn);
+        // Read the persisted account summary directly so this screen does not fail
+        // when the optional legacy overview function is missing/out of date.
+        // All rows and login-event aggregates remain constrained to the active society.
+        await using var cmd=new NpgsqlCommand("""
+            SELECT u.user_id,
+                   u.login_name,
+                   u.display_name,
+                   COALESCE(a.last_login_ip::text, u.last_login_ip::text) AS last_login_ip,
+                   COALESCE(a.last_login_at, u.last_login_at) AS last_login_at,
+                   COALESCE(a.login_count, u.login_count, 0)::bigint AS login_count,
+                   u.role_code,
+                   COALESCE(a.last_login_status,
+                       CASE WHEN COALESCE(a.last_login_at, u.last_login_at) IS NULL THEN 'Never' ELSE 'SUCCESS' END) AS last_login_status,
+                   a.last_user_agent,
+                   COALESCE(h.failed_login_count, 0)::bigint AS failed_login_count,
+                   h.last_failed_at,
+                   u.is_active
+              FROM society_manager.m_user u
+              LEFT JOIN society_manager.t_user_login_audit a ON a.user_id = u.user_id
+              LEFT JOIN LATERAL (
+                  SELECT COUNT(*) FILTER (WHERE upper(lh.status) IN ('FAILURE', 'FAILED')) AS failed_login_count,
+                         MAX(COALESCE(lh.created_at, lh.login_at))
+                             FILTER (WHERE upper(lh.status) IN ('FAILURE', 'FAILED')) AS last_failed_at
+                    FROM society_manager.t_user_login_history lh
+                   WHERE lh.user_id = u.user_id
+                     AND lh.society_id = u.society_id
+              ) h ON TRUE
+             WHERE u.society_id = @society
+               AND u.role_code NOT IN ('SUPER_ADMIN', 'RESIDENT')
+             ORDER BY COALESCE(a.last_login_at, u.last_login_at) DESC NULLS LAST,
+                      u.display_name, u.user_id
+            """,cn);
         cmd.Parameters.AddWithValue("society",session.SocietyId.Value);
-        return Results.Ok(await ReadRows(cmd,9,ct));
+        return Results.Ok(await ReadRows(cmd,12,ct));
     }
 
     static async Task<IResult> SaveCharge(ChargeRuleRequest x,AuthService auth,HttpContext http,CancellationToken ct){var s=await AuthGuard.Get(http,auth,ct);if(s is null)return Results.Unauthorized();if(s.RoleCode is not ("SOCIETY_ADMIN" or "SUPER_ADMIN")||s.SocietyId is null)return Results.Forbid();await using var cn=new NpgsqlConnection(Environment.GetEnvironmentVariable("SOCIETY360_DB_CONNECTION"));await cn.OpenAsync(ct);await using var cmd=new NpgsqlCommand("call society_manager.sp_society_save_charge_rule(@society,@code,@plan,@method,@rate,@from,@to,@scope,@value,@user,NULL)",cn);cmd.Parameters.AddWithValue("society",s.SocietyId.Value);cmd.Parameters.AddWithValue("code",x.ChargeCode);cmd.Parameters.AddWithValue("plan",x.PlanName);cmd.Parameters.AddWithValue("method",x.Method);cmd.Parameters.AddWithValue("rate",x.Rate);cmd.Parameters.AddWithValue("from",x.EffectiveFrom);cmd.Parameters.AddWithValue("to",(object?)x.EffectiveTo??DBNull.Value);cmd.Parameters.AddWithValue("scope",x.ScopeType);cmd.Parameters.AddWithValue("value",(object?)x.ScopeValue??DBNull.Value);cmd.Parameters.AddWithValue("user",s.UserId);return Results.Ok(new{success=true,id=await cmd.ExecuteScalarAsync(ct)});}
