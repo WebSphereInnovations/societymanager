@@ -38,6 +38,16 @@ public static class RequestedSocietyManagerEndpoints
         app.MapGet("/api/sm/management",async(string? q,AuthService a,HttpContext h,CancellationToken c)=>await Query(a,h,c,"SOC_CUSTOMER_MASTER","fn_society_management",("q",q??"")));
         app.MapGet("/api/sm/customers/search",async(string? q,AuthService a,HttpContext h,CancellationToken c)=>await Query(a,h,c,"CRM_CUSTOMER_ACCOUNT","fn_customer_search_requested",("q",q??"")));
         app.MapGet("/api/sm/collection/search",async(string? q,AuthService a,HttpContext h,CancellationToken c)=>await Query(a,h,c,"COL_ACCEPT_PAYMENT","fn_collection_consumer_search",("q",q??"")));
+        app.MapGet("/api/sm/collection/flat/{flatId:long}/summary",async(long flatId,AuthService a,HttpContext h,CancellationToken c)=>{
+            var g=await Guard(a,h,c,"COL_ACCEPT_PAYMENT");if(g is not null)return g;var s=await Session(a,h,c);
+            await using var cn=await Open();await using var cmd=new NpgsqlCommand("select * from society_manager.fn_collection_account_summary(@s,@flat)",cn);
+            cmd.Parameters.AddWithValue("s",s!.SocietyId!.Value);cmd.Parameters.AddWithValue("flat",flatId);return await Rows(cmd,c);
+        });
+        app.MapGet("/api/sm/collection/customer/{customerId:long}/flat/{flatId:long}/history",async(long customerId,long flatId,AuthService a,HttpContext h,CancellationToken c)=>{
+            var g=await Guard(a,h,c,"COL_ACCEPT_PAYMENT");if(g is not null)return g;var s=await Session(a,h,c);
+            await using var cn=await Open();await using var cmd=new NpgsqlCommand("select * from society_manager.fn_collection_payment_history(@s,@customer,@flat)",cn);
+            cmd.Parameters.AddWithValue("s",s!.SocietyId!.Value);cmd.Parameters.AddWithValue("customer",customerId);cmd.Parameters.AddWithValue("flat",flatId);return await Rows(cmd,c);
+        });
         app.MapGet("/api/sm/payment-modes",async(AuthService a,HttpContext h,CancellationToken c)=>await Query(a,h,c,"COL_ACCEPT_PAYMENT","fn_payment_modes"));
         app.MapGet("/api/sm/service-types",async(AuthService a,HttpContext h,CancellationToken c)=>await Query(a,h,c,"COL_SERVICE_PAYMENT","fn_service_charge_types"));
         app.MapGet("/api/sm/banks",async(AuthService a,HttpContext h,CancellationToken c)=>await Query(a,h,c,"COL_BANK_DETAILS","fn_bank_details"));
