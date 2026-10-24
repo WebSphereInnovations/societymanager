@@ -2,7 +2,7 @@ const $=s=>document.querySelector(s);const $$=s=>document.querySelectorAll(s);
 const moduleWorkspaceTemplate=$('#module-workspace')?.innerHTML||'';
 let session=null;
 const money=v=>'₹'+Number(v||0).toLocaleString('en-IN',{maximumFractionDigits:2});
-async function get(url){const r=await fetch(url,{cache:'no-store'});if(r.status===401){location.href='/login';throw 0}if(!r.ok)throw new Error('Request failed');return r.json()}
+async function get(url){const r=await fetch(url,{cache:'no-store',credentials:'same-origin',headers:{'Accept':'application/json'}});if(r.status===401){location.href='/login';throw new Error('Your session has expired. Please sign in again.')}if(!r.ok){let detail='';try{const body=await r.json();detail=body?.message||body?.title||''}catch{}throw new Error(detail||('Request failed ('+r.status+')'))}return r.json()}
 const tableRegistry=new Map();
 if(!window.__s360AdminExportDelegate){
  document.addEventListener('click',event=>{
