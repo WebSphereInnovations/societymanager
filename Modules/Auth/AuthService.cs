@@ -108,19 +108,18 @@ public sealed class AuthService(IConfiguration configuration)
         return (r.GetInt64(0),r.IsDBNull(1)?null:r.GetInt64(1),r.GetString(2));
     }
 
-    public async Task RecordLoginSuccessAsync(long userId,long? societyId,string login,string ip,string userAgent,Guid sessionId,CancellationToken ct)
+    public async Task RecordLoginSuccessAsync(long userId,long? societyId,string login,string ip,string userAgent,CancellationToken ct)
     {
         if (!IsConfigured) return;
         await using var cn = new NpgsqlConnection(_connectionString);
         await cn.OpenAsync(ct);
         await using var cmd = new NpgsqlCommand(
-            "call society_manager.sp_record_login_success(@user_id,@society_id,@login,@ip,@user_agent,@session_id)",cn);
+            "call society_manager.sp_record_login_success_v2(@user_id,@society_id,@login,@ip,@user_agent)",cn);
         cmd.Parameters.AddWithValue("user_id",userId);
         cmd.Parameters.AddWithValue("society_id",(object?)societyId??DBNull.Value);
         cmd.Parameters.AddWithValue("login",login);
         cmd.Parameters.AddWithValue("ip",ip);
         cmd.Parameters.AddWithValue("user_agent",userAgent);
-        cmd.Parameters.AddWithValue("session_id",sessionId);
         await cmd.ExecuteNonQueryAsync(ct);
     }
 
@@ -130,7 +129,7 @@ public sealed class AuthService(IConfiguration configuration)
         await using var cn = new NpgsqlConnection(_connectionString);
         await cn.OpenAsync(ct);
         await using var cmd = new NpgsqlCommand(
-            "call society_manager.sp_record_login_failure(@user_id,@society_id,@login,@ip,@user_agent,@reason)",cn);
+            "call society_manager.sp_record_login_failure_v2(@user_id,@society_id,@login,@ip,@user_agent,@reason)",cn);
         cmd.Parameters.AddWithValue("user_id",(object?)userId??DBNull.Value);
         cmd.Parameters.AddWithValue("society_id",(object?)societyId??DBNull.Value);
         cmd.Parameters.AddWithValue("login",login);

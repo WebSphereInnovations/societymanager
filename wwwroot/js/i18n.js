@@ -1536,6 +1536,33 @@ const exportDownloadNoticeTranslations={
  ta:{'Export prepared. If no file appears, check Chrome Download history.':'ஏற்றுமதி தயாராக உள்ளது. கோப்பு தெரியாவிட்டால் Chrome பதிவிறக்க வரலாற்றைப் பார்க்கவும்.'}
 };
 Object.keys(exportDownloadNoticeTranslations).forEach(lang=>Object.assign(tr[lang],exportDownloadNoticeTranslations[lang]));
+const auditReportTranslations={
+ en:{'Search user / action / entity':'Search user / action / entity','Login name':'Login name','Old Values':'Old Values','New Values':'New Values','Login History':'Login History','Search user / IP / status':'Search user / IP / status','Failure Reason':'Failure Reason','Trace ID':'Trace ID','IP Address':'IP Address','Refresh':'Refresh'},
+ hi:{'Search user / action / entity':'उपयोगकर्ता / कार्रवाई / इकाई खोजें','Login name':'लॉगिन नाम','Old Values':'पुराने मान','New Values':'नए मान','Login History':'लॉगिन इतिहास','Search user / IP / status':'उपयोगकर्ता / IP / स्थिति खोजें','Failure Reason':'विफलता का कारण','Trace ID':'ट्रेस ID','IP Address':'IP पता','Refresh':'रीफ़्रेश'},
+ mr:{'Search user / action / entity':'वापरकर्ता / कृती / घटक शोधा','Login name':'लॉगिन नाव','Old Values':'जुनी मूल्ये','New Values':'नवीन मूल्ये','Login History':'लॉगिन इतिहास','Search user / IP / status':'वापरकर्ता / IP / स्थिती शोधा','Failure Reason':'अपयशाचे कारण','Trace ID':'ट्रेस ID','IP Address':'IP पत्ता','Refresh':'रीफ्रेश'},
+ gu:{'Search user / action / entity':'વપરાશકર્તા / ક્રિયા / એકમ શોધો','Login name':'લૉગિન નામ','Old Values':'જૂની કિંમતો','New Values':'નવી કિંમતો','Login History':'લૉગિન ઇતિહાસ','Search user / IP / status':'વપરાશકર્તા / IP / સ્થિતિ શોધો','Failure Reason':'નિષ્ફળતાનું કારણ','Trace ID':'ટ્રેસ ID','IP Address':'IP સરનામું','Refresh':'રીફ્રેશ'},
+ kn:{'Search user / action / entity':'ಬಳಕೆದಾರ / ಕ್ರಿಯೆ / ಘಟಕವನ್ನು ಹುಡುಕಿ','Login name':'ಲಾಗಿನ್ ಹೆಸರು','Old Values':'ಹಳೆಯ ಮೌಲ್ಯಗಳು','New Values':'ಹೊಸ ಮೌಲ್ಯಗಳು','Login History':'ಲಾಗಿನ್ ಇತಿಹಾಸ','Search user / IP / status':'ಬಳಕೆದಾರ / IP / ಸ್ಥಿತಿಯನ್ನು ಹುಡುಕಿ','Failure Reason':'ವಿಫಲತೆಯ ಕಾರಣ','Trace ID':'ಟ್ರೇಸ್ ID','IP Address':'IP ವಿಳಾಸ','Refresh':'ರಿಫ್ರೆಶ್'},
+ ta:{'Search user / action / entity':'பயனர் / செயல் / உருப்படியைத் தேடுங்கள்','Login name':'உள்நுழைவு பெயர்','Old Values':'பழைய மதிப்புகள்','New Values':'புதிய மதிப்புகள்','Login History':'உள்நுழைவு வரலாறு','Search user / IP / status':'பயனர் / IP / நிலையைத் தேடுங்கள்','Failure Reason':'தோல்விக்கான காரணம்','Trace ID':'ட்ரேஸ் ID','IP Address':'IP முகவரி','Refresh':'புதுப்பி'}
+};
+Object.keys(auditReportTranslations).forEach(lang=>Object.assign(tr[lang],auditReportTranslations[lang]));
+const loginHistoryEmptyTranslations={
+ en:{'No login history records found.':'No login history records found.','No matching login history records.':'No matching login history records.'},
+ hi:{'No login history records found.':'लॉगिन इतिहास में कोई रिकॉर्ड नहीं मिला।','No matching login history records.':'खोज से मेल खाने वाला कोई लॉगिन रिकॉर्ड नहीं मिला।'},
+ mr:{'No login history records found.':'लॉगिन इतिहासात कोणतीही नोंद आढळली नाही.','No matching login history records.':'शोधाशी जुळणारी लॉगिन नोंद आढळली नाही.'},
+ gu:{'No login history records found.':'લૉગિન ઇતિહાસમાં કોઈ રેકોર્ડ મળ્યો નથી.','No matching login history records.':'શોધ સાથે મેળ ખાતો લૉગિન રેકોર્ડ મળ્યો નથી.'},
+ kn:{'No login history records found.':'ಲಾಗಿನ್ ಇತಿಹಾಸದಲ್ಲಿ ಯಾವುದೇ ದಾಖಲೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ.','No matching login history records.':'ಹುಡುಕಾಟಕ್ಕೆ ಹೊಂದುವ ಲಾಗಿನ್ ದಾಖಲೆ ಕಂಡುಬಂದಿಲ್ಲ.'},
+ ta:{'No login history records found.':'உள்நுழைவு வரலாற்றில் பதிவுகள் எதுவும் இல்லை.','No matching login history records.':'தேடலுக்குப் பொருந்தும் உள்நுழைவு பதிவு இல்லை.'}
+};
+Object.keys(loginHistoryEmptyTranslations).forEach(lang=>Object.assign(tr[lang],loginHistoryEmptyTranslations[lang]));
+const approvalHistoryTranslations={
+ en:{'Approval History':'Approval History','Search approver / entity / decision':'Search approver / entity / decision','Approver':'Approver','Decision':'Decision','No approval history records found.':'No approval history records found.','No matching approval history records.':'No matching approval history records.'},
+ hi:{'Approval History':'अनुमोदन इतिहास','Search approver / entity / decision':'अनुमोदक / इकाई / निर्णय खोजें','Approver':'अनुमोदक','Decision':'निर्णय','No approval history records found.':'अनुमोदन इतिहास में कोई रिकॉर्ड नहीं मिला।','No matching approval history records.':'खोज से मेल खाने वाला कोई अनुमोदन रिकॉर्ड नहीं मिला।'},
+ mr:{'Approval History':'मंजुरी इतिहास','Search approver / entity / decision':'मंजुरी देणारा / घटक / निर्णय शोधा','Approver':'मंजुरी देणारा','Decision':'निर्णय','No approval history records found.':'मंजुरी इतिहासात कोणतीही नोंद आढळली नाही.','No matching approval history records.':'शोधाशी जुळणारी मंजुरी नोंद आढळली नाही.'},
+ gu:{'Approval History':'મંજૂરી ઇતિહાસ','Search approver / entity / decision':'મંજૂરી આપનાર / એકમ / નિર્ણય શોધો','Approver':'મંજૂરી આપનાર','Decision':'નિર્ણય','No approval history records found.':'મંજૂરી ઇતિહાસમાં કોઈ રેકોર્ડ મળ્યો નથી.','No matching approval history records.':'શોધ સાથે મેળ ખાતો મંજૂરી રેકોર્ડ મળ્યો નથી.'},
+ kn:{'Approval History':'ಅನುಮೋದನೆ ಇತಿಹಾಸ','Search approver / entity / decision':'ಅನುಮೋದಿಸಿದವರು / ಘಟಕ / ನಿರ್ಧಾರ ಹುಡುಕಿ','Approver':'ಅನುಮೋದಿಸಿದವರು','Decision':'ನಿರ್ಧಾರ','No approval history records found.':'ಅನುಮೋದನೆ ಇತಿಹಾಸದಲ್ಲಿ ಯಾವುದೇ ದಾಖಲೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ.','No matching approval history records.':'ಹುಡುಕಾಟಕ್ಕೆ ಹೊಂದುವ ಅನುಮೋದನೆ ದಾಖಲೆ ಕಂಡುಬಂದಿಲ್ಲ.'},
+ ta:{'Approval History':'ஒப்புதல் வரலாறு','Search approver / entity / decision':'ஒப்புதல் அளித்தவர் / உருப்படி / முடிவைத் தேடுங்கள்','Approver':'ஒப்புதல் அளித்தவர்','Decision':'முடிவு','No approval history records found.':'ஒப்புதல் வரலாற்றில் பதிவுகள் எதுவும் இல்லை.','No matching approval history records.':'தேடலுக்குப் பொருந்தும் ஒப்புதல் பதிவு இல்லை.'}
+};
+Object.keys(approvalHistoryTranslations).forEach(lang=>Object.assign(tr[lang],approvalHistoryTranslations[lang]));
 window.Society360I18n={
  init,apply,setLanguage,translateText,toast,currentLanguage:()=>current,locale:()=>languages[current].locale,t:translateText,
  languages:Object.freeze(languages)

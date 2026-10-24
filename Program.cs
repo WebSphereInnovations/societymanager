@@ -163,7 +163,7 @@ app.MapPost("/api/auth/login", async (LoginRequest request, AuthService auth, Ht
     if (selected is null && societies.Count==1) selected=societies[0].SocietyId;
     var sessionInfo = await auth.CreateSessionAsync(user.UserId,selected,ct);
     var token = sessionInfo.RawToken;
-    await auth.RecordLoginSuccessAsync(user.UserId,selected,user.LoginName,ip,userAgent,sessionInfo.SessionId,ct);
+    await auth.RecordLoginSuccessAsync(user.UserId,selected,user.LoginName,ip,userAgent,ct);
     AuthGuard.ClearCookie(response);
     var claims = new List<Claim>
     {
@@ -263,7 +263,7 @@ app.MapPost("/api/public/create-society", async (CreateSocietyRequest request, S
         var createdUserId=reader.GetInt64(1);
         var sessionInfo=await auth.CreateSessionAsync(createdUserId,createdSocietyId,ct);
         var token=sessionInfo.RawToken;
-        await auth.RecordLoginSuccessAsync(createdUserId,createdSocietyId,request.LoginName.Trim(),GetClientIp(httpContext),httpContext.Request.Headers.UserAgent.ToString(),sessionInfo.SessionId,ct);
+        await auth.RecordLoginSuccessAsync(createdUserId,createdSocietyId,request.LoginName.Trim(),GetClientIp(httpContext),httpContext.Request.Headers.UserAgent.ToString(),ct);
         AuthGuard.ClearCookie(response);
         var identity=new ClaimsIdentity(new[]
         {
