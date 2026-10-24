@@ -12,7 +12,7 @@ assert 'sum(allocated_amount)' in sql and 'allocated_amount' in sql
 assert 'fn_payment_receipt_details(@s,@p)' in api
 assert "x.charge_breakdown" in js and "x.bill_allocations" in js
 assert 'JSON.parse(v)' in js, 'PostgreSQL jsonb values serialized as strings must be parsed before rendering'
-assert 'requested-workflows.js?v=20261024.10' in (root/'wwwroot/modules/society-admin/index.html').read_text(encoding='utf-8')
+assert 'requested-workflows.js?v=20261024.12' in (root/'wwwroot/modules/society-admin/index.html').read_text(encoding='utf-8')
 assert "Total Allocated" in js and "Amount Received" in js
 for lang in ['en','hi','mr','gu','kn','ta']:
  assert re.search(rf'\b{lang}:\{{',i18n), f'missing locale {lang}'

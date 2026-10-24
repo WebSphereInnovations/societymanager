@@ -84,3 +84,24 @@ Repository: `C:\Users\Delta\Society360` — `WebSphereInnovations/societymanager
 - Successful new payment transaction, receipt print/PDF workflow and post-payment customer balance reconciliation remain untested because no isolated test DB or explicitly authorized test remittance was established. No payment was submitted.
 - After the latest JSONB parsing fix, reload the visible Chrome application, open an existing receipt through an authorized UI workflow if available, verify the itemized rows and totals, and retest all six locale labels (especially Tamil). Do not use a real financial write just to test the print path.
 - The module remains **Partial**, not Fully functional. Existing Collection Management UI/source changes were preserved; no broad reset/clean was performed.
+
+
+## 2026-10-24 — Outstanding / Aging report implemented and visible-Chrome verified
+
+### Actual application changes
+- Added additive migration `Database/048_outstanding_aging_report.sql` defining `society_manager.fn_mis_outstanding(p_society_id,p_as_of_date)`. It returns bill ID/number/month/due date, flat, primary customer, total/paid/outstanding amounts, days overdue, aging bucket and bill status. It filters to the authenticated society, excludes zero-balance and closed/void/reversed bills, and computes aging in PostgreSQL. No financial records were modified.
+- Added authenticated route `GET /api/sm/reports/outstanding?asOf=YYYY-MM-DD` guarded by `RPT_OUTSTANDING` and routed through the existing session-scoped `Query` helper.
+- Replaced the `RPT_OUTSTANDING` generic-workspace fallback with a real date-filtered Tabulator report. It includes header filtering, sorting/pagination through the existing grid helper, currency-formatted amount columns, translated aging buckets, localized error feedback, and a language-change handler that re-renders the report while preserving the selected as-of date.
+- Added report labels and aging-bucket translations for English, Hindi, Marathi, Gujarati, Kannada and Tamil. Bumped the workflow asset cache key to `requested-workflows.js?v=20261024.12`; i18n remains `i18n.js?v=20261024.04`.
+
+### Verification evidence
+- Applied migration 048 after a non-secret fingerprint check (`society_manager` database/schema, local PostgreSQL server, `t_bill` present). The report function ran read-only for the society linked to an existing payment: 22 rows, total outstanding `47300.00`, 22 overdue rows, 0 rows in 90+ days, and every returned outstanding amount positive.
+- Release build after report route/UI/i18n changes passed with 0 warnings and 0 errors. `scripts/verify_receipt_details_contract.py` and `scripts/verify_outstanding_report_contract.py` passed; `node --check` passed for `requested-workflows.js` and `i18n.js`; `git diff --check` passed.
+- Restarted the application and confirmed `/api/health` returned HTTP 200 with database configured.
+- Visible Chrome: hard-reloaded Society Admin, opened Reports & Analytics, scrolled the actual navigation container to the Outstanding / Aging submenu, and clicked it. UI Automation confirmed `outstandingAsOf`, `outstandingRefresh`, and `outstandingTable` exist and the rendered table exposes the expected bill, period, due date, flat, consumer, amount, overdue-day, aging-bucket and status columns. A direct authenticated browser request to the report API returned 22 rows totaling `47300.00`, all positive, with `aging_bucket` present.
+- Visible-Chrome language switching on the Outstanding / Aging screen passed for all six configured languages. In each language, the report heading and as-of-date label matched the expected translation; the selected date remained unchanged. English was restored at the end.
+- Date field was visible and Refresh was clicked, but a second date value could not be reliably set through UI Automation; alternate-date UI filtering remains unverified. No write operations were performed.
+
+### Remaining scope / status
+- Outstanding / Aging is implemented and its read-only UI/API/language path is verified; it is not evidence that all Reports & Exports menus are complete. Billing, Collection, Consumer and Audit report routes still require full menu-specific workflow verification and export acceptance.
+- Collection Management receipt-details implementation remains partial: the receipt API and existing-payment allocation totals reconcile, but a successful payment transaction, actual print/PDF popup and post-payment Customer Account balance reconciliation are still blocked on an approved isolated test fixture/remittance. No production payment was created.

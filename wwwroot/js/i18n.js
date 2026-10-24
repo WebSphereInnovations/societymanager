@@ -1509,6 +1509,15 @@ const receiptLabels={
  ta:{'Charge Breakdown':'கட்டண விவரம்','Charge':'கட்டணம்','Total Allocated':'மொத்த ஒதுக்கீடு','No itemized bill allocation is available for this payment.':'இந்த கட்டணத்திற்கான விரிவான பில் ஒதுக்கீடு இல்லை.','Bill Allocations':'பில் ஒதுக்கீடுகள்','Bill Number':'பில் எண்','Billing Period':'பில்லிங் காலம்','Maintenance':'பராமரிப்பு','Parking':'வாகன நிறுத்தம்','Sinking Fund':'சிங்கிங் நிதி','Arrears':'நிலுவை','DPC':'DPC','Interest on Arrears':'நிலுவை வட்டி','Other Charges':'பிற கட்டணங்கள்','Tax':'வரி','Rebate':'தள்ளுபடி','Current Dues / Unclassified':'தற்போதைய நிலுவை / பிற'}
 };
 Object.keys(receiptLabels).forEach(lang=>Object.assign(tr[lang],receiptLabels[lang]));
+const reportLabels={
+ en:{'Outstanding / Aging':'Outstanding / Aging','As of date':'As of date','Days Overdue':'Days Overdue','Aging Bucket':'Aging Bucket','Report could not be loaded.':'Report could not be loaded.','Not Due':'Not Due','1-30 Days':'1-30 Days','31-60 Days':'31-60 Days','61-90 Days':'61-90 Days','90+ Days':'90+ Days'},
+ hi:{'Outstanding / Aging':'बकाया / अवधि विश्लेषण','As of date':'इस तारीख तक','Days Overdue':'देय तिथि के बाद के दिन','Aging Bucket':'बकाया अवधि श्रेणी','Report could not be loaded.':'रिपोर्ट लोड नहीं हो सकी।','Not Due':'अभी देय नहीं','1-30 Days':'1-30 दिन','31-60 Days':'31-60 दिन','61-90 Days':'61-90 दिन','90+ Days':'90+ दिन'},
+ mr:{'Outstanding / Aging':'थकबाकी / कालावधी विश्लेषण','As of date':'या तारखेपर्यंत','Days Overdue':'देय तारखेनंतरचे दिवस','Aging Bucket':'थकबाकी कालावधी श्रेणी','Report could not be loaded.':'अहवाल लोड करता आला नाही.','Not Due':'अद्याप देय नाही','1-30 Days':'1-30 दिवस','31-60 Days':'31-60 दिवस','61-90 Days':'61-90 दिवस','90+ Days':'90+ दिवस'},
+ gu:{'Outstanding / Aging':'બાકી / સમયગાળો વિશ્લેષણ','As of date':'આ તારીખ સુધી','Days Overdue':'નિયત તારીખ પછીના દિવસો','Aging Bucket':'બાકી સમયગાળાની શ્રેણી','Report could not be loaded.':'રિપોર્ટ લોડ થઈ શક્યો નથી.','Not Due':'હજુ ચૂકવવાનું નથી','1-30 Days':'1-30 દિવસ','31-60 Days':'31-60 દિવસ','61-90 Days':'61-90 દિવસ','90+ Days':'90+ દિવસ'},
+ kn:{'Outstanding / Aging':'ಬಾಕಿ / ಅವಧಿ ವಿಶ್ಲೇಷಣೆ','As of date':'ಈ ದಿನಾಂಕದಂತೆ','Days Overdue':'ಗಡುವಿನ ನಂತರದ ದಿನಗಳು','Aging Bucket':'ಬಾಕಿ ಅವಧಿ ವರ್ಗ','Report could not be loaded.':'ವರದಿಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.','Not Due':'ಇನ್ನೂ ಬಾಕಿ ದಿನವಿಲ್ಲ','1-30 Days':'1-30 ದಿನಗಳು','31-60 Days':'31-60 ದಿನಗಳು','61-90 Days':'61-90 ದಿನಗಳು','90+ Days':'90+ ದಿನಗಳು'},
+ ta:{'Outstanding / Aging':'நிலுவை / கால வகைப்பாடு','As of date':'இந்த தேதி வரை','Days Overdue':'காலக்கெடுவுக்குப் பிந்தைய நாட்கள்','Aging Bucket':'நிலுவைக் கால வகை','Report could not be loaded.':'அறிக்கையை ஏற்ற முடியவில்லை.','Not Due':'இன்னும் செலுத்த வேண்டிய நாள் வரவில்லை','1-30 Days':'1-30 நாட்கள்','31-60 Days':'31-60 நாட்கள்','61-90 Days':'61-90 நாட்கள்','90+ Days':'90+ நாட்கள்'}
+};
+Object.keys(reportLabels).forEach(lang=>Object.assign(tr[lang],reportLabels[lang]));
 window.Society360I18n={
  init,apply,setLanguage,translateText,toast,currentLanguage:()=>current,locale:()=>languages[current].locale,t:translateText,
  languages:Object.freeze(languages)

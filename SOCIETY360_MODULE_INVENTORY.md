@@ -49,3 +49,10 @@ Status labels: **Partial** means some implementation or workflow evidence exists
 2. Compare each live `/api/menu` item with `moduleViewMap` and actual API endpoint implementations; enumerate all hidden/role-filtered menu items separately.
 3. Resolve the database identity using a non-secret host/database fingerprint before any financial write test. Do not print or commit connection strings.
 4. For each module, mark Fully functional only after UI workflow + persisted DB state + refresh/re-login + role/society scope + all six configured languages pass.
+
+
+## Evidence update — 2026-10-24
+
+- `RPT_OUTSTANDING` is no longer only a generic-workspace route in source. It now routes to a real date-filtered Outstanding / Aging report backed by `fn_mis_outstanding` and the authenticated `/api/sm/reports/outstanding` endpoint. Visible Chrome confirmed the report controls and columns, the browser API returned 22 real rows / 47,300.00 outstanding, and report heading/date label switching passed in English, Hindi, Marathi, Gujarati, Kannada and Tamil. The report is **implemented and read-only path verified**; alternate-date UI input and export behavior remain pending, so the Reports & Exports family stays **Partial**.
+- Collection receipt details are implemented through migration 047 and the existing permission-guarded receipt endpoint; existing-payment allocation and breakdown totals reconcile. The successful payment write / receipt print popup / Customer Account balance integration is still blocked pending an approved isolated test fixture/remittance. Collection Management stays **Partial**.
+- Current live-menu count is still not established. The visible UI automation has navigated into the actual report submenu, but a complete every-menu click inventory and hidden-role route reconciliation have not yet been completed. Do not substitute source-defined view count for live menu/submenu count.

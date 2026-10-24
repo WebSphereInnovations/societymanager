@@ -157,6 +157,29 @@ async function mis(k){
  const loadComplaints=async()=>{const r=await api('/api/sm/mis/complaints?status='+encodeURIComponent(misComplaintStatus.value));grid('misTable',r,Object.keys(r[0]||{}).map(a=>({title:a.replaceAll('_',' '),field:a,headerFilter:true})))};
  misComplaintStatus.onchange=loadComplaints;await loadComplaints();
 }
+async function outstandingReport(asOfOverride=null){
+ const localToday=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+ const initialDate=asOfOverride||$('#outstandingAsOf')?.value||localToday;
+ panel(trw('Outstanding / Aging'),'<div class="requested-form"><label><span>'+trw('As of date')+'</span><input id="outstandingAsOf" type="date" value="'+esc(initialDate)+'" required></label><button type="button" class="primary" id="outstandingRefresh">'+trw('Refresh')+'</button></div><div id="outstandingTable"></div>');
+ const columns=[
+  {title:trw('Bill Number'),field:'bill_no',headerFilter:true},
+  {title:trw('Billing Period'),field:'bill_month',headerFilter:true},
+  {title:trw('Due Date'),field:'due_date',headerFilter:true},
+  {title:trw('Flat'),field:'flat_no',headerFilter:true},
+  {title:trw('Consumer Name'),field:'customer_name',headerFilter:true},
+  {title:trw('Total Bill Amount'),field:'total_amount',hozAlign:'right',formatter:c=>money(c.getValue())},
+  {title:trw('Paid Amount'),field:'paid_amount',hozAlign:'right',formatter:c=>money(c.getValue())},
+  {title:trw('Outstanding Amount'),field:'outstanding_amount',hozAlign:'right',formatter:c=>money(c.getValue())},
+  {title:trw('Days Overdue'),field:'days_overdue',hozAlign:'right'},
+  {title:trw('Aging Bucket'),field:'aging_bucket',formatter:c=>trw(String(c.getValue()||''))},
+  {title:trw('Status'),field:'bill_status',formatter:c=>trw(String(c.getValue()||''))}
+ ];
+ const load=async()=>{const asOf=$('#outstandingAsOf')?.value;if(!asOf){notify(trw('As of date')+' is required.','error');return}try{const rows=await api('/api/sm/reports/outstanding?asOf='+encodeURIComponent(asOf));grid('outstandingTable',rows,columns)}catch(err){notify(err.message||trw('Report could not be loaded.'),'error')}};
+ $('#outstandingRefresh').onclick=load;$('#outstandingAsOf').onchange=load;await load();
+ if(window.__s360OutstandingLanguageHandler)window.removeEventListener('society360-language-changed',window.__s360OutstandingLanguageHandler);
+ window.__s360OutstandingLanguageHandler=()=>{const currentDate=$('#outstandingAsOf')?.value;outstandingReport(currentDate).catch(err=>notify(err.message||trw('Report could not be loaded.'),'error'))};
+ window.addEventListener('society360-language-changed',window.__s360OutstandingLanguageHandler);
+}
 async function auditLog(){const r=await api('/api/sm/audit-log');panel('Audit Log','<div class="requested-form"><input id="auditQ" class="search" placeholder="Search user / action / entity"></div><div id="auditTable"></div>');const t=grid('auditTable',r,[{title:'Time',field:'created_at',headerFilter:true},{title:'User',field:'display_name',headerFilter:true},{title:'Entity',field:'entity_name',headerFilter:true},{title:'Record',field:'entity_id',headerFilter:true},{title:'Action',field:'action',headerFilter:true},{title:'Outcome',field:'new_data'}]);$('#auditQ').oninput=()=>t.setFilter([{field:'display_name',type:'like',value:auditQ.value},{field:'action',type:'like',value:auditQ.value},{field:'entity_name',type:'like',value:auditQ.value}]);}
 async function loginHistory(){const r=await api('/api/sm/login-history');panel('Login History','<div class="requested-form"><input id="loginQ" class="search" placeholder="Search user / IP / status"></div><div id="loginHistoryTable"></div>');const t=grid('loginHistoryTable',r,[{title:'Time',field:'created_at',headerFilter:true},{title:'User',field:'display_name',headerFilter:true},{title:'Login',field:'login_name',headerFilter:true},{title:'IP',field:'login_ip',headerFilter:true},{title:'Status',field:'status',headerFilter:true},{title:'Failure Reason',field:'failure_reason'},{title:'Trace',field:'trace_id'}]);$('#loginQ').oninput=()=>t.setFilter([{field:'display_name',type:'like',value:loginQ.value},{field:'login_name',type:'like',value:loginQ.value},{field:'login_ip',type:'like',value:loginQ.value},{field:'status',type:'like',value:loginQ.value}]);}
 async function rateMaster(){
@@ -187,6 +210,10 @@ window.openRequestedModule=function(c){
  if(c.startsWith('MIS_')){mis(c==='MIS_CONSUMER_MASTER'?'consumer':c==='MIS_BILLING_DATA'?'billing':c==='MIS_COLLECTION_DETAILS'?'collection':'complaints');return true}
  if(c==='SA_RATE'){rateMaster();return true}
  if(c==='PARK_SLOT'||c==='PARK_ASSIGN'||c==='PARK_VEHICLE'||c==='PARK_CHARGE'||c==='SOC_NEW_PARKING'){parkingManagement();return true}
+ if(c==='RPT_BILLING'){mis('billing');return true}
+ if(c==='RPT_COLLECTION'){mis('collection');return true}
+ if(c==='RPT_CONSUMER'){mis('consumer');return true}
+ if(c==='RPT_OUTSTANDING'){outstandingReport();return true}
  if(c==='AUDIT_LOG'||c==='RPT_AUDIT'||c==='SUPER_AUDIT'){auditLog();return true}
  if(c==='AUDIT_LOGIN'){loginHistory();return true}
  if(c==='NOTIFICATION_CENTER'){notifications();return true}

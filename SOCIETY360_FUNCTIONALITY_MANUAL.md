@@ -165,3 +165,8 @@ Last updated: 2026-10-24 (IST). This manual describes expected operational workf
 ## Test record template
 
 For each menu/submenu record: exact DB menu ID/code/name/parent; route/view; role and active society context (non-secret); UI workflow and timestamp; API calls/status; relevant DB query or before/after row counts without personal data; test environment fingerprint; locale; screenshot path if genuinely captured; regression result; defects; final status. Never record passwords, cookies, tokens, or connection strings.
+
+
+## Implementation update — 2026-10-24: Outstanding / Aging report
+
+`RPT_OUTSTANDING` now uses the dedicated `GET /api/sm/reports/outstanding?asOf=YYYY-MM-DD` route and `society_manager.fn_mis_outstanding`. The function scopes all bill rows to the authenticated society ID supplied by the existing guarded query helper, excludes closed/zero-balance bills, and calculates days overdue and the 1–30 / 31–60 / 61–90 / 90+ aging bucket in SQL. The screen presents bill number, billing period, due date, flat, primary consumer, total/paid/outstanding amounts, days overdue, aging bucket and status. The as-of date is a read-only report filter, not a bill mutation. The report re-renders its localized heading, date control and columns when the six-language selector changes, preserving the current date. Verified with real read-only data in visible Chrome and all six configured languages; alternate-date UI interaction and export acceptance remain pending.
