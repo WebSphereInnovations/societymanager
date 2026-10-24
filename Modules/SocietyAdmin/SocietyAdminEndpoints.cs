@@ -149,6 +149,15 @@ public static class SocietyAdminEndpoints
             "SA_VISITORS" or "VISITORS" => "VISITORS",
             "SA_PARKING" or "PARKING" => "PARKING",
             "ADM_ACCOUNTS" => "ADM_ACCOUNTS",
+            "MIS_CONSUMER_MASTER" => "MIS_CONSUMER_MASTER",
+            "MIS_BILLING_DATA" => "MIS_BILLING_DATA",
+            "MIS_COLLECTION_DETAILS" => "MIS_COLLECTION_DETAILS",
+            "MIS_COMPLAINT_HISTORY" => "MIS_COMPLAINT_HISTORY",
+            "RPT_OUTSTANDING" => "RPT_OUTSTANDING",
+            "RPT_BILLING" => "RPT_BILLING",
+            "RPT_COLLECTION" => "RPT_COLLECTION",
+            "RPT_CONSUMER" => "RPT_CONSUMER",
+            "RPT_AUDIT" => "RPT_AUDIT",
             _ => null
         };
         if(module is null)return Results.BadRequest(new {message="Export is not enabled for this table."});

@@ -81,8 +81,8 @@ async function exportTabulatorXlsx(id,button,overrideRows,overrideColumns,reques
   const response=await fetch('/api/society-admin/export/xlsx',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({moduleCode,fileName:'Society360-'+exportName,sheetName:exportName.slice(0,31),columns:columns.map(c=>({key:c.field,title:Society360I18n.translateText(c.title)})),rows})});
   if(response.status===401){location.href='/login';return}
   if(!response.ok){const body=await response.json().catch(()=>({}));throw new Error(body.message||'Excel export failed.')}
-  const blob=await response.blob(),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Society360-'+exportName+'.xlsx';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-  window.Society360I18n?.toast?.('Export successful.','success');
+  const blob=await response.blob(),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Society360-'+exportName+'.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
+  window.Society360I18n?.toast?.(Society360I18n.translateText('Export prepared. If no file appears, check Chrome Download history.'),'info');
  }catch(e){window.Society360I18n?.toast?.(e.message||'Excel export failed.','error')}
  finally{button.disabled=false;button.textContent=Society360I18n.translateText('Export to Excel')}
 }

@@ -105,3 +105,52 @@ Repository: `C:\Users\Delta\Society360` — `WebSphereInnovations/societymanager
 ### Remaining scope / status
 - Outstanding / Aging is implemented and its read-only UI/API/language path is verified; it is not evidence that all Reports & Exports menus are complete. Billing, Collection, Consumer and Audit report routes still require full menu-specific workflow verification and export acceptance.
 - Collection Management receipt-details implementation remains partial: the receipt API and existing-payment allocation totals reconcile, but a successful payment transaction, actual print/PDF popup and post-payment Customer Account balance reconciliation are still blocked on an approved isolated test fixture/remittance. No production payment was created.
+
+
+## 2026-10-24 — Collection UI regression and receipt timestamp refinement
+
+### Actual source changes
+- wwwroot/modules/society-admin/requested-workflows.js: receipt rendering now formats INR currency with Intl.NumberFormat using the active Society360 locale, formats timestamps with locale-aware Intl.DateTimeFormat, and shows separate Receipt Date / Time and Payment Date rows. This preserves the receipt endpoint contract and uses only actual receipt/payment timestamps.
+- wwwroot/js/i18n.js: added the Receipt Date / Time label for English, Hindi, Marathi, Gujarati, Kannada and Tamil.
+- wwwroot/modules/society-admin/index.html: bumped static asset cache keys to requested-workflows.js?v=20261024.15 and i18n.js?v=20261024.05.
+- scripts/verify_receipt_details_contract.py and scripts/verify_outstanding_report_contract.py: aligned expected cache key; receipt contract now checks locale-aware currency/time formatting and all six timestamp label dictionaries.
+- Earlier Release build C:\Society360BuildResume10 passed after the receipt date/time source change with 0 warnings and 0 errors. This latest cache-key-only change does not alter C# compilation.
+
+### Genuine visible Chrome evidence
+- Opened a new tab in the existing Chrome profile at http://192.168.1.8:5180/ without closing the existing ChatGPT tab. The Society360 page loaded in the visible browser and showed authenticated Society Admin context for Lakeview Residency.
+- Opened Collection Management → Accept Payment through actual mouse interaction in the visible Chrome UI.
+- Search for Rahul returned 20 visible consumer results. Selected the first result through the visible UI. The screen showed the database-backed account summary: Current Bill ₹2,200.00, arrears ₹0.00, DPC/Penalty ₹0.00, rebate/credit ₹0.00, previously paid ₹0.00, pending service charges ₹0.00, Outstanding Amount ₹2,200.00 and 1 unpaid bill. A genuine desktop screenshot was captured to C:\Users\Delta\Society360\collection-live-accept-payment-check.png.
+- Clicked Save with the amount left blank. The actual UI displayed the validation text Enter a valid amount greater than zero. twice (inline + toast), and no payment-success message appeared. No financial write was submitted.
+- Receipt/outstanding/dashboard static contracts passed; JavaScript syntax checks passed; git diff --check passed (only expected line-ending warnings).
+
+### Remaining acceptance
+- The six-language regression automation attempt hit a UI Automation selector lookup issue after the first language iteration. It is not recorded as a six-language pass for this latest receipt timestamp change. Re-run using the selector's stable AutomationId, verify the form and selected customer remain intact in each locale, and restore English.
+- The visible payment-history receipt action and print/PDF layout have not yet been exercised against an existing payment in the UI. A new payment was not created. The existing payment API/SQL allocation reconciliation remains read-only evidence from the previous checkpoint.
+- Collection Management remains Partial, not Fully functional. Successful payment/receipt/customer-balance end-to-end acceptance is still gated on safe existing-payment UI verification and the production-write safety rule.
+
+
+## 2026-10-24 — MIS report date semantics, export permissions, and Chrome download blocker
+
+### Implemented
+- Added Database/049_mis_collection_month_options.sql and Database/050_mis_report_specific_month_options.sql. Both are repeatable CREATE OR REPLACE migrations. Migration 049 combined bill months and payment months; live testing then exposed a cross-report regression, so migration 050 now exposes separate BILL_MONTH and PAYMENT_MONTH option groups while retaining combined MONTH for backward compatibility.
+- Added command-line migration runners in Program.cs. Migration 049 and migration 050 were applied successfully after correcting the first SELECT output aliases. These are function-only changes; no payment, bill, or customer records were written.
+- Updated requested-workflows.js to choose BILL_MONTH for Billing Data and PAYMENT_MONTH for Collection Details, preferring the current month when it exists and otherwise the latest available month. Asset key is requested-workflows.js?v=20261024.17.
+- Added explicit XLSX export permission mappings for MIS_CONSUMER_MASTER, MIS_BILLING_DATA, MIS_COLLECTION_DETAILS, MIS_COMPLAINT_HISTORY, RPT_OUTSTANDING, RPT_BILLING, RPT_COLLECTION, RPT_CONSUMER and RPT_AUDIT in SocietyAdminEndpoints.cs. Server-side EXPORT permission enforcement remains in place.
+- Updated the XLSX download lifecycle in admin.js to delay blob URL revocation by five seconds, and replaced the misleading “Export successful” toast with a localized notice telling the user to check Chrome Download history if no file appears. Added the notice in all six configured languages in i18n.js; asset keys are admin.js v20261024.03 and i18n.js v20261024.06.
+- Added/updated static regression contracts: verify_mis_collection_month_options.py, verify_mis_export_permission_contract.py, verify_receipt_details_contract.py, verify_outstanding_report_contract.py and verify_dashboard_period_total_contract.py.
+
+### Genuine visible Chrome results
+- After migration 049, Collection Details changed from August 2026 with no rows to October 2026 with the actual October payment row.
+- Migration 050 fixed the cross-report regression: in visible Chrome, Billing Data defaults to August 2026 (latest bill month with data) and Collection Details defaults to October 2026 (payment month). Both showed nonempty accessible table content; no financial writes were performed.
+- Consumer Master Data report opened in visible Chrome with database-backed rows. Changing the Wing filter and pressing Show returned a filtered dataset; this was a read-only operation.
+- Existing payment receipt was opened from the real Collection Management payment history in visible Chrome. The receipt showed receipt number, date/time, INR amounts, itemized charge breakdown, bill allocation and Print / Save as PDF control. Amount received and total allocated both displayed ₹1,100.00 for that existing payment. No new payment was created.
+- Blank payment amount validation was tested in the actual UI: “Enter a valid amount greater than zero.” appeared, and no success message or payment write occurred.
+- XLSX export endpoint returned a successful response and the permission mapping is present. Chrome Download history explicitly showed Chrome blocked the XLSX download because the site uses an insecure HTTP connection. The generated download remained as .crdownload; the app must not bypass this browser security policy. The user-facing toast now explains to check Download history. Final workbook file delivery remains externally blocked until a secure origin or an explicit user-approved browser decision is available.
+- A genuine desktop screenshot of the Collection Details result is stored on the remote test machine at C:\Users\Delta\Society360\collection-live-accept-payment-check.png. It is not a sandbox-hosted downloadable attachment.
+
+### Verification and remaining gaps
+- Release build to C:\Society360BuildResume13 passed with 0 warnings and 0 errors. The latest SQL alias correction was applied via the already-built migration runner; C# source did not change after that build.
+- After the final localized export-notice edit, all five static report/receipt/dashboard/export/month-group contracts passed, node syntax checks passed for admin.js, requested-workflows.js and i18n.js, git diff --check passed (line-ending warnings only), and GET /api/health returned HTTP 200.
+- Full six-language receipt-popup verification remains inconclusive because the UI Automation selector did not reliably report the selected locale. The translation resources include all six receipt and export-notice keys, but do not claim complete per-locale browser acceptance.
+- Collection Management remains Partial: existing customer search/selection, real dues/history, existing receipt display and blank-amount validation were verified. Successful payment creation, partial-payment allocation, post-payment balance reconciliation and receipt persistence were not run because an isolated test fixture/remittance was not approved.
+- The HTTP-only XLSX browser restriction, project-wide live menu enumeration, Audit report workflow, and remaining module-specific full-stack acceptance are still open.

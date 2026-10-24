@@ -1518,6 +1518,24 @@ const reportLabels={
  ta:{'Outstanding / Aging':'நிலுவை / கால வகைப்பாடு','As of date':'இந்த தேதி வரை','Days Overdue':'காலக்கெடுவுக்குப் பிந்தைய நாட்கள்','Aging Bucket':'நிலுவைக் கால வகை','Report could not be loaded.':'அறிக்கையை ஏற்ற முடியவில்லை.','Not Due':'இன்னும் செலுத்த வேண்டிய நாள் வரவில்லை','1-30 Days':'1-30 நாட்கள்','31-60 Days':'31-60 நாட்கள்','61-90 Days':'61-90 நாட்கள்','90+ Days':'90+ நாட்கள்'}
 };
 Object.keys(reportLabels).forEach(lang=>Object.assign(tr[lang],reportLabels[lang]));
+const collectionReceiptActionTranslations={
+ en:{'Receipt Date / Time':'Receipt Date / Time','View Receipt':'View Receipt','Receipt could not be loaded.':'Receipt could not be loaded.','Allow popups to view the receipt.':'Allow popups to view the receipt.','Loading receipt':'Loading receipt'},
+ hi:{'Receipt Date / Time':'रसीद दिनांक / समय','View Receipt':'रसीद देखें','Receipt could not be loaded.':'रसीद लोड नहीं हो सकी।','Allow popups to view the receipt.':'रसीद देखने के लिए पॉप-अप की अनुमति दें।','Loading receipt':'रसीद लोड हो रही है'},
+ mr:{'Receipt Date / Time':'पावती दिनांक / वेळ','View Receipt':'पावती पहा','Receipt could not be loaded.':'पावती लोड करता आली नाही.','Allow popups to view the receipt.':'पावती पाहण्यासाठी पॉप-अपला परवानगी द्या.','Loading receipt':'पावती लोड होत आहे'},
+ gu:{'Receipt Date / Time':'રસીદ તારીખ / સમય','View Receipt':'રસીદ જુઓ','Receipt could not be loaded.':'રસીદ લોડ થઈ શકી નથી.','Allow popups to view the receipt.':'રસીદ જોવા માટે પોપ-અપને મંજૂરી આપો.','Loading receipt':'રસીદ લોડ થઈ રહી છે'},
+ kn:{'Receipt Date / Time':'ರಸೀದಿ ದಿನಾಂಕ / ಸಮಯ','View Receipt':'ರಸೀದಿ ವೀಕ್ಷಿಸಿ','Receipt could not be loaded.':'ರಸೀದಿಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.','Allow popups to view the receipt.':'ರಸೀದಿ ನೋಡಲು ಪಾಪ್-ಅಪ್‌ಗಳಿಗೆ ಅನುಮತಿ ನೀಡಿ.','Loading receipt':'ರಸೀದಿ ಲೋಡ್ ಆಗುತ್ತಿದೆ'},
+ ta:{'Receipt Date / Time':'ரசீது தேதி / நேரம்','View Receipt':'ரசீதைக் காண்க','Receipt could not be loaded.':'ரசீதை ஏற்ற முடியவில்லை.','Allow popups to view the receipt.':'ரசீதைக் காண பாப்-அப்களை அனுமதிக்கவும்.','Loading receipt':'ரசீது ஏற்றப்படுகிறது'}
+};
+Object.keys(collectionReceiptActionTranslations).forEach(lang=>Object.assign(tr[lang],collectionReceiptActionTranslations[lang]));
+const exportDownloadNoticeTranslations={
+ en:{'Export prepared. If no file appears, check Chrome Download history.':'Export prepared. If no file appears, check Chrome Download history.'},
+ hi:{'Export prepared. If no file appears, check Chrome Download history.':'निर्यात तैयार है। फ़ाइल न दिखे तो Chrome डाउनलोड इतिहास देखें।'},
+ mr:{'Export prepared. If no file appears, check Chrome Download history.':'निर्यात तयार आहे. फाइल दिसत नसल्यास Chrome डाउनलोड इतिहास तपासा.'},
+ gu:{'Export prepared. If no file appears, check Chrome Download history.':'નિકાસ તૈયાર છે. ફાઇલ ન દેખાય તો Chrome ડાઉનલોડ ઇતિહાસ તપાસો.'},
+ kn:{'Export prepared. If no file appears, check Chrome Download history.':'ರಫ್ತು ಸಿದ್ಧವಾಗಿದೆ. ಫೈಲ್ ಕಾಣದಿದ್ದರೆ Chrome ಡೌನ್‌ಲೋಡ್ ಇತಿಹಾಸವನ್ನು ಪರಿಶೀಲಿಸಿ.'},
+ ta:{'Export prepared. If no file appears, check Chrome Download history.':'ஏற்றுமதி தயாராக உள்ளது. கோப்பு தெரியாவிட்டால் Chrome பதிவிறக்க வரலாற்றைப் பார்க்கவும்.'}
+};
+Object.keys(exportDownloadNoticeTranslations).forEach(lang=>Object.assign(tr[lang],exportDownloadNoticeTranslations[lang]));
 window.Society360I18n={
  init,apply,setLanguage,translateText,toast,currentLanguage:()=>current,locale:()=>languages[current].locale,t:translateText,
  languages:Object.freeze(languages)

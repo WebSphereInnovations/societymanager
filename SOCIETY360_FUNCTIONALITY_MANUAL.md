@@ -138,9 +138,9 @@ Last updated: 2026-10-24 (IST). This manual describes expected operational workf
 
 **Purpose / users:** provide accurate bill, collection, outstanding, consumer and audit reporting.
 
-**Workflow:** choose report → set period and supported filters → run query → inspect totals and rows → page/sort/search → export exactly the authorized filtered dataset.
+**Workflow:** choose report → set period and supported filters → run query → inspect totals and rows → page/sort/search → export exactly the authorized filtered dataset. Billing Data uses bill-period options; Collection Details uses payment-date options. The options API retains the combined MONTH group for backward compatibility and adds BILL_MONTH and PAYMENT_MONTH groups so these reports do not filter against the wrong date basis.
 
-**Rules:** report calculations must reconcile with source records; exclude statuses only according to existing accounting rules. Exports must enforce the same permission and society scope as the UI, sanitize filenames/values as needed, and localize headers without changing canonical identifiers.
+**Rules:** report calculations must reconcile with source records; exclude statuses only according to existing accounting rules. Exports must enforce the same permission and society scope as the UI, sanitize filenames/values as needed, and localize headers without changing canonical identifiers. Chrome currently blocks the generated XLSX download from the configured HTTP origin as an insecure download; the app must not bypass this browser security policy. Until a secure origin or user-approved browser decision is available, tell the user to check Chrome Download history.
 
 **Important status:** `RPT_BILLING`, `RPT_COLLECTION`, `RPT_OUTSTANDING`, `RPT_CONSUMER`, and `RPT_AUDIT` currently map to the generic workspace in `admin.js`; actual report-specific behavior must be verified before acceptance.
 

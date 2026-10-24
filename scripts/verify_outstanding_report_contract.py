@@ -11,7 +11,11 @@ assert "GREATEST(COALESCE(b.total_amount,0)-COALESCE(b.paid_amount,0),0)>0" in s
 assert "fn_mis_outstanding" in api and "RPT_OUTSTANDING" in api
 assert "async function outstandingReport(asOfOverride=null)" in js and "'/api/sm/reports/outstanding?asOf='" in js
 assert "society360-language-changed" in js and "outstandingReport(currentDate)" in js
-assert 'requested-workflows.js?v=20261024.12' in (root/'wwwroot/modules/society-admin/index.html').read_text(encoding='utf-8')
+assert 'requested-workflows.js?v=20261024.17' in (root/'wwwroot/modules/society-admin/index.html').read_text(encoding='utf-8')
+assert "function reportColumnTitle(field)" in js and "function bindMisLanguageRefresh(kind,readState)" in js
+assert "if(c==='RPT_BILLING'){mis('billing');return true}" in js
+assert "if(c==='RPT_COLLECTION'){mis('collection');return true}" in js
+assert "if(c==='RPT_CONSUMER'){mis('consumer');return true}" in js
 assert "if(c==='RPT_OUTSTANDING'){outstandingReport();return true}" in js
 for lang in ['en','hi','mr','gu','kn','ta']:
  assert f"{lang}:{{'Outstanding / Aging'" in i18n, f'missing report labels for {lang}'
