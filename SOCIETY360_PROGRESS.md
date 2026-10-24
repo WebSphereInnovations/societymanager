@@ -158,3 +158,11 @@ Repository: `C:\Users\Delta\Society360` — `WebSphereInnovations/societymanager
 - Implementation commit 697b240 (Fix MIS report periods and export feedback) was pushed successfully to origin/main. The unrelated pre-existing admin.css/dashboard.js edits and the many pre-existing QA/screenshot artifacts remain unstaged and preserved.
 
 - Additional visible Chrome acceptance after commit: MIS Complaint History loaded database-backed rows, the Complaint Status filter changed to In Progress and Show returned a smaller nonempty result set (accessible data items decreased from 99 to 54). Read-only only; no complaint record was modified.
+
+
+## 2026-10-24 — Customer Account cross-module read-only verification
+
+- Opened Customer Relationship Management → Customer Account in the actual visible Chrome session. Search by consumer name displayed matching live records directly below the search field; selected the consumer associated with the existing October payment.
+- The single-consumer account summary showed Current Outstanding ₹1,100, Current Bill ₹2,200 and Last Payment ₹1,100. These values reconcile with the same consumer's Collection Details row and the existing ₹1,100 receipt. Four account tabs were present, including Payments and Service History. No write was performed.
+- Screenshot captured at C:\Users\Delta\Society360\customer-account-existing-payment-check.png. Collection Details screenshot recaptured at C:\Users\Delta\Society360\mis-collection-details-october-check.png.
+- Customer Account remains Partial: this was a read-only cross-module consistency test, not a full CRUD, refresh/re-login, multi-flat or six-language acceptance run.
