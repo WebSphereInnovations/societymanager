@@ -102,3 +102,26 @@ body.nav-layout-top .mobile-menu-toggle{display:none}
 /* Collection and shared requested-workflow inline validation */
 .requested-form .rw-inline-error{display:block;color:#b91c1c;font-size:12px;line-height:1.4;margin-top:4px;font-weight:600}
 .requested-form [aria-invalid="true"]{border-color:#dc2626!important;box-shadow:0 0 0 2px rgba(220,38,38,.12)!important}
+/* Collection payment screen: separated summary, balance and payment entry */
+.collection-payment-form{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding:22px;background:linear-gradient(145deg,#fff,#f8faff);align-items:start}
+.collection-payment-form>#payAccountSummary{grid-column:1/-1;min-width:0}
+.collection-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.collection-summary-item{display:flex;flex-direction:column;justify-content:space-between;gap:7px;min-width:0;min-height:72px;padding:13px 15px;border:1px solid #e1e7f0;border-radius:12px;background:#fff;box-shadow:0 3px 12px rgba(20,35,70,.035)}
+.collection-summary-item span{color:#64718a;font-size:12px;font-weight:600;line-height:1.4;overflow-wrap:anywhere}
+.collection-summary-item strong{font-size:18px;font-weight:800;color:#182448;line-height:1.25;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.collection-summary-item:nth-child(7){background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border-color:#b7e6c7}
+.collection-summary-item:nth-child(7) strong{color:#15803d;font-size:21px}
+.collection-summary-item:nth-child(8){background:#f8faff}
+.collection-accounting-note{grid-column:1/-1;margin:0;padding:10px 13px;border-left:3px solid #8b7cf6;background:#f7f6ff;border-radius:0 8px 8px 0;color:#5d6680;font-size:12px;line-height:1.55}
+.collection-payment-form>.due-banner{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:0;padding:15px 18px;border:1px solid #cbd5ff;border-radius:12px;background:linear-gradient(100deg,#f3f5ff,#fafaff);color:#28345b}
+.collection-payment-form>.due-banner b{font-size:19px;font-weight:800}
+.collection-payment-form>.due-banner span{font-size:13px;color:#596781}
+.collection-payment-form>label{min-width:0;gap:8px;font-size:12px;font-weight:700;color:#34405a}
+.collection-payment-form>label input,.collection-payment-form>label select,.collection-payment-form>label textarea{width:100%;min-width:0;min-height:44px;border-radius:10px;border:1px solid #d4dbea;background:#fff;padding:11px 12px;font-size:14px;color:#202b45}
+.collection-payment-form>label input:focus,.collection-payment-form>label select:focus{outline:none;border-color:#7865e7;box-shadow:0 0 0 3px rgba(120,101,231,.13)}
+.collection-payment-form>#chequeFields{grid-column:1/-1;width:100%;min-width:0}
+.collection-payment-form>#chequeFields .requested-form{grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:14px;background:#f7f9fd}
+.collection-payment-form>#rwSave{min-height:44px;min-width:150px;border-radius:10px}
+.collection-payment-form+#payHistory,.requested-panel #payHistory{min-width:0}
+@media(max-width:900px){.collection-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.collection-payment-form{grid-template-columns:repeat(2,minmax(0,1fr));padding:16px}.collection-payment-form>#chequeFields .requested-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.collection-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.collection-summary-item{padding:10px;min-height:68px}.collection-summary-item strong{font-size:16px}.collection-payment-form{grid-template-columns:minmax(0,1fr);padding:12px;gap:13px}.collection-payment-form>#payAccountSummary,.collection-payment-form>.due-banner,.collection-payment-form>#chequeFields,.collection-payment-form>.collection-accounting-note{grid-column:1}.collection-payment-form>.due-banner{align-items:flex-start;flex-direction:column}.collection-payment-form>#chequeFields .requested-form{grid-template-columns:minmax(0,1fr);padding:10px}}
