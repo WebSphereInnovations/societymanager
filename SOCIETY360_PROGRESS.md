@@ -156,3 +156,5 @@ Repository: `C:\Users\Delta\Society360` — `WebSphereInnovations/societymanager
 - The HTTP-only XLSX browser restriction, project-wide live menu enumeration, Audit report workflow, and remaining module-specific full-stack acceptance are still open.
 
 - Implementation commit 697b240 (Fix MIS report periods and export feedback) was pushed successfully to origin/main. The unrelated pre-existing admin.css/dashboard.js edits and the many pre-existing QA/screenshot artifacts remain unstaged and preserved.
+
+- Additional visible Chrome acceptance after commit: MIS Complaint History loaded database-backed rows, the Complaint Status filter changed to In Progress and Show returned a smaller nonempty result set (accessible data items decreased from 99 to 54). Read-only only; no complaint record was modified.
