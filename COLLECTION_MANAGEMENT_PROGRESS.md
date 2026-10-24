@@ -34,14 +34,14 @@ Complete the existing Society360 Collection Management workflow against the exis
 - [x] .NET Release build passed (0 warnings / 0 errors).
 - [x] JavaScript syntax check after latest UI edit (`node --check` passed).
 - [x] PostgreSQL metadata verification: `tag` is nullable text; `processed_billing_month` has no default; active `sp_accept_payment` signature matches the 12-argument API call.
-- [ ] Safe rollback-only transaction test on a known eligible test account, with direct SQL assertions for payment amount = allocation sum and metadata SQL NULL.
-- [ ] Authenticated Chrome test of collection search, amount match validation, payment save, receipt, updated dues, refresh, and responsive layout.
+- [ ] Safe rollback-only transaction test on a known eligible test account, with direct SQL assertions for payment amount = allocation sum and metadata SQL NULL. An attempted test was not completed; no live payment was created.
+- [ ] Authenticated Chrome test of collection search, amount match validation, payment save, receipt, updated dues, refresh, and responsive layout. Authenticated browser session/test account was not available in this batch.
 - [ ] Verify payment history UI; current module loads a receipt after save but does not yet provide a dedicated per-customer payment-history view.
 - [ ] Full six-language audit of all Collection Management labels/messages.
 - [ ] Confirm search returns only the intended account and current dues are reconciled against bill records; UI currently displays aggregate dues from the existing DB search function.
 - [ ] Run complete project tests, review final diff, commit and push.
 
-## Exact next actions
+- [x] Runtime smoke: `GET /api/health` returned 200; unauthenticated `GET /api/sm/collection/search?q=` and receipt lookup returned 401, as expected.\r\n- [x] Commit/push succeeded: `3fdc74e Harden collection payment allocation and null metadata` pushed to `origin/main`.\r\n\r\n## Exact next actions
 1. Run `node --check wwwroot/modules/society-admin/requested-workflows.js` if Node is available; otherwise use an available JS parser.
 2. Query PostgreSQL metadata to confirm `tag` exists and payment function is the 12-argument definition.
 3. Run a safe, explicit rollback-only test only with a verified valid test record/user/payment mode; assert inserted payment `processed_billing_month IS NULL AND tag IS NULL`, allocation sum equals payment amount, then rollback and confirm no test payment remains.
