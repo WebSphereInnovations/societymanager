@@ -154,3 +154,5 @@ Repository: `C:\Users\Delta\Society360` — `WebSphereInnovations/societymanager
 - Full six-language receipt-popup verification remains inconclusive because the UI Automation selector did not reliably report the selected locale. The translation resources include all six receipt and export-notice keys, but do not claim complete per-locale browser acceptance.
 - Collection Management remains Partial: existing customer search/selection, real dues/history, existing receipt display and blank-amount validation were verified. Successful payment creation, partial-payment allocation, post-payment balance reconciliation and receipt persistence were not run because an isolated test fixture/remittance was not approved.
 - The HTTP-only XLSX browser restriction, project-wide live menu enumeration, Audit report workflow, and remaining module-specific full-stack acceptance are still open.
+
+- Implementation commit 697b240 (Fix MIS report periods and export feedback) was pushed successfully to origin/main. The unrelated pre-existing admin.css/dashboard.js edits and the many pre-existing QA/screenshot artifacts remain unstaged and preserved.
