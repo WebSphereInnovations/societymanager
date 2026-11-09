@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Society360 - Theme Access & Plans</title><script src="/js/i18n.js?v=20261109.05"></script>
+<link rel="stylesheet" href="/css/theme-controller.css?v=20261109.05">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6fb;color:#18233f;font-family:"DM Sans",Arial,sans-serif}
+.wrap{max-width:1120px;margin:34px auto;padding:0 20px}.head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:24px}
+.brand{font-weight:800;font-size:21px}.brand span{color:#735fe8}.back{color:#59657a;text-decoration:none;background:#fff;border:1px solid #e1e6ef;border-radius:9px;padding:10px 14px;font-size:12px}
+h1{font-size:26px;margin:0 0 8px}.intro{color:#7b8799;font-size:13px;line-height:1.6;margin:0 0 22px}
+.notice{background:#eaf8f1;border:1px solid #c8ead9;border-radius:12px;padding:15px 17px;margin-bottom:20px;color:#216b4b;font-size:13px}
+.list{display:grid;gap:14px}.theme{background:#fff;border:1px solid #e3e8f0;border-radius:15px;padding:18px;display:grid;grid-template-columns:minmax(180px,1fr) minmax(240px,1.3fr) auto;gap:18px;align-items:center}
+.name{font-weight:750;font-size:15px}.meta{font-size:11px;color:#8490a2;margin-top:5px}.mode{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select{border:1px solid #dce2ec;border-radius:9px;padding:10px;background:#fff;color:#27344a;font:inherit;font-size:12px}
+.plans{display:flex;gap:7px;flex-wrap:wrap}.plan{display:flex;gap:6px;align-items:center;background:#f6f7fb;border:1px solid #e6e9f0;border-radius:8px;padding:7px 9px;font-size:11px}
+.plan input{accent-color:#705ce4}.save{border:0;background:#6f5ce4;color:#fff;border-radius:9px;padding:10px 15px;font-weight:700;cursor:pointer;font-size:12px}.save:disabled{opacity:.5}
+.status{font-size:11px;min-height:16px;margin-top:8px;color:#28835e}.error{color:#bd4754}
+@media(max-width:760px){.theme{grid-template-columns:1fr}.save{width:100%}.head{align-items:flex-start}.wrap{margin-top:24px}}
+</style></head><body><div style="position:fixed;right:18px;top:14px;z-index:1000"><select id="language-select" aria-label="Language"></select></div>
+<div class="wrap"><div class="head"><div class="brand">Society<span>360</span> ? Super Admin</div><a class="back" href="/super-admin-security.html">? Super Admin</a></div>
+<h1>Theme Access & Subscription Plans</h1><p class="intro">Control whether each theme is free for every society or available only with selected subscription plans. These are platform-wide settings managed by Super Admin.</p>
+<div class="notice"><strong>Current launch setting:</strong> All active themes are FREE for every society, including Standard and Commercial/Premium themes. You can change this policy here whenever you are ready.</div>
+<div id="themes" class="list">Loading theme policies?</div></div>
+<script src="/js/super-admin-theme-access.js?v=20261109.05"></script><script src="/js/theme-controller.js?v=20261109.05"></script></body></html>

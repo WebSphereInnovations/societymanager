@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Antiforgery;
 namespace Society360.Modules.Platform;
 
 public sealed record ThemePreferenceRequest(string ThemeCode, string? Remark);
+public sealed record ThemeAccessPolicyRequest(string ThemeCode, string AccessMode, string[]? AllowedPlanCodes, string? Remark);
 public sealed record ThemeEntitlementRequest(
     long SocietyId,
     string ThemeCode,
@@ -331,6 +332,102 @@ public static class ThemeEndpoints
             }
             await tx.CommitAsync(ct);
             return Results.Ok(new { societyId = request.SocietyId, themeCode, isActive = request.IsActive });
+        });
+
+        app.MapGet("/api/platform/theme-access-policy", async (
+            SocietyDb db, AuthService auth, HttpContext http, CancellationToken ct) =>
+        {
+            var session = await AuthGuard.Get(http, auth, ct);
+            if (session is null) return Results.Unauthorized();
+            if (session.RoleCode != "SUPER_ADMIN" ||
+                !await auth.HasPermissionAsync(session.UserId, PermissionModule, "MANAGE", ct))
+                return Results.Forbid();
+            if (!db.IsConfigured) return Results.Problem("Database is not configured.", statusCode: 503);
+
+            await using var cn = db.CreateConnection();
+            await cn.OpenAsync(ct);
+            var themes = new List<object>();
+            await using (var cmd = new NpgsqlCommand("""
+                SELECT theme_code, theme_name, is_commercial, access_mode, allowed_plan_codes
+                FROM society_manager.m_theme WHERE is_active
+                ORDER BY is_default DESC, theme_name
+                """, cn))
+            await using (var reader = await cmd.ExecuteReaderAsync(ct))
+            {
+                while (await reader.ReadAsync(ct))
+                    themes.Add(new {
+                        themeCode = reader.GetString(0), themeName = reader.GetString(1),
+                        isCommercial = reader.GetBoolean(2), accessMode = reader.GetString(3),
+                        allowedPlanCodes = reader.GetFieldValue<string[]>(4)
+                    });
+            }
+            var plans = new List<object>();
+            await using (var cmd = new NpgsqlCommand("""
+                SELECT plan_code, plan_name FROM society_manager.m_subscription_plan
+                WHERE is_active ORDER BY price, plan_name
+                """, cn))
+            await using (var reader = await cmd.ExecuteReaderAsync(ct))
+            {
+                while (await reader.ReadAsync(ct))
+                    plans.Add(new { planCode = reader.GetString(0), planName = reader.GetString(1) });
+            }
+            return Results.Ok(new { themes, plans });
+        });
+
+        app.MapPut("/api/platform/theme-access-policy", async (
+            ThemeAccessPolicyRequest request, SocietyDb db, AuthService auth,
+            HttpContext http, IAntiforgery antiforgery, CancellationToken ct) =>
+        {
+            var session = await AuthGuard.Get(http, auth, ct);
+            if (session is null) return Results.Unauthorized();
+            if (session.RoleCode != "SUPER_ADMIN" ||
+                !await auth.HasPermissionAsync(session.UserId, PermissionModule, "MANAGE", ct))
+                return Results.Forbid();
+            try { await antiforgery.ValidateRequestAsync(http); }
+            catch { return Results.BadRequest(new { message = "Security token expired. Refresh the page and try again." }); }
+            if (!db.IsConfigured) return Results.Problem("Database is not configured.", statusCode: 503);
+
+            var code = (request.ThemeCode ?? "").Trim().ToUpperInvariant();
+            var mode = (request.AccessMode ?? "").Trim().ToUpperInvariant();
+            if (code.Length == 0 || mode is not ("FREE" or "PAID"))
+                return Results.BadRequest(new { message = "Choose a theme and a valid Free or Paid access mode." });
+            var plans = (request.AllowedPlanCodes ?? Array.Empty<string>())
+                .Select(x => x.Trim().ToUpperInvariant()).Where(x => x.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+            if (mode == "PAID" && plans.Length == 0)
+                return Results.BadRequest(new { message = "Select at least one subscription plan for a paid theme." });
+            if (mode == "FREE") plans = Array.Empty<string>();
+
+            await using var cn = db.CreateConnection();
+            await cn.OpenAsync(ct);
+            await using (var validate = new NpgsqlCommand("""
+                SELECT count(*) FROM society_manager.m_subscription_plan
+                WHERE is_active AND upper(plan_code)=ANY(@plans)
+                """, cn))
+            {
+                validate.Parameters.Add("plans", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Varchar).Value = plans;
+                if (plans.Length > 0 && Convert.ToInt64(await validate.ExecuteScalarAsync(ct)) != plans.Length)
+                    return Results.BadRequest(new { message = "One or more selected subscription plans are invalid or inactive." });
+            }
+
+            await using var tx = await cn.BeginTransactionAsync(ct);
+            await SetAuditContextAsync(cn, tx, session.UserId, request.Remark, http, ct);
+            await using var save = new NpgsqlCommand("""
+                UPDATE society_manager.m_theme
+                SET access_mode=@mode, allowed_plan_codes=@plans,
+                    modified_by=@user_id, modified_at=now(), modify_by=@user_id,
+                    modify_date=now(), modify_remark=@remark
+                WHERE theme_code=@code AND is_active
+                """, cn, tx);
+            save.Parameters.AddWithValue("mode", mode);
+            save.Parameters.Add("plans", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Varchar).Value = plans;
+            save.Parameters.AddWithValue("user_id", session.UserId);
+            save.Parameters.AddWithValue("remark", request.Remark?.Trim() ?? "");
+            save.Parameters.AddWithValue("code", code);
+            if (await save.ExecuteNonQueryAsync(ct) == 0)
+                return Results.NotFound(new { message = "Active theme not found." });
+            await tx.CommitAsync(ct);
+            return Results.Ok(new { themeCode = code, accessMode = mode, allowedPlanCodes = plans });
         });
     }
 
