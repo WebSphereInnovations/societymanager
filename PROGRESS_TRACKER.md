@@ -27,3 +27,13 @@ Phase 1 source and DB audit is substantially documented but remains **in progres
 ## Next exact step
 
 Complete role-to-menu/API/page mapping and inspect database FK/index/migration conventions. Then finalize a reversible theme entitlement/preference model. Do not begin theme CSS/JS integration until Phase 1 exit gaps are recorded and reviewed.
+
+
+## Additional audit evidence
+
+- [x] Captured all 254 live menu catalog rows in `MODULE_INVENTORY.md`.
+- [x] Queried the authenticated menu function for active users; deduplicated role menu counts: RESIDENT 4, SOCIETY_ADMIN 105, SUPER_ADMIN 105.
+- [x] Counted page controls across all seven HTML entry pages.
+- [x] Enumerated 158 API route declarations across 10 backend endpoint files.
+- [x] Reviewed migration-service behavior and audit-trigger conventions.
+- [ ] Visible browser acceptance and additional role accounts remain unavailable/not verified.

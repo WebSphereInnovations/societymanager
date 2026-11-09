@@ -36,3 +36,10 @@
 - Live authenticated menu capture for each role is not yet recorded.
 - Visible Chrome page-by-page acceptance is not yet performed.
 - Database theme migration is only proposed; no schema change has been made.
+
+
+## Additional audit gaps
+
+- [ ] Obtain authorized test sessions for CASHIER, COLLECTOR, GUARD, SECURITY, ACCOUNTANT, BILLING_ADMIN, EMPLOYEE and MAINTENANCE roles before role-by-role visual acceptance.
+- [ ] Complete visible browser baseline; the current remote toolset has no visible browser-control action and no Chrome CDP debug port is listening.
+- [ ] Review the full API-to-view route map and all form/modal event handlers before any module-level theme changes.

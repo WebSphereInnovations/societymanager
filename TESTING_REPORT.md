@@ -22,3 +22,12 @@
 ## Safety
 
 Database inspection ran inside read-only transactions. No production data was inserted, updated or deleted. No schema migration was applied. Existing app process on port 5180 was not stopped or restarted.
+
+
+## Expanded audit evidence
+
+- [x] Live menu function: role-filtered outputs queried read-only for the three role codes with active user records.
+- [x] HTML page control counts recorded for all seven page entry points.
+- [x] API route declaration scan: 158 across 10 endpoint files.
+- [x] Schema migration convention inspected: numbered SQL scripts are applied outside the runtime MigrationService; no schema-migration ledger table was found in the inspected schema.
+- [ ] Visible Chrome comparison is still not performed; remote tooling exposes shell/file operations but no visible browser mouse/keyboard/screenshot action. CDP ports 9222, 9333, 9334 and 9335 were unavailable.

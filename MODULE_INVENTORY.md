@@ -309,3 +309,16 @@ Existing source inventory identifies 14 view sections: home, customers, flats, b
 8. `wwwroot/modules/society-admin/security-visitor.js` — security/visitor grids.
 
 Do not replace server-side paging in Customer Account with local paging. Header visibility must be fixed while preserving each data source and export behavior.
+
+
+## Authenticated role menu snapshot
+
+Read-only execution of `society_manager.fn_user_module_menu(user_id)` against active users (deduplicated by module code):
+
+| Active role code | Distinct menu codes | Root menu items |
+|---|---:|---:|
+| RESIDENT | 4 | 1 |
+| SOCIETY_ADMIN | 105 | 17 |
+| SUPER_ADMIN | 105 | 17 |
+
+The database has 11 role definitions, but only these three role codes had active user records in the queried `m_user` rows. CASHIER, COLLECTOR, GUARD, SECURITY, ACCOUNTANT, BILLING_ADMIN, EMPLOYEE and MAINTENANCE need a safe authorized test user before visible per-role UI acceptance. Do not create users or alter role assignments just for this audit.

@@ -75,3 +75,20 @@ At audit start, local Git reported 291 existing status entries: 5 tracked modifi
 - Inspect every CSS input rule and every Tabulator column definition/constructor for sizing and header clipping.
 - Run browser baseline at desktop/tablet/mobile with existing language selector and login/session state.
 - Verify theme preference and commercial entitlement schema design against complete FK/index/trigger conventions.
+
+
+## 9. Expanded source and role inventory
+
+- HTML control inventory across the seven pages:
+  - Platform: 1 select, 5 buttons, 4 sections.
+  - Login: 2 forms, 10 inputs, 1 select, 3 buttons, 2 sections.
+  - Super Admin Security: 5 inputs, 1 select, 1 textarea, 4 buttons, 4 sections.
+  - Cashier: 4 inputs, 2 selects, 38 buttons, 9 sections.
+  - Resident/Customer: 2 inputs, 1 select, 1 textarea, 5 buttons.
+  - Migration: 1 input, 1 select, 2 buttons.
+  - Society Admin: 46 inputs, 20 selects, 5 textareas, 66 buttons, 27 sections.
+- 158 API route declarations were found across 10 backend endpoint files.
+- Authenticated menu function was queried read-only for active user records. Three active role codes currently have users: RESIDENT (4 distinct menu codes), SOCIETY_ADMIN (105), SUPER_ADMIN (105). The other eight role catalog entries exist but were not represented by active m_user rows in this query.
+- The menu function emits permission-expanded rows; distinct module codes must be used for navigation inventory, not raw permission row counts.
+- Database migration scripts are numbered SQL files; the four tables containing “migration” are business-data import staging/history tables, not a schema migration ledger. The application MigrationService handles business imports and does not apply the schema scripts.
+- Existing audit triggers are present on user, branding, subscription, plan and system-setting tables. New theme tables should follow these audit conventions.
