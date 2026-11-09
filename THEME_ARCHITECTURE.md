@@ -63,3 +63,10 @@ Store theme preference separately from `m_user.preferred_language` and existing 
 ## Dashboard visual module
 
 `wwwroot/js/skyfy-dashboard.js` listens for the authorized theme-applied event and adds a dedicated Society Admin visual panel after the existing dashboard hero. It does not alter `dashboard.js`, dashboard API contracts, filters, totals or drilldowns. The building picker mirrors the existing database-populated `#dashBuilding` filter and reloads the existing analytics. Displayed values are read from the existing dashboard's rendered API-backed metrics. The 3D tower geometry is illustrative only; no synthetic floor, apartment, occupancy or visitor records are created. CSS 3D keeps this scene lightweight and WebGL-independent.
+
+
+## Login and in-app preference experience
+
+The theme trigger is inserted immediately after the language selector. On `login.html`, the controller reads only the anonymous active-theme catalog and applies a browser-local visual preview; it stores the selected theme in `society360-guest-theme`. After authentication, `/api/theme/options` supplies the full active catalog plus a per-society `isAvailable` flag. The guest selection is saved through the existing CSRF-protected preference endpoint only when the signed-in user has UPDATE permission and the society is entitled. Otherwise the authenticated saved preference (normally Standard) is applied and the commercial card remains visible but locked.
+
+The theme gallery is a centered accessible dialog. Society Admin also receives a `Society Manager Preferences` navigation group with `Navigation Settings` and `Themes`. Navigation Settings is a centered dialog for left/right/top layout and compact sidebar mode. Navigation layout/collapse continue to use the existing browser-local preference keys; theme preference remains account + society scoped in PostgreSQL.

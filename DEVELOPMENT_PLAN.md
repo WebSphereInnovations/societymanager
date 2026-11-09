@@ -47,3 +47,6 @@ Phase 2 database model and migration are applied after backup and transactional 
 
 
 Dashboard phase has started: the Society Admin visual component now consumes existing live dashboard outputs and the existing building filter. Remaining dashboard work includes authenticated visual acceptance, chart treatment, announcements/activity panels and any additional KPIs only where existing APIs provide the data.
+
+
+Preference UX phase update: login and authenticated theme triggers, guest preview transfer, locked commercial theme cards, and Society Admin preference submenus/modal are implemented. Existing navigation keyboard/submenu behavior was retained in the updated navigation controller. Next: real authenticated Chrome acceptance across roles and verify preference persistence after an actual logout/login cycle.

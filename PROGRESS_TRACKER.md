@@ -88,3 +88,20 @@ Current phases: Phase 1 source/DB audit checkpoint captured (visual/role gaps re
 - [x] Added hidden, active `THEME_PREFERENCES` module catalog row (`visible=false`) to migration 051 and its rollback. This keeps the permission namespace out of normal navigation.
 - [x] Re-applied migration idempotently and verified `fn_user_has_permission`: Society Admin VIEW/UPDATE true; Super Admin VIEW/UPDATE/MANAGE true; Collector and Resident false.
 - [x] Verified the hidden module does not appear in the visible Society Admin menu function output.
+
+
+## Theme and navigation preferences UI — 2026-11-09
+
+- [x] Added a theme trigger immediately beside the language selector on the login page and all six authenticated role/platform HTML surfaces.
+- [x] Added anonymous `GET /api/theme/catalog`, returning active theme metadata only (no user, society, entitlement, or preference information).
+- [x] Pre-login theme selection applies a local visual preview and stores a guest preference; after login it is transferred to the authenticated account only if the user's role can update themes and the society is entitled.
+- [x] Authenticated theme options now list all active themes with an `isAvailable` flag; non-entitled commercial themes remain visible as locked choices and cannot be selected.
+- [x] Added centered theme gallery modal with one card per active theme and immediate apply/save behavior.
+- [x] Added `Society Manager Preferences` to Society Admin navigation with `Navigation Settings` and `Themes` submenus.
+- [x] Navigation Settings opens a centered modal with Left sidebar, Right sidebar, Top navigation and Compact sidebar choices. Existing top-navigation submenu positioning and keyboard navigation behavior retained.
+- [x] Added preference UI translations for English, Hindi, Marathi, Gujarati, Kannada and Tamil.
+- [x] Chrome headless smoke tests passed for pre-login preview, eligible authenticated preference transfer, non-entitled locked-theme fallback, navigation modal, theme modal, three layout choices, and six-language translation codepoint checks.
+- [x] Mobile-width layout smoke test: modal dialog width remained within the tested 500 CSS-pixel viewport.
+- [ ] Real authenticated Chrome acceptance with the user's actual Society Admin session remains pending; the authenticated UI flows above used deterministic mocked session/API responses.
+
+- [x] Final live login-page Chrome DOM check confirmed the real `/login.html` loads the theme trigger beside the language selector while retaining the login form.

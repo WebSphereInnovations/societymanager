@@ -22,6 +22,27 @@ public static class ThemeEndpoints
 
     public static void MapThemeEndpoints(this WebApplication app)
     {
+        // Public catalog is intentionally limited to active theme metadata only.
+        // It contains no society, entitlement, user, or preference information and is
+        // used solely to render the pre-login theme preview selector.
+        app.MapGet("/api/theme/catalog", async (SocietyDb db, CancellationToken ct) =>
+        {
+            if (!db.IsConfigured) return Results.Problem("Theme catalog is unavailable.", statusCode: 503);
+            await using var cn = db.CreateConnection();
+            await cn.OpenAsync(ct);
+            await using var cmd = new NpgsqlCommand("""
+                SELECT theme_code, theme_name, is_commercial
+                FROM society_manager.m_theme
+                WHERE is_active
+                ORDER BY is_default DESC, theme_name
+                """, cn);
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            var themes = new List<object>();
+            while (await reader.ReadAsync(ct))
+                themes.Add(new { themeCode = reader.GetString(0), themeName = reader.GetString(1), isCommercial = reader.GetBoolean(2) });
+            return Results.Ok(new { themes });
+        }).AllowAnonymous();
+
         app.MapGet("/api/theme/options", async (
             SocietyDb db, AuthService auth, HttpContext http, CancellationToken ct) =>
         {
@@ -39,16 +60,16 @@ public static class ThemeEndpoints
             await cn.OpenAsync(ct);
 
             await using (var cmd = new NpgsqlCommand("""
-                SELECT theme_code, theme_name, is_commercial
+                SELECT theme_code, theme_name, is_commercial,
+                       (
+                         t.theme_code = 'STANDARD'
+                         OR (
+                           @can_view AND @society_id IS NOT NULL
+                           AND society_manager.fn_skyfy_theme_is_entitled(@society_id, t.theme_code)
+                         )
+                       ) AS is_available
                 FROM society_manager.m_theme t
                 WHERE t.is_active
-                  AND (
-                    t.theme_code = 'STANDARD'
-                    OR (
-                      @can_view AND @society_id IS NOT NULL
-                      AND society_manager.fn_skyfy_theme_is_entitled(@society_id, t.theme_code)
-                    )
-                  )
                 ORDER BY t.is_default DESC, t.theme_name
                 """, cn))
             {
@@ -58,12 +79,14 @@ public static class ThemeEndpoints
                 while (await reader.ReadAsync(ct))
                 {
                     var themeCode = reader.GetString(0);
-                    allowedThemeCodes.Add(themeCode);
+                    var isAvailable = reader.GetBoolean(3);
+                    if (isAvailable) allowedThemeCodes.Add(themeCode);
                     options.Add(new
                     {
                         themeCode,
                         themeName = reader.GetString(1),
-                        isCommercial = reader.GetBoolean(2)
+                        isCommercial = reader.GetBoolean(2),
+                        isAvailable
                     });
                 }
             }

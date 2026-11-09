@@ -88,3 +88,27 @@ The first permission-function test returned false for all roles because the exis
 - Visible menu function exposes zero `THEME_PREFERENCES` menu entries.
 
 This correction is included in the current migration file and live database.
+
+
+## Theme and navigation preferences QA — 2026-11-09
+
+| Check | Result |
+|---|---|
+| JavaScript syntax for theme controller, navigation layout and i18n | PASS |
+| .NET 8 build after theme catalog and availability endpoint changes | PASS — 0 warnings, 0 errors |
+| Public theme catalog endpoint | PASS — HTTP 200; active Standard and SKYFY entries returned |
+| Authenticated options endpoint without a session | PASS — HTTP 401 (protected) |
+| Pre-login Chrome theme button beside language selector | PASS |
+| Pre-login gallery lists Standard and SKYFY; selecting SKYFY applies preview and stores guest preference | PASS |
+| Authenticated eligible mock session transfers guest SKYFY selection via preference PUT and clears guest preference | PASS |
+| Authenticated non-entitled mock session falls back to Standard, does not save SKYFY, and shows SKYFY locked | PASS |
+| Society Manager Preferences menu and both submenus | PASS |
+| Centered Navigation Settings modal and left/right/top choices | PASS |
+| Theme submenu opens centered theme gallery | PASS |
+| Six-language translation codepoint audit | PASS |
+| Responsive modal width at tested 500 CSS-pixel viewport | PASS — dialog width 480 px |
+| Actual user-authenticated live Chrome session | PENDING |
+
+The browser fixtures used isolated temporary HTML files and deterministic mocked authenticated responses for entitlement/save-flow coverage. The real API's public catalog and unauthenticated protection status were separately checked against the running local app. No society entitlement or user preference records were changed by the test fixtures.
+
+The actual local `/login.html` (not only the isolated fixture) was opened in headless Chrome after the final asset cache version update. DOM assertions confirmed the login form, language selector, and dynamically inserted theme trigger were all present. The isolated fixture remains the interaction test for selecting and applying a guest preview.

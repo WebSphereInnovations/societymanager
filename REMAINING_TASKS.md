@@ -72,3 +72,12 @@
 - [ ] Review the 3D dashboard component in an authenticated session with real society data and compare desktop/tablet/mobile layouts.
 - [ ] Add interactive floor/flat visualization only after identifying a real floor/flat API and permission-safe data contract.
 - [ ] Extend dashboard visual cards only with fields already returned by the backend; do not synthesize announcements, events, security or activity statistics.
+
+
+## Preference UI acceptance still required
+
+- [ ] Verify the theme picker with a real Society Admin account whose society is entitled to SKYFY NEXUS.
+- [ ] Verify a society without SKYFY entitlement sees the card locked and cannot save it.
+- [ ] Verify Super Admin/platform, Cashier, Resident and Migration page theme triggers with their real authenticated sessions and ensure unauthorized roles cannot persist theme preferences.
+- [ ] Verify navigation layout and compact sidebar survive browser refresh and do not regress nested menu behavior in the real Society Admin menu.
+- [ ] Verify guest theme preview transfer through an actual login and logout/login cycle.
