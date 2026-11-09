@@ -65,3 +65,10 @@
 - [ ] Verify all six languages in both themes, including dynamically injected controls and long labels.
 - [ ] Complete desktop/tablet/mobile and reduced-motion/WebGL fallback checks.
 - [ ] Run authenticated CRUD, role, tenant-isolation, export, report and API regression.
+
+
+## Dashboard follow-through
+
+- [ ] Review the 3D dashboard component in an authenticated session with real society data and compare desktop/tablet/mobile layouts.
+- [ ] Add interactive floor/flat visualization only after identifying a real floor/flat API and permission-safe data contract.
+- [ ] Extend dashboard visual cards only with fields already returned by the backend; do not synthesize announcements, events, security or activity statistics.

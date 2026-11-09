@@ -88,7 +88,8 @@ At audit start, local Git reported 291 existing status entries: 5 tracked modifi
   - Migration: 1 input, 1 select, 2 buttons.
   - Society Admin: 46 inputs, 20 selects, 5 textareas, 66 buttons, 27 sections.
 - 158 API route declarations were found across 10 backend endpoint files.
-- Authenticated menu function was queried read-only for active user records. Three active role codes currently have users: RESIDENT (4 distinct menu codes), SOCIETY_ADMIN (105), SUPER_ADMIN (105). The other eight role catalog entries exist but were not represented by active m_user rows in this query.
+- Authenticated menu function was queried read-only for active user records. Four active role codes currently have users: COLLECTOR, RESIDENT, SOCIETY_ADMIN and SUPER_ADMIN. Distinct visible menu-code counts are COLLECTOR 0, RESIDENT 4, SOCIETY_ADMIN 105 and SUPER_ADMIN 105. Collector currently has no visible menu rows from the menu function; treat this as a role/menu configuration gap, not as an inactive role.
+- Seven role catalog entries (CASHIER, GUARD, SECURITY, ACCOUNTANT, BILLING_ADMIN, EMPLOYEE and MAINTENANCE) had no active m_user records in this snapshot.
 - The menu function emits permission-expanded rows; distinct module codes must be used for navigation inventory, not raw permission row counts.
 - Database migration scripts are numbered SQL files; the four tables containing “migration” are business-data import staging/history tables, not a schema migration ledger. The application MigrationService handles business imports and does not apply the schema scripts.
 - Existing audit triggers are present on user, branding, subscription, plan and system-setting tables. New theme tables should follow these audit conventions.

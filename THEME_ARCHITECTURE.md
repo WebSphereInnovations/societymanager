@@ -58,3 +58,8 @@ Store theme preference separately from `m_user.preferred_language` and existing 
 - `theme-controller.css` styles only the new picker. `skyfy-nexus.css` is fully namespaced under `html[data-s360-theme="skyfy-nexus"]`, so Standard styling is not overridden.
 - Six authenticated page entry points load the controller; login remains unchanged.
 - The visual layer currently provides dark glass surfaces, shared input/button/table styling, responsive behavior, reduced-motion rules and a reusable CSS 3D building primitive. The building primitive is not yet wired to live dashboard data.
+
+
+## Dashboard visual module
+
+`wwwroot/js/skyfy-dashboard.js` listens for the authorized theme-applied event and adds a dedicated Society Admin visual panel after the existing dashboard hero. It does not alter `dashboard.js`, dashboard API contracts, filters, totals or drilldowns. The building picker mirrors the existing database-populated `#dashBuilding` filter and reloads the existing analytics. Displayed values are read from the existing dashboard's rendered API-backed metrics. The 3D tower geometry is illustrative only; no synthetic floor, apartment, occupancy or visitor records are created. CSS 3D keeps this scene lightweight and WebGL-independent.

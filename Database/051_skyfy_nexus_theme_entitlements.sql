@@ -199,6 +199,20 @@ FROM society_manager.m_theme t
 WHERE t.theme_code IN ('STANDARD','SKYFY_NEXUS')
 ON CONFLICT (theme_id,config_version) DO NOTHING;
 
+INSERT INTO society_manager.m_module
+    (module_code,module_name,parent_module_code,display_order,visible,is_active,created_at,modify_date,modify_remark)
+VALUES
+    ('THEME_PREFERENCES','Theme Preferences',NULL,990,false,true,now(),now(),
+     'Hidden permission namespace for the authenticated theme picker')
+ON CONFLICT (module_code) DO UPDATE SET
+    module_name=EXCLUDED.module_name,
+    parent_module_code=EXCLUDED.parent_module_code,
+    display_order=EXCLUDED.display_order,
+    visible=false,
+    is_active=true,
+    modify_date=now(),
+    modify_remark=EXCLUDED.modify_remark;
+
 INSERT INTO society_manager.m_permission
     (module_code,action_code,permission_name,is_active,visible,created_at,modify_date,modify_remark)
 VALUES

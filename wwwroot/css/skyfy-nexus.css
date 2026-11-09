@@ -336,3 +336,254 @@ html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-face--roof {
     transition-duration: .01ms !important;
   }
 }
+
+/* SKYFY NEXUS Society Admin dashboard enhancement. Values are copied from the existing live analytics view. */
+html[data-s360-theme="skyfy-nexus"] .dash-hero {
+  color: var(--nexus-text) !important;
+  background:
+    radial-gradient(circle at 78% 40%, rgba(77,225,255,.18), transparent 28%),
+    linear-gradient(118deg, rgba(9,28,48,.98), rgba(19,40,73,.94) 55%, rgba(38,35,82,.9)) !important;
+  border: 1px solid var(--nexus-border-strong) !important;
+  box-shadow: var(--nexus-shadow) !important;
+}
+html[data-s360-theme="skyfy-nexus"] .dash-hero h2 { color: #f1fbff !important; }
+html[data-s360-theme="skyfy-nexus"] .dash-hero p { color: #a9bfd4 !important; }
+html[data-s360-theme="skyfy-nexus"] .dash-hero-meta { color: #c5e9f7 !important; }
+html[data-s360-theme="skyfy-nexus"] .dash-hero-art { filter: saturate(.8); }
+html[data-s360-theme="skyfy-nexus"] .dash-orb {
+  background: radial-gradient(circle at 32% 24%, #63e8ff, #386b9d 62%, #1c315d) !important;
+  box-shadow: inset 0 0 28px rgba(255,255,255,.16), 0 0 55px rgba(77,225,255,.3) !important;
+}
+html[data-s360-theme="skyfy-nexus"] .dash-float {
+  color: #d7f4ff !important;
+  background: rgba(7,25,43,.68) !important;
+  border-color: rgba(77,225,255,.25) !important;
+}
+html[data-s360-theme="skyfy-nexus"] .dash-float b { color: #fff !important; }
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual {
+  display: grid;
+  grid-template-columns: minmax(230px, .82fr) minmax(0, 1.5fr);
+  gap: 22px;
+  align-items: stretch;
+  margin: 16px 0;
+  padding: 18px;
+  border: 1px solid var(--nexus-border-strong);
+  border-radius: 22px;
+  color: var(--nexus-text);
+  background:
+    radial-gradient(ellipse at 15% 85%, rgba(77,225,255,.12), transparent 36%),
+    linear-gradient(135deg, rgba(12,34,57,.96), rgba(8,22,40,.94));
+  box-shadow: var(--nexus-shadow);
+  overflow: hidden;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__scene {
+  position: relative;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(77,225,255,.14);
+  border-radius: 17px;
+  background:
+    linear-gradient(rgba(77,225,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77,225,255,.035) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 75%, rgba(77,225,255,.15), transparent 55%),
+    rgba(3,15,28,.35);
+  background-size: 24px 24px, 24px 24px, auto, auto;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__kicker {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  color: var(--nexus-cyan);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .2em;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 210px;
+  perspective: 900px;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-halo {
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(77,225,255,.18), rgba(77,225,255,.035) 48%, transparent 72%);
+  filter: blur(2px);
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-plinth {
+  position: relative;
+  width: 190px;
+  height: 208px;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  background: linear-gradient(135deg, rgba(77,225,255,.12), rgba(154,124,255,.07));
+  clip-path: polygon(50% 0,100% 22%,100% 80%,50% 100%,0 80%,0 22%);
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-model {
+  position: relative;
+  width: 122px;
+  height: 168px;
+  transform-style: preserve-3d;
+  transform: perspective(900px) rotateX(var(--nexus-tilt-x, -7deg)) rotateY(var(--nexus-tilt-y, -24deg));
+  animation: s360-nexus-building-drift 8s ease-in-out infinite;
+  transition: transform .18s ease-out;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-face {
+  position: absolute;
+  border: 1px solid rgba(112,225,255,.46);
+  background:
+    linear-gradient(145deg, rgba(34,105,147,.92), rgba(7,30,54,.98));
+  box-shadow: inset 0 0 22px rgba(77,225,255,.12), 0 0 25px rgba(77,225,255,.08);
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-face--front {
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 8px 7px;
+  transform: translateZ(34px);
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-face--side {
+  top: 0;
+  right: -68px;
+  width: 68px;
+  height: 168px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 8px 6px;
+  transform: rotateY(90deg);
+  transform-origin: left center;
+  filter: brightness(.72);
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-face--roof {
+  top: -34px;
+  left: 0;
+  width: 122px;
+  height: 68px;
+  transform: rotateX(90deg);
+  transform-origin: bottom center;
+  background: linear-gradient(135deg, rgba(88,222,255,.48), rgba(112,115,226,.34));
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-floor {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  height: 15px;
+  align-items: center;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-floor--side {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-window {
+  display: block;
+  height: 8px;
+  border: 1px solid rgba(155,235,255,.5);
+  border-radius: 2px;
+  background: linear-gradient(135deg, rgba(129,240,255,.92), rgba(44,131,180,.35));
+  box-shadow: 0 0 8px rgba(77,225,255,.28);
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-window:nth-child(3n) {
+  background: linear-gradient(135deg, rgba(246,201,117,.95), rgba(190,123,57,.35));
+  box-shadow: 0 0 8px rgba(246,201,117,.22);
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__building-name {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  right: 14px;
+  overflow: hidden;
+  color: #bfeeff;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__data {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__heading h3 {
+  margin: 0;
+  color: #eaf8ff;
+  font-size: 18px;
+  font-weight: 750;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__filter {
+  min-width: 150px;
+  display: grid;
+  gap: 5px;
+  color: var(--nexus-muted);
+  font-size: 10px;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__select {
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--nexus-border-strong);
+  border-radius: 9px;
+  color: var(--nexus-text);
+  background: rgba(4,16,30,.88);
+  font: inherit;
+  font-size: 11px;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 10px;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-metric {
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid rgba(120,190,255,.14);
+  border-radius: 13px;
+  background: linear-gradient(145deg, rgba(18,47,74,.76), rgba(8,25,44,.72));
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-metric span {
+  display: block;
+  margin-bottom: 7px;
+  color: #94b2ca;
+  font-size: 10px;
+  font-weight: 650;
+}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-metric strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #f1fbff;
+  font-size: clamp(15px,1.5vw,21px);
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+@keyframes s360-nexus-building-drift {
+  0%,100% { transform: perspective(900px) rotateX(var(--nexus-tilt-x, -7deg)) rotateY(var(--nexus-tilt-y, -24deg)) translateY(0); }
+  50% { transform: perspective(900px) rotateX(var(--nexus-tilt-x, -7deg)) rotateY(var(--nexus-tilt-y, -24deg)) translateY(-5px); }
+}
+@media (max-width: 900px) {
+  html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual { grid-template-columns: minmax(190px,.7fr) minmax(0,1.3fr); gap: 14px; padding: 14px; }
+  html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 640px) {
+  html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual { grid-template-columns: 1fr; }
+  html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__scene { min-height: 230px; }
+  html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__heading { align-items: stretch; flex-direction: column; }
+  html[data-s360-theme="skyfy-nexus"] .s360-nexus-dashboard-visual__filter { min-width: 0; }
+}

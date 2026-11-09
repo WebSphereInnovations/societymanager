@@ -1568,32 +1568,38 @@ const skyfyThemeTranslations = {
  en: {
   'Theme':'Theme','Select theme':'Select theme','Standard Theme':'Standard Theme',
   'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'Theme updated successfully.',
-  'Could not change theme.':'Could not change theme.','Theme settings are unavailable.':'Theme settings are unavailable.'
+  'Could not change theme.':'Could not change theme.','Theme settings are unavailable.':'Theme settings are unavailable.',
+  'Smart Society Overview':'Smart Society Overview','Select building':'Select building','Buildings / wings':'Buildings / wings','Apartments':'Apartments','Occupancy':'Occupancy','Visitors inside':'Visitors inside','Open complaints':'Open complaints','Collected in period':'Collected in period'
  },
  hi: {
   'Theme':'थीम','Select theme':'थीम चुनें','Standard Theme':'मानक थीम',
   'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'थीम सफलतापूर्वक अपडेट की गई।',
-  'Could not change theme.':'थीम बदली नहीं जा सकी।','Theme settings are unavailable.':'थीम सेटिंग उपलब्ध नहीं हैं।'
+  'Could not change theme.':'थीम बदली नहीं जा सकी।','Theme settings are unavailable.':'थीम सेटिंग उपलब्ध नहीं हैं।',
+  'Smart Society Overview':'स्मार्ट सोसायटी अवलोकन','Select building':'भवन चुनें','Buildings / wings':'इमारतें / विंग','Apartments':'अपार्टमेंट','Occupancy':'अधिभोग','Visitors inside':'अंदर मौजूद आगंतुक','Open complaints':'खुली शिकायतें','Collected in period':'अवधि में संग्रह'
  },
  mr: {
   'Theme':'थीम','Select theme':'थीम निवडा','Standard Theme':'मानक थीम',
   'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'थीम यशस्वीरित्या अद्यतनित केली.',
-  'Could not change theme.':'थीम बदलता आली नाही.','Theme settings are unavailable.':'थीम सेटिंग्ज उपलब्ध नाहीत.'
+  'Could not change theme.':'थीम बदलता आली नाही.','Theme settings are unavailable.':'थीम सेटिंग्ज उपलब्ध नाहीत.',
+  'Smart Society Overview':'स्मार्ट सोसायटी आढावा','Select building':'इमारत निवडा','Buildings / wings':'इमारती / विंग','Apartments':'सदनिका','Occupancy':'व्यापलेपणा','Visitors inside':'आत असलेले अभ्यागत','Open complaints':'प्रलंबित तक्रारी','Collected in period':'कालावधीतील वसुली'
  },
  gu: {
   'Theme':'થીમ','Select theme':'થીમ પસંદ કરો','Standard Theme':'માનક થીમ',
   'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'થીમ સફળતાપૂર્વક અપડેટ થઈ.',
-  'Could not change theme.':'થીમ બદલી શકાઈ નથી.','Theme settings are unavailable.':'થીમ સેટિંગ્સ ઉપલબ્ધ નથી.'
+  'Could not change theme.':'થીમ બદલી શકાઈ નથી.','Theme settings are unavailable.':'થીમ સેટિંગ્સ ઉપલબ્ધ નથી.',
+  'Smart Society Overview':'સ્માર્ટ સોસાયટી ઝાંખી','Select building':'બિલ્ડિંગ પસંદ કરો','Buildings / wings':'બિલ્ડિંગ / વિંગ','Apartments':'એપાર્ટમેન્ટ','Occupancy':'વસવાટ','Visitors inside':'અંદર આવેલા મુલાકાતીઓ','Open complaints':'ખુલ્લી ફરિયાદો','Collected in period':'સમયગાળાની વસૂલાત'
  },
  kn: {
   'Theme':'ಥೀಮ್','Select theme':'ಥೀಮ್ ಆಯ್ಕೆಮಾಡಿ','Standard Theme':'ಪ್ರಮಾಣಿತ ಥೀಮ್',
   'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'ಥೀಮ್ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ.',
-  'Could not change theme.':'ಥೀಮ್ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.','Theme settings are unavailable.':'ಥೀಮ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ.'
+  'Could not change theme.':'ಥೀಮ್ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.','Theme settings are unavailable.':'ಥೀಮ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ.',
+  'Smart Society Overview':'ಸ್ಮಾರ್ಟ್ ಸೊಸೈಟಿ ಅವಲೋಕನ','Select building':'ಕಟ್ಟಡ ಆಯ್ಕೆಮಾಡಿ','Buildings / wings':'ಕಟ್ಟಡಗಳು / ವಿಂಗ್‌ಗಳು','Apartments':'ಅಪಾರ್ಟ್‌ಮೆಂಟ್‌ಗಳು','Occupancy':'ವಾಸದ ಪ್ರಮಾಣ','Visitors inside':'ಒಳಗಿರುವ ಸಂದರ್ಶಕರು','Open complaints':'ತೆರೆದ ದೂರುಗಳು','Collected in period':'ಅವಧಿಯ ಸಂಗ್ರಹ'
  },
  ta: {
   'Theme':'தீம்','Select theme':'தீமைத் தேர்ந்தெடுக்கவும்','Standard Theme':'நிலையான தீம்',
   'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'தீம் வெற்றிகரமாகப் புதுப்பிக்கப்பட்டது.',
-  'Could not change theme.':'தீமை மாற்ற முடியவில்லை.','Theme settings are unavailable.':'தீம் அமைப்புகள் கிடைக்கவில்லை.'
+  'Could not change theme.':'தீமை மாற்ற முடியவில்லை.','Theme settings are unavailable.':'தீம் அமைப்புகள் கிடைக்கவில்லை.',
+  'Smart Society Overview':'ஸ்மார்ட் சொசைட்டி மேலோட்டம்','Select building':'கட்டிடத்தைத் தேர்ந்தெடுக்கவும்','Buildings / wings':'கட்டிடங்கள் / பிரிவுகள்','Apartments':'குடியிருப்புகள்','Occupancy':'குடியிருப்பு விகிதம்','Visitors inside':'உள்ளே உள்ள வருகையாளர்கள்','Open complaints':'திறந்த புகார்கள்','Collected in period':'காலகட்ட வசூல்'
  }
 };
 Object.keys(skyfyThemeTranslations).forEach(lang => Object.assign(tr[lang], skyfyThemeTranslations[lang]));

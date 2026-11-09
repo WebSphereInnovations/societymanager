@@ -64,3 +64,27 @@ Database inspection ran inside read-only transactions. No production data was in
 | Full page/module/3D/Tabulator regression | NOT RUN | Remaining phases |
 
 The new backend/API and CSS layer are a foundation only; this does not certify the commercial theme or all modules complete.
+
+
+## Dashboard component smoke test
+
+A temporary, isolated fixture was served locally and tested with headless Chrome using mocked theme API responses and sample DOM values. Verified:
+- SKYFY theme event inserts the dashboard building component.
+- Six metric values bind from the existing dashboard DOM.
+- Building selection updates the existing API-backed filter and calls the existing dashboard reload function.
+- Language-change event updates the component label.
+- Switching to Standard removes the 3D component; switching back to SKYFY recreates it.
+- Theme preference PUT flow is invoked in the mocked browser fixture.
+
+The temporary fixture and browser profile were removed after the test. This is a frontend logic smoke test only, not authenticated Chrome acceptance or verification against a live society's dashboard values.
+
+
+## Permission integration test correction
+
+The first permission-function test returned false for all roles because the existing `fn_user_permissions` implementation requires an active `m_module` catalog row. Migration 051 was corrected to seed a hidden active `THEME_PREFERENCES` module row (`visible=false`) and the rollback removes it. After reapplying the migration:
+- Society Admin: VIEW=true, UPDATE=true, MANAGE=false.
+- Super Admin: VIEW=true, UPDATE=true, MANAGE=true.
+- Collector and Resident: all false.
+- Visible menu function exposes zero `THEME_PREFERENCES` menu entries.
+
+This correction is included in the current migration file and live database.

@@ -44,3 +44,6 @@ The initial database model and API/permission contract are now documented. Migra
 ## Latest status — 2026-11-09
 
 Phase 2 database model and migration are applied after backup and transactional rollback testing. Phase 3 API/controller foundation and Phase 4 namespaced visual tokens have started. The existing server has been restarted from an isolated Release build on the original port 5180. No theme entitlement has been granted; no commercial theme is exposed by default.
+
+
+Dashboard phase has started: the Society Admin visual component now consumes existing live dashboard outputs and the existing building filter. Remaining dashboard work includes authenticated visual acceptance, chart treatment, announcements/activity panels and any additional KPIs only where existing APIs provide the data.

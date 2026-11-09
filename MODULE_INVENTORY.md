@@ -317,8 +317,9 @@ Read-only execution of `society_manager.fn_user_module_menu(user_id)` against ac
 
 | Active role code | Distinct menu codes | Root menu items |
 |---|---:|---:|
+| COLLECTOR | 0 | 0 |
 | RESIDENT | 4 | 1 |
 | SOCIETY_ADMIN | 105 | 17 |
 | SUPER_ADMIN | 105 | 17 |
 
-The database has 11 role definitions, but only these three role codes had active user records in the queried `m_user` rows. CASHIER, COLLECTOR, GUARD, SECURITY, ACCOUNTANT, BILLING_ADMIN, EMPLOYEE and MAINTENANCE need a safe authorized test user before visible per-role UI acceptance. Do not create users or alter role assignments just for this audit.
+The database has 11 role definitions. Four role codes had active user records in the queried `m_user` rows: COLLECTOR, RESIDENT, SOCIETY_ADMIN and SUPER_ADMIN. COLLECTOR currently receives no visible rows from `fn_user_module_menu`, which is a role/menu configuration gap requiring later review. CASHIER, GUARD, SECURITY, ACCOUNTANT, BILLING_ADMIN, EMPLOYEE and MAINTENANCE need a safe authorized test user before visible per-role UI acceptance. Do not create users or alter role assignments just for this audit.

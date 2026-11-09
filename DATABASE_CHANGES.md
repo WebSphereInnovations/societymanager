@@ -65,3 +65,6 @@ Post-apply state:
 - Standard entitlement predicate returns true; SKYFY_NEXUS returns false until a Super Admin grants a valid entitlement.
 
 No existing society, subscription, user, bill, payment, customer or operational record was modified. Matching rollback remains available but must only be used after theme use has been discontinued.
+
+
+Permission integration detail: the existing permission resolver joins through active `m_module` rows. Migration 051 therefore adds a hidden active `THEME_PREFERENCES` module catalog row with `visible=false`; this enables role/action authorization without adding an extra navigation menu. The role permission function was verified after reapplication.

@@ -2,11 +2,12 @@
   'use strict';
 
   const THEME_STYLE_ID = 's360-skyfy-theme-style';
-  const THEME_STYLE_URL = '/css/skyfy-nexus.css?v=20261109.01';
+  const THEME_STYLE_URL = '/css/skyfy-nexus.css?v=20261109.02';
   let currentTheme = 'STANDARD';
   let picker;
 
   const translate = (value) => window.Society360I18n?.t?.(value) || value;
+  const notifyThemeApplied = (themeCode) => window.dispatchEvent(new CustomEvent('s360:theme-applied', { detail: { themeCode } }));
 
   function announce(message, kind = 'success') {
     let toast = document.getElementById('s360-theme-toast');
@@ -28,6 +29,7 @@
     const existing = document.getElementById(THEME_STYLE_ID);
     if (existing) {
       document.documentElement.dataset.s360Theme = 'skyfy-nexus';
+      notifyThemeApplied('SKYFY_NEXUS');
       return Promise.resolve(true);
     }
     return new Promise((resolve) => {
@@ -37,11 +39,13 @@
       link.href = THEME_STYLE_URL;
       link.onload = () => {
         document.documentElement.dataset.s360Theme = 'skyfy-nexus';
+        notifyThemeApplied('SKYFY_NEXUS');
         resolve(true);
       };
       link.onerror = () => {
         link.remove();
         document.documentElement.dataset.s360Theme = 'standard';
+        notifyThemeApplied('STANDARD');
         resolve(false);
       };
       document.head.appendChild(link);
@@ -55,6 +59,7 @@
     }
     document.documentElement.dataset.s360Theme = 'standard';
     document.getElementById(THEME_STYLE_ID)?.remove();
+    notifyThemeApplied('STANDARD');
     return true;
   }
 
@@ -189,6 +194,7 @@
     } catch {
       document.documentElement.dataset.s360Theme = 'standard';
       document.getElementById(THEME_STYLE_ID)?.remove();
+      notifyThemeApplied('STANDARD');
     }
   }
 

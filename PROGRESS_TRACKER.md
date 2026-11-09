@@ -69,3 +69,22 @@ Complete role-to-menu/API/page mapping and inspect database FK/index/migration c
 - [ ] SKYFY visual preview, full dashboard 3D scene, every module redesign, Tabulator global fix and complete dual-theme language regression remain pending.
 
 Current phases: Phase 1 source/DB audit checkpoint captured (visual/role gaps remain); Phase 2 schema and API contract implemented; Phase 3 backend/bootstrap foundation in progress; Phase 4 design tokens/shared visual layer in progress.
+
+
+## Dashboard visual checkpoint — 2026-11-09
+
+- [x] Added a separate SKYFY Society Admin dashboard visual module; existing `dashboard.js` and its API/business calculations were not modified.
+- [x] Added a CSS 3D residential tower model with subtle motion and pointer tilt; the model is illustrative geometry, not fabricated building/floor records.
+- [x] Added a building selector that mirrors the existing API-populated `#dashBuilding` filter and invokes the existing dashboard reload function.
+- [x] Added six visual metric slots populated only from existing dashboard DOM values: buildings/wings, apartments, occupancy, visitors inside, open complaints and period collections.
+- [x] Added six-language labels for the new dashboard component.
+- [x] Headless Chrome DOM smoke test passed: initial SKYFY activation, live metric binding, building filter change/reload, language event, Standard fallback/removal, SKYFY reactivation and saved theme sequence.
+- [ ] No authenticated production dashboard session was used in the smoke fixture; visible Chrome and live society visual acceptance remain pending.
+
+
+## Permission integration correction — 2026-11-09
+
+- [x] Live permission-function test exposed that `fn_user_permissions` requires an active `m_module` catalog row as well as `m_permission` and `m_role_permission`.
+- [x] Added hidden, active `THEME_PREFERENCES` module catalog row (`visible=false`) to migration 051 and its rollback. This keeps the permission namespace out of normal navigation.
+- [x] Re-applied migration idempotently and verified `fn_user_has_permission`: Society Admin VIEW/UPDATE true; Super Admin VIEW/UPDATE/MANAGE true; Collector and Resident false.
+- [x] Verified the hidden module does not appear in the visible Society Admin menu function output.

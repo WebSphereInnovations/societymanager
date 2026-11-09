@@ -15,6 +15,9 @@ WHERE p.permission_id=up.permission_id
 DELETE FROM society_manager.m_permission
 WHERE module_code='THEME_PREFERENCES';
 
+DELETE FROM society_manager.m_module
+WHERE module_code='THEME_PREFERENCES';
+
 -- Dropping the tables first removes their dependent triggers.
 DROP TABLE IF EXISTS society_manager.t_user_theme_preference;
 DROP TABLE IF EXISTS society_manager.t_society_theme_entitlement;
