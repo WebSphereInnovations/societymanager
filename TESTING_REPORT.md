@@ -31,3 +31,11 @@ Database inspection ran inside read-only transactions. No production data was in
 - [x] API route declaration scan: 158 across 10 endpoint files.
 - [x] Schema migration convention inspected: numbered SQL scripts are applied outside the runtime MigrationService; no schema-migration ledger table was found in the inspected schema.
 - [ ] Visible Chrome comparison is still not performed; remote tooling exposes shell/file operations but no visible browser mouse/keyboard/screenshot action. CDP ports 9222, 9333, 9334 and 9335 were unavailable.
+
+
+## Phase 2 migration validation
+
+- [x] Migration 051 DDL executed in a transaction: table creation, indexes, triggers, permissions, role grants and entitlement function all succeeded.
+- [x] Rollback script executed in the same transaction: permissions, tables and functions removed successfully.
+- [x] Outer transaction rolled back; post-check found no theme tables or permission rows persisted.
+- [ ] Migration has not been applied to the live database.

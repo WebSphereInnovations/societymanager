@@ -35,3 +35,20 @@ Standard is seeded as the default available theme. SKYFY NEXUS is catalogued as 
 ## Status
 
 No SQL migration has been created or applied. No production database writes were performed.
+
+
+## Migration 051 draft — not applied
+
+Files:
+- `Database/051_skyfy_nexus_theme_entitlements.sql`
+- `Database/051_skyfy_nexus_theme_entitlements_rollback.sql`
+
+New logical entities:
+- `m_theme`: Standard and SKYFY NEXUS catalog/version/commercial/default status.
+- `m_theme_configuration`: versioned JSONB configuration.
+- `t_society_theme_entitlement`: organization entitlement, subscription link, grant source, active window and status.
+- `t_user_theme_preference`: per-user/per-society selected theme with composite membership FK to `m_user_society(user_id,society_id)`.
+
+The migration also seeds `THEME_PREFERENCES` VIEW/UPDATE/MANAGE permissions, grants VIEW/UPDATE to Society Admin and VIEW/UPDATE/MANAGE to Super Admin, adds audit/stamp triggers and the `fn_skyfy_theme_is_entitled` backend predicate. No existing subscription plan, society, user or business row is changed.
+
+Validation: migration and rollback scripts both executed successfully inside a single PostgreSQL transaction followed by ROLLBACK. Post-rollback checks confirmed the new tables were absent and no `THEME_PREFERENCES` permission rows persisted. The live database remains unchanged.

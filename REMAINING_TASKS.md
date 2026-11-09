@@ -43,3 +43,12 @@
 - [ ] Obtain authorized test sessions for CASHIER, COLLECTOR, GUARD, SECURITY, ACCOUNTANT, BILLING_ADMIN, EMPLOYEE and MAINTENANCE roles before role-by-role visual acceptance.
 - [ ] Complete visible browser baseline; the current remote toolset has no visible browser-control action and no Chrome CDP debug port is listening.
 - [ ] Review the full API-to-view route map and all form/modal event handlers before any module-level theme changes.
+
+
+## Phase 2 / Phase 3
+
+- [ ] Implement `GET /api/theme/options` and `PUT /api/theme/preference` using AuthGuard, HasPermissionAsync and antiforgery validation.
+- [ ] Implement Super Admin entitlement list/activate/deactivate endpoints.
+- [ ] Compile and test API contracts against a disposable test schema/database before applying migration 051 to the working DB.
+- [ ] Implement the theme bootstrap/controller and keep Standard as fallback.
+- [ ] Only then add theme assets to the role pages.

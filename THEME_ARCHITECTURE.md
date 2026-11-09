@@ -31,3 +31,19 @@ Shared visual components: application shell, sidebar/header, breadcrumbs, cards/
 ## Theme and language independence
 
 Store theme preference separately from `m_user.preferred_language` and existing i18n local/session state. Theme switching must not reset locale; locale switching must not reset theme.
+
+
+## Phase 2 decisions — theme access contract
+
+- Permission namespace: `THEME_PREFERENCES` with `VIEW`, `UPDATE`, `MANAGE`. Existing `AuthService.HasPermissionAsync` is the enforcement point. Initial grants: Society Admin receives VIEW/UPDATE; Super Admin receives VIEW/UPDATE/MANAGE. Other roles receive no default theme access; the existing role-rights system can grant it later.
+- User theme preference is scoped by `(user_id,society_id)` and has a composite FK to `m_user_society`; this prevents storing a preference for an organization the user is not a member of.
+- Organization commercial entitlement is separate from user preference. A user preference cannot grant access.
+- Standard is always the fallback. SKYFY NEXUS is offered only if the current society has a valid active entitlement and the user has VIEW permission.
+- Preference writes require UPDATE permission, current session society scope and a valid entitlement for commercial themes.
+- Entitlement management requires MANAGE permission and is restricted to Super Admin.
+- API contract: `GET /api/theme/options`, `PUT /api/theme/preference`; platform management endpoints will expose entitlement list/activation/deactivation under Super Admin authorization. Mutating requests must validate antiforgery tokens.
+- Theme preference changes never update `m_user.preferred_language` or any i18n storage key.
+
+## Migration draft
+
+`Database/051_skyfy_nexus_theme_entitlements.sql` creates the theme catalog/configuration, society entitlement and user preference tables, role permissions, audit/stamp triggers and `fn_skyfy_theme_is_entitled`. Matching rollback script is `Database/051_skyfy_nexus_theme_entitlements_rollback.sql`. Both were tested together in one read-only-in-effect transaction that was rolled back; neither has been applied to the live schema.

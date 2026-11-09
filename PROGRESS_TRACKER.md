@@ -37,3 +37,15 @@ Complete role-to-menu/API/page mapping and inspect database FK/index/migration c
 - [x] Enumerated 158 API route declarations across 10 backend endpoint files.
 - [x] Reviewed migration-service behavior and audit-trigger conventions.
 - [ ] Visible browser acceptance and additional role accounts remain unavailable/not verified.
+
+
+## Phase 2 progress
+
+- [x] Confirmed `m_user_society` composite primary key supports a membership-enforced user preference FK.
+- [x] Confirmed existing permission service supports module/action checks and existing role/user permission tables.
+- [x] Designed Standard fallback, commercial entitlement, role permission and user preference separation.
+- [x] Authored migration 051 and matching rollback script.
+- [x] Executed migration + rollback in a single transaction; confirmed all changes rolled back and live DB remained unchanged.
+- [ ] Implement backend theme options/preference APIs with antiforgery and entitlement checks.
+- [ ] Implement Super Admin entitlement activation/deactivation.
+- [ ] Complete architecture exit review before applying migration.

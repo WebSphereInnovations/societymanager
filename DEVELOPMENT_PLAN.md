@@ -34,3 +34,8 @@
 2. Review database constraints, foreign keys, indexes, migration runner and subscription assignment semantics.
 3. Finalize architecture and reversible migration proposal.
 4. Only after audit exit, implement the isolated theme resolver and static theme assets.
+
+
+## Phase 2 architecture checkpoint
+
+The initial database model and API/permission contract are now documented. Migration 051 and its rollback draft exist and passed a transactional up/down syntax test. They have **not** been applied. Phase 2 remains open until endpoint behavior, subscription/entitlement semantics and admin activation workflow are implemented and reviewed.
