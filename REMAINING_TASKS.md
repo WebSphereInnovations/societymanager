@@ -52,3 +52,16 @@
 - [ ] Compile and test API contracts against a disposable test schema/database before applying migration 051 to the working DB.
 - [ ] Implement the theme bootstrap/controller and keep Standard as fallback.
 - [ ] Only then add theme assets to the role pages.
+
+
+## Current next implementation steps
+
+- [ ] Build the Super Admin entitlement management screen on top of the new protected endpoints.
+- [ ] Exercise authenticated theme options and preference persistence using a valid authorized browser session.
+- [ ] Build the SKYFY NEXUS dashboard with actual Society360 dashboard API metrics and a lazy, optimized building scene.
+- [ ] Complete shared page shell/sidebar/header/card/modal/empty/loading/error styles for each role surface.
+- [ ] Map and redesign every active route and inner workflow; no generic workspace may be marked complete without evidence.
+- [ ] Implement the project-wide Tabulator header fix in shared defaults and all independent constructors, including Standard Theme regression.
+- [ ] Verify all six languages in both themes, including dynamically injected controls and long labels.
+- [ ] Complete desktop/tablet/mobile and reduced-motion/WebGL fallback checks.
+- [ ] Run authenticated CRUD, role, tenant-isolation, export, report and API regression.

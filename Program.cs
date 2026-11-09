@@ -132,6 +132,7 @@ app.MapCashierEndpoints();
 app.MapPaymentEndpoints();
 app.MapBillingEndpoints();
 app.MapPlatformEndpoints();
+app.MapThemeEndpoints();
 
 app.MapGet("/api/health", (SocietyDb db) => Results.Ok(new
 {    application = "Society360",

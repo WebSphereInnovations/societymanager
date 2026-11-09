@@ -39,3 +39,28 @@ Database inspection ran inside read-only transactions. No production data was in
 - [x] Rollback script executed in the same transaction: permissions, tables and functions removed successfully.
 - [x] Outer transaction rolled back; post-check found no theme tables or permission rows persisted.
 - [ ] Migration has not been applied to the live database.
+
+
+## Latest implementation and runtime validation — 2026-11-09
+
+| Test | Result | Evidence |
+|---|---|---|
+| Pre-migration database backup | PASS | Custom-format schema backup created outside repo, 2,899,561 bytes |
+| Migration 051 | PASS | Applied to configured `society_manager` database |
+| Migration rollback | PASS | Transactional up/down test passed; live schema was not removed |
+| Entitlement function | PASS | Standard true; SKYFY false without active entitlement |
+| No automatic paid grants | PASS | 0 entitlement rows and 0 user preferences |
+| Entitlement audit triggers | PASS | Transaction-only insert generated two audit events; transaction rolled back |
+| Release build | PASS | 0 warnings, 0 errors |
+| Theme controller JS syntax | PASS | `node --check` |
+| i18n JS syntax | PASS | `node --check` |
+| Health endpoint | PASS | `192.168.1.8:5180/api/health` HTTP 200 |
+| Theme options unauthenticated | PASS | HTTP 401 |
+| Entitlement list unauthenticated | PASS | HTTP 401 |
+| Theme JS/CSS static assets | PASS | HTTP 200 |
+| Authenticated preference save | NOT RUN | No authenticated browser session exercised |
+| Super Admin entitlement UI workflow | NOT RUN | API exists; UI not yet built |
+| Visible Chrome visual comparison | NOT RUN | CDP ports unavailable; no visible browser control tool exposed |
+| Full page/module/3D/Tabulator regression | NOT RUN | Remaining phases |
+
+The new backend/API and CSS layer are a foundation only; this does not certify the commercial theme or all modules complete.

@@ -49,3 +49,23 @@ Complete role-to-menu/API/page mapping and inspect database FK/index/migration c
 - [ ] Implement backend theme options/preference APIs with antiforgery and entitlement checks.
 - [ ] Implement Super Admin entitlement activation/deactivation.
 - [ ] Complete architecture exit review before applying migration.
+
+
+## Latest implementation checkpoint — 2026-11-09
+
+- [x] Created a database backup before applying schema 051: `C:\Society360SkyfyAuditBuild\society_manager-before-skyfy-051.dump` (2,899,561 bytes).
+- [x] Applied migration 051 to the configured `society_manager` database after successful transactional up/down validation.
+- [x] Verified Standard is active/default and always entitled; SKYFY NEXUS is commercial and unavailable without a society entitlement.
+- [x] Verified zero society entitlements and zero user theme preferences were seeded; no organization was granted paid access.
+- [x] Added DB validation trigger to ensure entitlement theme is commercial and any linked subscription belongs to the same society.
+- [x] Added `ThemeEndpoints.cs`: options, user preference, Super Admin entitlement list and activation/deactivation API.
+- [x] Registered theme endpoints in Program.cs.
+- [x] Added theme bootstrap/controller, neutral theme-picker CSS, isolated SKYFY NEXUS CSS and six-language labels.
+- [x] Added controller/style references to six authenticated page entry points; login page intentionally remains unthemed until authentication.
+- [x] Restarted local service from the new isolated Release build on the existing `192.168.1.8:5180` endpoint.
+- [x] Release build: 0 warnings, 0 errors. Node syntax checks: pass.
+- [x] HTTP smoke: health 200; theme options and platform entitlement endpoints return 401 when unauthenticated; theme JS/CSS assets return 200.
+- [ ] Authenticated theme selection and entitlement management have not yet been exercised through a logged-in browser.
+- [ ] SKYFY visual preview, full dashboard 3D scene, every module redesign, Tabulator global fix and complete dual-theme language regression remain pending.
+
+Current phases: Phase 1 source/DB audit checkpoint captured (visual/role gaps remain); Phase 2 schema and API contract implemented; Phase 3 backend/bootstrap foundation in progress; Phase 4 design tokens/shared visual layer in progress.

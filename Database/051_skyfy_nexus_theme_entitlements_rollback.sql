@@ -22,5 +22,6 @@ DROP TABLE IF EXISTS society_manager.m_theme_configuration;
 DROP TABLE IF EXISTS society_manager.m_theme;
 
 DROP FUNCTION IF EXISTS society_manager.fn_skyfy_theme_is_entitled(bigint, varchar);
+DROP FUNCTION IF EXISTS society_manager.fn_skyfy_theme_validate_entitlement();
 DROP FUNCTION IF EXISTS society_manager.fn_skyfy_theme_audit();
 DROP FUNCTION IF EXISTS society_manager.fn_skyfy_theme_stamp();

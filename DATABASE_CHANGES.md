@@ -52,3 +52,16 @@ New logical entities:
 The migration also seeds `THEME_PREFERENCES` VIEW/UPDATE/MANAGE permissions, grants VIEW/UPDATE to Society Admin and VIEW/UPDATE/MANAGE to Super Admin, adds audit/stamp triggers and the `fn_skyfy_theme_is_entitled` backend predicate. No existing subscription plan, society, user or business row is changed.
 
 Validation: migration and rollback scripts both executed successfully inside a single PostgreSQL transaction followed by ROLLBACK. Post-rollback checks confirmed the new tables were absent and no `THEME_PREFERENCES` permission rows persisted. The live database remains unchanged.
+
+
+## Latest status — 2026-11-09
+
+Migration 051 is now **applied** to the application's configured local `society_manager` database. A custom-format backup was created first at `C:\Society360SkyfyAuditBuild\society_manager-before-skyfy-051.dump`. The migration was re-run idempotently after adding the database-side subscription/society validation trigger.
+
+Post-apply state:
+- Two theme catalog rows: STANDARD (default) and SKYFY_NEXUS (commercial).
+- Three `THEME_PREFERENCES` permissions.
+- Zero society entitlements and zero user preferences.
+- Standard entitlement predicate returns true; SKYFY_NEXUS returns false until a Super Admin grants a valid entitlement.
+
+No existing society, subscription, user, bill, payment, customer or operational record was modified. Matching rollback remains available but must only be used after theme use has been discontinued.

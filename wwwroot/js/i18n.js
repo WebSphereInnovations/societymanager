@@ -1563,6 +1563,41 @@ const approvalHistoryTranslations={
  ta:{'Approval History':'ஒப்புதல் வரலாறு','Search approver / entity / decision':'ஒப்புதல் அளித்தவர் / உருப்படி / முடிவைத் தேடுங்கள்','Approver':'ஒப்புதல் அளித்தவர்','Decision':'முடிவு','No approval history records found.':'ஒப்புதல் வரலாற்றில் பதிவுகள் எதுவும் இல்லை.','No matching approval history records.':'தேடலுக்குப் பொருந்தும் ஒப்புதல் பதிவு இல்லை.'}
 };
 Object.keys(approvalHistoryTranslations).forEach(lang=>Object.assign(tr[lang],approvalHistoryTranslations[lang]));
+
+const skyfyThemeTranslations = {
+ en: {
+  'Theme':'Theme','Select theme':'Select theme','Standard Theme':'Standard Theme',
+  'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'Theme updated successfully.',
+  'Could not change theme.':'Could not change theme.','Theme settings are unavailable.':'Theme settings are unavailable.'
+ },
+ hi: {
+  'Theme':'थीम','Select theme':'थीम चुनें','Standard Theme':'मानक थीम',
+  'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'थीम सफलतापूर्वक अपडेट की गई।',
+  'Could not change theme.':'थीम बदली नहीं जा सकी।','Theme settings are unavailable.':'थीम सेटिंग उपलब्ध नहीं हैं।'
+ },
+ mr: {
+  'Theme':'थीम','Select theme':'थीम निवडा','Standard Theme':'मानक थीम',
+  'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'थीम यशस्वीरित्या अद्यतनित केली.',
+  'Could not change theme.':'थीम बदलता आली नाही.','Theme settings are unavailable.':'थीम सेटिंग्ज उपलब्ध नाहीत.'
+ },
+ gu: {
+  'Theme':'થીમ','Select theme':'થીમ પસંદ કરો','Standard Theme':'માનક થીમ',
+  'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'થીમ સફળતાપૂર્વક અપડેટ થઈ.',
+  'Could not change theme.':'થીમ બદલી શકાઈ નથી.','Theme settings are unavailable.':'થીમ સેટિંગ્સ ઉપલબ્ધ નથી.'
+ },
+ kn: {
+  'Theme':'ಥೀಮ್','Select theme':'ಥೀಮ್ ಆಯ್ಕೆಮಾಡಿ','Standard Theme':'ಪ್ರಮಾಣಿತ ಥೀಮ್',
+  'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'ಥೀಮ್ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ.',
+  'Could not change theme.':'ಥೀಮ್ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.','Theme settings are unavailable.':'ಥೀಮ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ.'
+ },
+ ta: {
+  'Theme':'தீம்','Select theme':'தீமைத் தேர்ந்தெடுக்கவும்','Standard Theme':'நிலையான தீம்',
+  'SKYFY NEXUS':'SKYFY NEXUS','Theme updated successfully.':'தீம் வெற்றிகரமாகப் புதுப்பிக்கப்பட்டது.',
+  'Could not change theme.':'தீமை மாற்ற முடியவில்லை.','Theme settings are unavailable.':'தீம் அமைப்புகள் கிடைக்கவில்லை.'
+ }
+};
+Object.keys(skyfyThemeTranslations).forEach(lang => Object.assign(tr[lang], skyfyThemeTranslations[lang]));
+
 window.Society360I18n={
  init,apply,setLanguage,translateText,toast,currentLanguage:()=>current,locale:()=>languages[current].locale,t:translateText,
  languages:Object.freeze(languages)

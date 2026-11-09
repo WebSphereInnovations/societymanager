@@ -47,3 +47,14 @@ Store theme preference separately from `m_user.preferred_language` and existing 
 ## Migration draft
 
 `Database/051_skyfy_nexus_theme_entitlements.sql` creates the theme catalog/configuration, society entitlement and user preference tables, role permissions, audit/stamp triggers and `fn_skyfy_theme_is_entitled`. Matching rollback script is `Database/051_skyfy_nexus_theme_entitlements_rollback.sql`. Both were tested together in one read-only-in-effect transaction that was rolled back; neither has been applied to the live schema.
+
+
+## Implemented foundation — 2026-11-09
+
+- Server-side APIs now expose theme options, per-user/per-society preference persistence, and Super Admin entitlement list/activation/deactivation.
+- API access uses AuthGuard, existing role/action permission checks and antiforgery validation for mutations.
+- The theme bootstrap loads only after authenticated API options return. It uses database preferences, does not use localStorage, and falls back to Standard on failures.
+- Theme picker labels are translated through the existing six-language i18n runtime.
+- `theme-controller.css` styles only the new picker. `skyfy-nexus.css` is fully namespaced under `html[data-s360-theme="skyfy-nexus"]`, so Standard styling is not overridden.
+- Six authenticated page entry points load the controller; login remains unchanged.
+- The visual layer currently provides dark glass surfaces, shared input/button/table styling, responsive behavior, reduced-motion rules and a reusable CSS 3D building primitive. The building primitive is not yet wired to live dashboard data.

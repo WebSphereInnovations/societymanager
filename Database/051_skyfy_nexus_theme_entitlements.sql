@@ -217,6 +217,38 @@ WHERE r.role_code IN ('SUPER_ADMIN','SOCIETY_ADMIN')
   AND (r.role_code='SUPER_ADMIN' OR p.action_code IN ('VIEW','UPDATE'))
 ON CONFLICT (role_id,permission_id) DO NOTHING;
 
+CREATE OR REPLACE FUNCTION society_manager.fn_skyfy_theme_validate_entitlement()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_commercial boolean;
+BEGIN
+    SELECT t.is_commercial INTO v_commercial
+    FROM society_manager.m_theme t
+    WHERE t.theme_id = NEW.theme_id AND t.is_active;
+    IF NOT COALESCE(v_commercial, false) THEN
+        RAISE EXCEPTION 'Only an active commercial theme can be granted to a society.';
+    END IF;
+    IF NEW.subscription_id IS NOT NULL AND NOT EXISTS (
+        SELECT 1
+        FROM society_manager.m_society_subscription s
+        WHERE s.subscription_id = NEW.subscription_id
+          AND s.society_id = NEW.society_id
+    ) THEN
+        RAISE EXCEPTION 'The linked subscription must belong to the entitled society.';
+    END IF;
+    RETURN NEW;
+END;
+$function$;
+
+DROP TRIGGER IF EXISTS trg_skyfy_theme_validate_entitlement
+    ON society_manager.t_society_theme_entitlement;
+CREATE TRIGGER trg_skyfy_theme_validate_entitlement
+    BEFORE INSERT OR UPDATE ON society_manager.t_society_theme_entitlement
+    FOR EACH ROW
+    EXECUTE FUNCTION society_manager.fn_skyfy_theme_validate_entitlement();
+
 CREATE OR REPLACE FUNCTION society_manager.fn_skyfy_theme_is_entitled(
     p_society_id bigint,
     p_theme_code varchar

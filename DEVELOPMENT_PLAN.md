@@ -39,3 +39,8 @@
 ## Phase 2 architecture checkpoint
 
 The initial database model and API/permission contract are now documented. Migration 051 and its rollback draft exist and passed a transactional up/down syntax test. They have **not** been applied. Phase 2 remains open until endpoint behavior, subscription/entitlement semantics and admin activation workflow are implemented and reviewed.
+
+
+## Latest status — 2026-11-09
+
+Phase 2 database model and migration are applied after backup and transactional rollback testing. Phase 3 API/controller foundation and Phase 4 namespaced visual tokens have started. The existing server has been restarted from an isolated Release build on the original port 5180. No theme entitlement has been granted; no commercial theme is exposed by default.

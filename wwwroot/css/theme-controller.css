@@ -1,0 +1,86 @@
+/* Theme picker only; does not alter existing Standard Theme styling. */
+.s360-theme-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline: 8px;
+  padding: 6px 9px;
+  border: 1px solid rgba(100, 116, 139, .24);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .88);
+  color: #1e293b;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, .08);
+  vertical-align: middle;
+  max-width: 100%;
+}
+.s360-theme-picker__label {
+  margin: 0;
+  color: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.s360-theme-picker__select {
+  min-width: 132px;
+  max-width: min(220px, 42vw);
+  min-height: 34px;
+  padding: 6px 28px 6px 9px;
+  border: 1px solid rgba(100, 116, 139, .28);
+  border-radius: 8px;
+  background: #fff;
+  color: #172554;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.s360-theme-picker__select:focus-visible {
+  outline: 3px solid rgba(14, 165, 233, .25);
+  outline-offset: 2px;
+}
+.s360-theme-picker__select:disabled {
+  opacity: .65;
+  cursor: progress;
+}
+.s360-theme-picker--floating {
+  position: fixed;
+  top: 14px;
+  right: 16px;
+  z-index: 12000;
+}
+.s360-theme-toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 12010;
+  max-width: min(360px, calc(100vw - 36px));
+  padding: 11px 15px;
+  border: 1px solid rgba(100, 116, 139, .24);
+  border-radius: 12px;
+  background: #fff;
+  color: #172554;
+  box-shadow: 0 12px 34px rgba(15, 23, 42, .18);
+  font: 600 13px/1.4 system-ui, sans-serif;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.s360-theme-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.s360-theme-toast[data-kind="error"] {
+  border-color: rgba(220, 38, 38, .32);
+}
+@media (max-width: 720px) {
+  .s360-theme-picker {
+    gap: 5px;
+    margin: 4px;
+    padding: 5px 6px;
+  }
+  .s360-theme-picker__label { font-size: 10px; }
+  .s360-theme-picker__select { min-width: 116px; max-width: 48vw; }
+  .s360-theme-picker--floating { top: 8px; right: 8px; }
+}
