@@ -1,0 +1,930 @@
+[
+  {
+    "theme": "SKYFY BLUE",
+    "mode": "Dark mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.0627451 0.141176 0.254902 / 0.94)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "header": {
+        "bg": "rgb(16, 36, 65)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "input": {
+        "bg": "rgb(16, 36, 65)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "mode": "DARK",
+      "nav": {
+        "bg": "color(srgb 0.0627451 0.141176 0.254902 / 0.88)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.0627451 0.141176 0.254902 / 0.94)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "theme": "SKYFY_BLUE"
+    },
+    "screenshot": "auth-skyfy-blue-dark-mode.png"
+  },
+  {
+    "theme": "SKYFY BLUE",
+    "mode": "Light mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "header": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "mode": "LIGHT",
+      "nav": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "panel": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "theme": "SKYFY_BLUE"
+    },
+    "screenshot": "auth-skyfy-blue-light-mode.png"
+  },
+  {
+    "theme": "SKYFY BLUE",
+    "mode": "Premium glass",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.0627451 0.141176 0.254902 / 0.94)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "header": {
+        "bg": "rgb(16, 36, 65)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "input": {
+        "bg": "rgb(16, 36, 65)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "mode": "GLASS",
+      "nav": {
+        "bg": "color(srgb 0.0627451 0.141176 0.254902 / 0.88)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.0627451 0.141176 0.254902 / 0.94)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "theme": "SKYFY_BLUE"
+    },
+    "screenshot": "auth-skyfy-blue-premium-glass.png"
+  },
+  {
+    "theme": "SKYFY BLUE",
+    "mode": "Dynamic gradient",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.0627451 0.141176 0.254902 / 0.94)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "header": {
+        "bg": "rgb(16, 36, 65)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "input": {
+        "bg": "rgb(16, 36, 65)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "mode": "GRADIENT",
+      "nav": {
+        "bg": "color(srgb 0.0627451 0.141176 0.254902 / 0.88)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.0627451 0.141176 0.254902 / 0.94)",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "theme": "SKYFY_BLUE"
+    },
+    "screenshot": "auth-skyfy-blue-dynamic-gradient.png"
+  },
+  {
+    "theme": "RUBY RED",
+    "mode": "Dark mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.168627 0.0784314 0.12549 / 0.94)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "header": {
+        "bg": "rgb(43, 20, 32)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "input": {
+        "bg": "rgb(43, 20, 32)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "mode": "DARK",
+      "nav": {
+        "bg": "color(srgb 0.168627 0.0784314 0.12549 / 0.88)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.168627 0.0784314 0.12549 / 0.94)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "theme": "RUBY_RED"
+    },
+    "screenshot": "auth-ruby-red-dark-mode.png"
+  },
+  {
+    "theme": "RUBY RED",
+    "mode": "Light mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "header": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "mode": "LIGHT",
+      "nav": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "panel": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "theme": "RUBY_RED"
+    },
+    "screenshot": "auth-ruby-red-light-mode.png"
+  },
+  {
+    "theme": "RUBY RED",
+    "mode": "Premium glass",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.168627 0.0784314 0.12549 / 0.94)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "header": {
+        "bg": "rgb(43, 20, 32)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "input": {
+        "bg": "rgb(43, 20, 32)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "mode": "GLASS",
+      "nav": {
+        "bg": "color(srgb 0.168627 0.0784314 0.12549 / 0.88)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.168627 0.0784314 0.12549 / 0.94)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "theme": "RUBY_RED"
+    },
+    "screenshot": "auth-ruby-red-premium-glass.png"
+  },
+  {
+    "theme": "RUBY RED",
+    "mode": "Dynamic gradient",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.168627 0.0784314 0.12549 / 0.94)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "header": {
+        "bg": "rgb(43, 20, 32)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "input": {
+        "bg": "rgb(43, 20, 32)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "mode": "GRADIENT",
+      "nav": {
+        "bg": "color(srgb 0.168627 0.0784314 0.12549 / 0.88)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.168627 0.0784314 0.12549 / 0.94)",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "theme": "RUBY_RED"
+    },
+    "screenshot": "auth-ruby-red-dynamic-gradient.png"
+  },
+  {
+    "theme": "ROYAL PURPLE",
+    "mode": "Dark mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.129412 0.0941176 0.239216 / 0.94)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "header": {
+        "bg": "rgb(33, 24, 61)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "input": {
+        "bg": "rgb(33, 24, 61)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "mode": "DARK",
+      "nav": {
+        "bg": "color(srgb 0.129412 0.0941176 0.239216 / 0.88)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.129412 0.0941176 0.239216 / 0.94)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "theme": "ROYAL_PURPLE"
+    },
+    "screenshot": "auth-royal-purple-dark-mode.png"
+  },
+  {
+    "theme": "ROYAL PURPLE",
+    "mode": "Light mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "header": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "mode": "LIGHT",
+      "nav": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "panel": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "theme": "ROYAL_PURPLE"
+    },
+    "screenshot": "auth-royal-purple-light-mode.png"
+  },
+  {
+    "theme": "ROYAL PURPLE",
+    "mode": "Premium glass",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.129412 0.0941176 0.239216 / 0.94)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "header": {
+        "bg": "rgb(33, 24, 61)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "input": {
+        "bg": "rgb(33, 24, 61)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "mode": "GLASS",
+      "nav": {
+        "bg": "color(srgb 0.129412 0.0941176 0.239216 / 0.88)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.129412 0.0941176 0.239216 / 0.94)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "theme": "ROYAL_PURPLE"
+    },
+    "screenshot": "auth-royal-purple-premium-glass.png"
+  },
+  {
+    "theme": "ROYAL PURPLE",
+    "mode": "Dynamic gradient",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.129412 0.0941176 0.239216 / 0.94)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "header": {
+        "bg": "rgb(33, 24, 61)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "input": {
+        "bg": "rgb(33, 24, 61)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "mode": "GRADIENT",
+      "nav": {
+        "bg": "color(srgb 0.129412 0.0941176 0.239216 / 0.88)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.129412 0.0941176 0.239216 / 0.94)",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "theme": "ROYAL_PURPLE"
+    },
+    "screenshot": "auth-royal-purple-dynamic-gradient.png"
+  },
+  {
+    "theme": "EMERALD GREEN",
+    "mode": "Dark mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.0627451 0.172549 0.141176 / 0.94)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "header": {
+        "bg": "rgb(16, 44, 36)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "input": {
+        "bg": "rgb(16, 44, 36)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "mode": "DARK",
+      "nav": {
+        "bg": "color(srgb 0.0627451 0.172549 0.141176 / 0.88)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.0627451 0.172549 0.141176 / 0.94)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "theme": "EMERALD_GREEN"
+    },
+    "screenshot": "auth-emerald-green-dark-mode.png"
+  },
+  {
+    "theme": "EMERALD GREEN",
+    "mode": "Light mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "header": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "mode": "LIGHT",
+      "nav": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "panel": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "theme": "EMERALD_GREEN"
+    },
+    "screenshot": "auth-emerald-green-light-mode.png"
+  },
+  {
+    "theme": "EMERALD GREEN",
+    "mode": "Premium glass",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.0627451 0.172549 0.141176 / 0.94)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "header": {
+        "bg": "rgb(16, 44, 36)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "input": {
+        "bg": "rgb(16, 44, 36)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "mode": "GLASS",
+      "nav": {
+        "bg": "color(srgb 0.0627451 0.172549 0.141176 / 0.88)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.0627451 0.172549 0.141176 / 0.94)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "theme": "EMERALD_GREEN"
+    },
+    "screenshot": "auth-emerald-green-premium-glass.png"
+  },
+  {
+    "theme": "EMERALD GREEN",
+    "mode": "Dynamic gradient",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.0627451 0.172549 0.141176 / 0.94)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "header": {
+        "bg": "rgb(16, 44, 36)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "input": {
+        "bg": "rgb(16, 44, 36)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "mode": "GRADIENT",
+      "nav": {
+        "bg": "color(srgb 0.0627451 0.172549 0.141176 / 0.88)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.0627451 0.172549 0.141176 / 0.94)",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "theme": "EMERALD_GREEN"
+    },
+    "screenshot": "auth-emerald-green-dynamic-gradient.png"
+  },
+  {
+    "theme": "GOLDEN LUXURY",
+    "mode": "Dark mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.168627 0.129412 0.0784314 / 0.94)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "header": {
+        "bg": "rgb(43, 33, 20)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "input": {
+        "bg": "rgb(43, 33, 20)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "mode": "DARK",
+      "nav": {
+        "bg": "color(srgb 0.168627 0.129412 0.0784314 / 0.88)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.168627 0.129412 0.0784314 / 0.94)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "theme": "GOLDEN_LUXURY"
+    },
+    "screenshot": "auth-golden-luxury-dark-mode.png"
+  },
+  {
+    "theme": "GOLDEN LUXURY",
+    "mode": "Light mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "header": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "mode": "LIGHT",
+      "nav": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "panel": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "theme": "GOLDEN_LUXURY"
+    },
+    "screenshot": "auth-golden-luxury-light-mode.png"
+  },
+  {
+    "theme": "GOLDEN LUXURY",
+    "mode": "Premium glass",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.168627 0.129412 0.0784314 / 0.94)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "header": {
+        "bg": "rgb(43, 33, 20)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "input": {
+        "bg": "rgb(43, 33, 20)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "mode": "GLASS",
+      "nav": {
+        "bg": "color(srgb 0.168627 0.129412 0.0784314 / 0.88)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.168627 0.129412 0.0784314 / 0.94)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "theme": "GOLDEN_LUXURY"
+    },
+    "screenshot": "auth-golden-luxury-premium-glass.png"
+  },
+  {
+    "theme": "GOLDEN LUXURY",
+    "mode": "Dynamic gradient",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.168627 0.129412 0.0784314 / 0.94)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "header": {
+        "bg": "rgb(43, 33, 20)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "input": {
+        "bg": "rgb(43, 33, 20)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "mode": "GRADIENT",
+      "nav": {
+        "bg": "color(srgb 0.168627 0.129412 0.0784314 / 0.88)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.168627 0.129412 0.0784314 / 0.94)",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "theme": "GOLDEN_LUXURY"
+    },
+    "screenshot": "auth-golden-luxury-dynamic-gradient.png"
+  },
+  {
+    "theme": "CYBER CYAN",
+    "mode": "Dark mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.0509804 0.160784 0.207843 / 0.94)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "header": {
+        "bg": "rgb(13, 41, 53)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "input": {
+        "bg": "rgb(13, 41, 53)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "mode": "DARK",
+      "nav": {
+        "bg": "color(srgb 0.0509804 0.160784 0.207843 / 0.88)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.0509804 0.160784 0.207843 / 0.94)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "theme": "CYBER_CYAN"
+    },
+    "screenshot": "auth-cyber-cyan-dark-mode.png"
+  },
+  {
+    "theme": "CYBER CYAN",
+    "mode": "Light mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "header": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "mode": "LIGHT",
+      "nav": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "panel": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "theme": "CYBER_CYAN"
+    },
+    "screenshot": "auth-cyber-cyan-light-mode.png"
+  },
+  {
+    "theme": "CYBER CYAN",
+    "mode": "Premium glass",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.0509804 0.160784 0.207843 / 0.94)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "header": {
+        "bg": "rgb(13, 41, 53)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "input": {
+        "bg": "rgb(13, 41, 53)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "mode": "GLASS",
+      "nav": {
+        "bg": "color(srgb 0.0509804 0.160784 0.207843 / 0.88)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.0509804 0.160784 0.207843 / 0.94)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "theme": "CYBER_CYAN"
+    },
+    "screenshot": "auth-cyber-cyan-premium-glass.png"
+  },
+  {
+    "theme": "CYBER CYAN",
+    "mode": "Dynamic gradient",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.0509804 0.160784 0.207843 / 0.94)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "header": {
+        "bg": "rgb(13, 41, 53)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "input": {
+        "bg": "rgb(13, 41, 53)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "mode": "GRADIENT",
+      "nav": {
+        "bg": "color(srgb 0.0509804 0.160784 0.207843 / 0.88)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.0509804 0.160784 0.207843 / 0.94)",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "theme": "CYBER_CYAN"
+    },
+    "screenshot": "auth-cyber-cyan-dynamic-gradient.png"
+  },
+  {
+    "theme": "SUNSET ORANGE",
+    "mode": "Dark mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.188235 0.12549 0.105882 / 0.94)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "header": {
+        "bg": "rgb(48, 32, 27)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "input": {
+        "bg": "rgb(48, 32, 27)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "mode": "DARK",
+      "nav": {
+        "bg": "color(srgb 0.188235 0.12549 0.105882 / 0.88)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.188235 0.12549 0.105882 / 0.94)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "theme": "SUNSET_ORANGE"
+    },
+    "screenshot": "auth-sunset-orange-dark-mode.png"
+  },
+  {
+    "theme": "SUNSET ORANGE",
+    "mode": "Light mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "header": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "mode": "LIGHT",
+      "nav": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "panel": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "theme": "SUNSET_ORANGE"
+    },
+    "screenshot": "auth-sunset-orange-light-mode.png"
+  },
+  {
+    "theme": "SUNSET ORANGE",
+    "mode": "Premium glass",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.188235 0.12549 0.105882 / 0.94)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "header": {
+        "bg": "rgb(48, 32, 27)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "input": {
+        "bg": "rgb(48, 32, 27)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "mode": "GLASS",
+      "nav": {
+        "bg": "color(srgb 0.188235 0.12549 0.105882 / 0.88)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.188235 0.12549 0.105882 / 0.94)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "theme": "SUNSET_ORANGE"
+    },
+    "screenshot": "auth-sunset-orange-premium-glass.png"
+  },
+  {
+    "theme": "SUNSET ORANGE",
+    "mode": "Dynamic gradient",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.188235 0.12549 0.105882 / 0.94)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "header": {
+        "bg": "rgb(48, 32, 27)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "input": {
+        "bg": "rgb(48, 32, 27)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "mode": "GRADIENT",
+      "nav": {
+        "bg": "color(srgb 0.188235 0.12549 0.105882 / 0.88)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.188235 0.12549 0.105882 / 0.94)",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "theme": "SUNSET_ORANGE"
+    },
+    "screenshot": "auth-sunset-orange-dynamic-gradient.png"
+  },
+  {
+    "theme": "ARCTIC SILVER",
+    "mode": "Dark mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.12549 0.176471 0.227451 / 0.94)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "header": {
+        "bg": "rgb(32, 45, 58)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "input": {
+        "bg": "rgb(32, 45, 58)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "mode": "DARK",
+      "nav": {
+        "bg": "color(srgb 0.12549 0.176471 0.227451 / 0.88)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.12549 0.176471 0.227451 / 0.94)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "theme": "ARCTIC_SILVER"
+    },
+    "screenshot": "auth-arctic-silver-dark-mode.png"
+  },
+  {
+    "theme": "ARCTIC SILVER",
+    "mode": "Light mode",
+    "state": {
+      "form": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "header": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "mode": "LIGHT",
+      "nav": {
+        "bg": "rgb(231, 237, 245)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "panel": {
+        "bg": "color(srgb 1 1 1 / 0.94)",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "theme": "ARCTIC_SILVER"
+    },
+    "screenshot": "auth-arctic-silver-light-mode.png"
+  },
+  {
+    "theme": "ARCTIC SILVER",
+    "mode": "Premium glass",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.12549 0.176471 0.227451 / 0.94)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "header": {
+        "bg": "rgb(32, 45, 58)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "input": {
+        "bg": "rgb(32, 45, 58)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "mode": "GLASS",
+      "nav": {
+        "bg": "color(srgb 0.12549 0.176471 0.227451 / 0.88)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.12549 0.176471 0.227451 / 0.94)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "theme": "ARCTIC_SILVER"
+    },
+    "screenshot": "auth-arctic-silver-premium-glass.png"
+  },
+  {
+    "theme": "ARCTIC SILVER",
+    "mode": "Dynamic gradient",
+    "state": {
+      "form": {
+        "bg": "color(srgb 0.12549 0.176471 0.227451 / 0.94)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "header": {
+        "bg": "rgb(32, 45, 58)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "input": {
+        "bg": "rgb(32, 45, 58)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "mode": "GRADIENT",
+      "nav": {
+        "bg": "color(srgb 0.12549 0.176471 0.227451 / 0.88)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "panel": {
+        "bg": "color(srgb 0.12549 0.176471 0.227451 / 0.94)",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "theme": "ARCTIC_SILVER"
+    },
+    "screenshot": "auth-arctic-silver-dynamic-gradient.png"
+  }
+]

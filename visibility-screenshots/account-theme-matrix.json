@@ -1,0 +1,1602 @@
+[
+  {
+    "theme": "SKYFY BLUE",
+    "mode": "Dark mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(9, 27, 59)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "input": {
+        "bg": "rgb(16, 36, 65)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "mode": "DARK",
+      "palette": "SKYFY_BLUE",
+      "panel": {
+        "bg": "rgb(16, 36, 65)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(234, 242, 250)"
+      },
+      "token": {
+        "active": "#2583ff",
+        "input": "#102441",
+        "surface": "#102441"
+      }
+    },
+    "screenshot": "account-skyfy-blue-dark-mode.png"
+  },
+  {
+    "theme": "SKYFY BLUE",
+    "mode": "Light mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(231, 237, 245)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(62, 75, 96)"
+      },
+      "mode": "LIGHT",
+      "palette": "SKYFY_BLUE",
+      "panel": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(28, 39, 56)"
+      },
+      "token": {
+        "active": "#2583ff",
+        "input": "#fff",
+        "surface": "#ffffff"
+      }
+    },
+    "screenshot": "account-skyfy-blue-light-mode.png"
+  },
+  {
+    "theme": "SKYFY BLUE",
+    "mode": "Premium glass",
+    "styles": {
+      "button": {
+        "bg": "rgb(9, 27, 59)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "input": {
+        "bg": "rgb(16, 36, 65)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "mode": "GLASS",
+      "palette": "SKYFY_BLUE",
+      "panel": {
+        "bg": "rgb(16, 36, 65)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(233, 241, 249)"
+      },
+      "token": {
+        "active": "#2583ff",
+        "input": "#102441",
+        "surface": "#102441"
+      }
+    },
+    "screenshot": "account-skyfy-blue-premium-glass.png"
+  },
+  {
+    "theme": "SKYFY BLUE",
+    "mode": "Dynamic gradient",
+    "styles": {
+      "button": {
+        "bg": "rgb(9, 27, 59)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "input": {
+        "bg": "rgb(16, 36, 65)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "mode": "GRADIENT",
+      "palette": "SKYFY_BLUE",
+      "panel": {
+        "bg": "rgb(16, 36, 65)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(239, 247, 255)"
+      },
+      "token": {
+        "active": "#2583ff",
+        "input": "#102441",
+        "surface": "#102441"
+      }
+    },
+    "screenshot": "account-skyfy-blue-dynamic-gradient.png"
+  },
+  {
+    "theme": "RUBY RED",
+    "mode": "Dark mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(74, 16, 32)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "input": {
+        "bg": "rgb(43, 20, 32)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "mode": "DARK",
+      "palette": "RUBY_RED",
+      "panel": {
+        "bg": "rgb(43, 20, 32)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "token": {
+        "active": "#e54462",
+        "input": "#2b1420",
+        "surface": "#2b1420"
+      }
+    },
+    "screenshot": "account-ruby-red-dark-mode.png"
+  },
+  {
+    "theme": "RUBY RED",
+    "mode": "Light mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(231, 237, 245)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(62, 75, 96)"
+      },
+      "mode": "LIGHT",
+      "palette": "RUBY_RED",
+      "panel": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(29, 40, 56)"
+      },
+      "token": {
+        "active": "#e54462",
+        "input": "#fff",
+        "surface": "#ffffff"
+      }
+    },
+    "screenshot": "account-ruby-red-light-mode.png"
+  },
+  {
+    "theme": "RUBY RED",
+    "mode": "Premium glass",
+    "styles": {
+      "button": {
+        "bg": "rgb(74, 16, 32)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "input": {
+        "bg": "rgb(43, 20, 32)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "mode": "GLASS",
+      "palette": "RUBY_RED",
+      "panel": {
+        "bg": "rgb(43, 20, 32)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(249, 234, 238)"
+      },
+      "token": {
+        "active": "#e54462",
+        "input": "#2b1420",
+        "surface": "#2b1420"
+      }
+    },
+    "screenshot": "account-ruby-red-premium-glass.png"
+  },
+  {
+    "theme": "RUBY RED",
+    "mode": "Dynamic gradient",
+    "styles": {
+      "button": {
+        "bg": "rgb(74, 16, 32)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "input": {
+        "bg": "rgb(43, 20, 32)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "mode": "GRADIENT",
+      "palette": "RUBY_RED",
+      "panel": {
+        "bg": "rgb(43, 20, 32)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(255, 240, 243)"
+      },
+      "token": {
+        "active": "#e54462",
+        "input": "#2b1420",
+        "surface": "#2b1420"
+      }
+    },
+    "screenshot": "account-ruby-red-dynamic-gradient.png"
+  },
+  {
+    "theme": "ROYAL PURPLE",
+    "mode": "Dark mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(37, 19, 79)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "input": {
+        "bg": "rgb(33, 24, 61)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "mode": "DARK",
+      "palette": "ROYAL_PURPLE",
+      "panel": {
+        "bg": "rgb(33, 24, 61)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "token": {
+        "active": "#9565ff",
+        "input": "#21183d",
+        "surface": "#21183d"
+      }
+    },
+    "screenshot": "account-royal-purple-dark-mode.png"
+  },
+  {
+    "theme": "ROYAL PURPLE",
+    "mode": "Light mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(231, 237, 245)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(62, 75, 96)"
+      },
+      "mode": "LIGHT",
+      "palette": "ROYAL_PURPLE",
+      "panel": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "token": {
+        "active": "#9565ff",
+        "input": "#fff",
+        "surface": "#ffffff"
+      }
+    },
+    "screenshot": "account-royal-purple-light-mode.png"
+  },
+  {
+    "theme": "ROYAL PURPLE",
+    "mode": "Premium glass",
+    "styles": {
+      "button": {
+        "bg": "rgb(37, 19, 79)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "input": {
+        "bg": "rgb(33, 24, 61)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "mode": "GLASS",
+      "palette": "ROYAL_PURPLE",
+      "panel": {
+        "bg": "rgb(33, 24, 61)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "token": {
+        "active": "#9565ff",
+        "input": "#21183d",
+        "surface": "#21183d"
+      }
+    },
+    "screenshot": "account-royal-purple-premium-glass.png"
+  },
+  {
+    "theme": "ROYAL PURPLE",
+    "mode": "Dynamic gradient",
+    "styles": {
+      "button": {
+        "bg": "rgb(37, 19, 79)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "input": {
+        "bg": "rgb(33, 24, 61)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "mode": "GRADIENT",
+      "palette": "ROYAL_PURPLE",
+      "panel": {
+        "bg": "rgb(33, 24, 61)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(246, 240, 255)"
+      },
+      "token": {
+        "active": "#9565ff",
+        "input": "#21183d",
+        "surface": "#21183d"
+      }
+    },
+    "screenshot": "account-royal-purple-dynamic-gradient.png"
+  },
+  {
+    "theme": "EMERALD GREEN",
+    "mode": "Dark mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(7, 59, 45)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "input": {
+        "bg": "rgb(16, 44, 36)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "mode": "DARK",
+      "palette": "EMERALD_GREEN",
+      "panel": {
+        "bg": "rgb(16, 44, 36)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "token": {
+        "active": "#12b981",
+        "input": "#102c24",
+        "surface": "#102c24"
+      }
+    },
+    "screenshot": "account-emerald-green-dark-mode.png"
+  },
+  {
+    "theme": "EMERALD GREEN",
+    "mode": "Light mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(231, 237, 245)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(62, 75, 96)"
+      },
+      "mode": "LIGHT",
+      "palette": "EMERALD_GREEN",
+      "panel": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "token": {
+        "active": "#12b981",
+        "input": "#fff",
+        "surface": "#ffffff"
+      }
+    },
+    "screenshot": "account-emerald-green-light-mode.png"
+  },
+  {
+    "theme": "EMERALD GREEN",
+    "mode": "Premium glass",
+    "styles": {
+      "button": {
+        "bg": "rgb(7, 59, 45)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "input": {
+        "bg": "rgb(16, 44, 36)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "mode": "GLASS",
+      "palette": "EMERALD_GREEN",
+      "panel": {
+        "bg": "rgb(16, 44, 36)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "token": {
+        "active": "#12b981",
+        "input": "#102c24",
+        "surface": "#102c24"
+      }
+    },
+    "screenshot": "account-emerald-green-premium-glass.png"
+  },
+  {
+    "theme": "EMERALD GREEN",
+    "mode": "Dynamic gradient",
+    "styles": {
+      "button": {
+        "bg": "rgb(7, 59, 45)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "input": {
+        "bg": "rgb(16, 44, 36)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "mode": "GRADIENT",
+      "palette": "EMERALD_GREEN",
+      "panel": {
+        "bg": "rgb(16, 44, 36)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(234, 255, 245)"
+      },
+      "token": {
+        "active": "#12b981",
+        "input": "#102c24",
+        "surface": "#102c24"
+      }
+    },
+    "screenshot": "account-emerald-green-dynamic-gradient.png"
+  },
+  {
+    "theme": "GOLDEN LUXURY",
+    "mode": "Dark mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(59, 41, 20)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "input": {
+        "bg": "rgb(43, 33, 20)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "mode": "DARK",
+      "palette": "GOLDEN_LUXURY",
+      "panel": {
+        "bg": "rgb(43, 33, 20)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "token": {
+        "active": "#c79a42",
+        "input": "#2b2114",
+        "surface": "#2b2114"
+      }
+    },
+    "screenshot": "account-golden-luxury-dark-mode.png"
+  },
+  {
+    "theme": "GOLDEN LUXURY",
+    "mode": "Light mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(231, 237, 245)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(62, 75, 96)"
+      },
+      "mode": "LIGHT",
+      "palette": "GOLDEN_LUXURY",
+      "panel": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(25, 36, 53)"
+      },
+      "token": {
+        "active": "#c79a42",
+        "input": "#fff",
+        "surface": "#ffffff"
+      }
+    },
+    "screenshot": "account-golden-luxury-light-mode.png"
+  },
+  {
+    "theme": "GOLDEN LUXURY",
+    "mode": "Premium glass",
+    "styles": {
+      "button": {
+        "bg": "rgb(59, 41, 20)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "input": {
+        "bg": "rgb(43, 33, 20)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "mode": "GLASS",
+      "palette": "GOLDEN_LUXURY",
+      "panel": {
+        "bg": "rgb(43, 33, 20)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(248, 240, 224)"
+      },
+      "token": {
+        "active": "#c79a42",
+        "input": "#2b2114",
+        "surface": "#2b2114"
+      }
+    },
+    "screenshot": "account-golden-luxury-premium-glass.png"
+  },
+  {
+    "theme": "GOLDEN LUXURY",
+    "mode": "Dynamic gradient",
+    "styles": {
+      "button": {
+        "bg": "rgb(59, 41, 20)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "input": {
+        "bg": "rgb(43, 33, 20)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "mode": "GRADIENT",
+      "palette": "GOLDEN_LUXURY",
+      "panel": {
+        "bg": "rgb(43, 33, 20)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(255, 247, 230)"
+      },
+      "token": {
+        "active": "#c79a42",
+        "input": "#2b2114",
+        "surface": "#2b2114"
+      }
+    },
+    "screenshot": "account-golden-luxury-dynamic-gradient.png"
+  },
+  {
+    "theme": "CYBER CYAN",
+    "mode": "Dark mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(7, 52, 74)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "input": {
+        "bg": "rgb(13, 41, 53)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "mode": "DARK",
+      "palette": "CYBER_CYAN",
+      "panel": {
+        "bg": "rgb(13, 41, 53)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "token": {
+        "active": "#00c9df",
+        "input": "#0d2935",
+        "surface": "#0d2935"
+      }
+    },
+    "screenshot": "account-cyber-cyan-dark-mode.png"
+  },
+  {
+    "theme": "CYBER CYAN",
+    "mode": "Light mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(231, 237, 245)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(62, 75, 96)"
+      },
+      "mode": "LIGHT",
+      "palette": "CYBER_CYAN",
+      "panel": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(28, 39, 55)"
+      },
+      "token": {
+        "active": "#00c9df",
+        "input": "#fff",
+        "surface": "#ffffff"
+      }
+    },
+    "screenshot": "account-cyber-cyan-light-mode.png"
+  },
+  {
+    "theme": "CYBER CYAN",
+    "mode": "Premium glass",
+    "styles": {
+      "button": {
+        "bg": "rgb(7, 52, 74)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "input": {
+        "bg": "rgb(13, 41, 53)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "mode": "GLASS",
+      "palette": "CYBER_CYAN",
+      "panel": {
+        "bg": "rgb(13, 41, 53)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(227, 247, 250)"
+      },
+      "token": {
+        "active": "#00c9df",
+        "input": "#0d2935",
+        "surface": "#0d2935"
+      }
+    },
+    "screenshot": "account-cyber-cyan-premium-glass.png"
+  },
+  {
+    "theme": "CYBER CYAN",
+    "mode": "Dynamic gradient",
+    "styles": {
+      "button": {
+        "bg": "rgb(7, 52, 74)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "input": {
+        "bg": "rgb(13, 41, 53)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "mode": "GRADIENT",
+      "palette": "CYBER_CYAN",
+      "panel": {
+        "bg": "rgb(13, 41, 53)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(232, 252, 255)"
+      },
+      "token": {
+        "active": "#00c9df",
+        "input": "#0d2935",
+        "surface": "#0d2935"
+      }
+    },
+    "screenshot": "account-cyber-cyan-dynamic-gradient.png"
+  },
+  {
+    "theme": "SUNSET ORANGE",
+    "mode": "Dark mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(74, 36, 27)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "input": {
+        "bg": "rgb(48, 32, 27)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "mode": "DARK",
+      "palette": "SUNSET_ORANGE",
+      "panel": {
+        "bg": "rgb(48, 32, 27)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "token": {
+        "active": "#f07835",
+        "input": "#30201b",
+        "surface": "#30201b"
+      }
+    },
+    "screenshot": "account-sunset-orange-dark-mode.png"
+  },
+  {
+    "theme": "SUNSET ORANGE",
+    "mode": "Light mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(231, 237, 245)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(62, 75, 96)"
+      },
+      "mode": "LIGHT",
+      "palette": "SUNSET_ORANGE",
+      "panel": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(25, 36, 53)"
+      },
+      "token": {
+        "active": "#f07835",
+        "input": "#fff",
+        "surface": "#ffffff"
+      }
+    },
+    "screenshot": "account-sunset-orange-light-mode.png"
+  },
+  {
+    "theme": "SUNSET ORANGE",
+    "mode": "Premium glass",
+    "styles": {
+      "button": {
+        "bg": "rgb(74, 36, 27)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "input": {
+        "bg": "rgb(48, 32, 27)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "mode": "GLASS",
+      "palette": "SUNSET_ORANGE",
+      "panel": {
+        "bg": "rgb(48, 32, 27)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(250, 239, 231)"
+      },
+      "token": {
+        "active": "#f07835",
+        "input": "#30201b",
+        "surface": "#30201b"
+      }
+    },
+    "screenshot": "account-sunset-orange-premium-glass.png"
+  },
+  {
+    "theme": "SUNSET ORANGE",
+    "mode": "Dynamic gradient",
+    "styles": {
+      "button": {
+        "bg": "rgb(74, 36, 27)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "input": {
+        "bg": "rgb(48, 32, 27)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "mode": "GRADIENT",
+      "palette": "SUNSET_ORANGE",
+      "panel": {
+        "bg": "rgb(48, 32, 27)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(255, 243, 235)"
+      },
+      "token": {
+        "active": "#f07835",
+        "input": "#30201b",
+        "surface": "#30201b"
+      }
+    },
+    "screenshot": "account-sunset-orange-dynamic-gradient.png"
+  },
+  {
+    "theme": "ARCTIC SILVER",
+    "mode": "Dark mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(52, 72, 93)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "input": {
+        "bg": "rgb(32, 45, 58)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "mode": "DARK",
+      "palette": "ARCTIC_SILVER",
+      "panel": {
+        "bg": "rgb(32, 45, 58)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "token": {
+        "active": "#8da9c2",
+        "input": "#202d3a",
+        "surface": "#202d3a"
+      }
+    },
+    "screenshot": "account-arctic-silver-dark-mode.png"
+  },
+  {
+    "theme": "ARCTIC SILVER",
+    "mode": "Light mode",
+    "styles": {
+      "button": {
+        "bg": "rgb(231, 237, 245)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "input": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(24, 35, 52)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(62, 75, 96)"
+      },
+      "mode": "LIGHT",
+      "palette": "ARCTIC_SILVER",
+      "panel": {
+        "bg": "rgb(255, 255, 255)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(31, 41, 58)"
+      },
+      "token": {
+        "active": "#8da9c2",
+        "input": "#fff",
+        "surface": "#ffffff"
+      }
+    },
+    "screenshot": "account-arctic-silver-light-mode.png"
+  },
+  {
+    "theme": "ARCTIC SILVER",
+    "mode": "Premium glass",
+    "styles": {
+      "button": {
+        "bg": "rgb(52, 72, 93)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "input": {
+        "bg": "rgb(32, 45, 58)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "mode": "GLASS",
+      "palette": "ARCTIC_SILVER",
+      "panel": {
+        "bg": "rgb(32, 45, 58)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(239, 244, 248)"
+      },
+      "token": {
+        "active": "#8da9c2",
+        "input": "#202d3a",
+        "surface": "#202d3a"
+      }
+    },
+    "screenshot": "account-arctic-silver-premium-glass.png"
+  },
+  {
+    "theme": "ARCTIC SILVER",
+    "mode": "Dynamic gradient",
+    "styles": {
+      "button": {
+        "bg": "rgb(52, 72, 93)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "h2": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "h3": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "input": {
+        "bg": "rgb(32, 45, 58)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "label": {
+        "bg": "rgba(0, 0, 0, 0)",
+        "bgi": "none",
+        "cls": "",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "mode": "GRADIENT",
+      "palette": "ARCTIC_SILVER",
+      "panel": {
+        "bg": "rgb(32, 45, 58)",
+        "bgi": "none",
+        "cls": "panel account-form-panel",
+        "fg": "rgb(243, 248, 252)"
+      },
+      "token": {
+        "active": "#8da9c2",
+        "input": "#202d3a",
+        "surface": "#202d3a"
+      }
+    },
+    "screenshot": "account-arctic-silver-dynamic-gradient.png"
+  }
+]

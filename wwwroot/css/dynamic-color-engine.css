@@ -1,0 +1,267 @@
+/* Phase 14 dynamic palette layer */
+html[data-s360-theme="skyfy-nexus"]{--s360-primary:#2583ff;--s360-secondary:#091b3b;--s360-accent:#39d8ff;--s360-bg:#071326;--s360-surface:#102441;--s360-text:#eff7ff;--s360-border:#294a70;--s360-muted:color-mix(in srgb,var(--s360-text) 62%,transparent);--s360-glow:color-mix(in srgb,var(--s360-accent) 28%,transparent);--s360-gradient:linear-gradient(135deg,var(--s360-secondary),var(--s360-bg) 55%,var(--s360-surface));color-scheme:dark}
+html[data-s360-palette="RUBY_RED"]{--s360-primary:#e33455;--s360-secondary:#4a1020;--s360-accent:#ff7187;--s360-bg:#170b12;--s360-surface:#2b1420;--s360-text:#fff0f3;--s360-border:#663044}
+html[data-s360-palette="ROYAL_PURPLE"]{--s360-primary:#9565ff;--s360-secondary:#25134f;--s360-accent:#d2a5ff;--s360-bg:#100c24;--s360-surface:#21183d;--s360-text:#f6f0ff;--s360-border:#4d3975}
+html[data-s360-palette="EMERALD_GREEN"]{--s360-primary:#12b981;--s360-secondary:#073b2d;--s360-accent:#70f0bd;--s360-bg:#071a16;--s360-surface:#102c24;--s360-text:#eafff5;--s360-border:#285a49}
+html[data-s360-palette="GOLDEN_LUXURY"]{--s360-primary:#c79a42;--s360-secondary:#3b2914;--s360-accent:#f4d58a;--s360-bg:#17120b;--s360-surface:#2b2114;--s360-text:#fff7e6;--s360-border:#69532e}
+html[data-s360-palette="CYBER_CYAN"]{--s360-primary:#00c9df;--s360-secondary:#07344a;--s360-accent:#63f3ff;--s360-bg:#06151e;--s360-surface:#0d2935;--s360-text:#e8fcff;--s360-border:#1b5968}
+html[data-s360-palette="SUNSET_ORANGE"]{--s360-primary:#f07835;--s360-secondary:#4a241b;--s360-accent:#ffb06d;--s360-bg:#1b100d;--s360-surface:#30201b;--s360-text:#fff3eb;--s360-border:#704330}
+html[data-s360-palette="ARCTIC_SILVER"]{--s360-primary:#8da9c2;--s360-secondary:#34485d;--s360-accent:#c6e7ff;--s360-bg:#101923;--s360-surface:#202d3a;--s360-text:#f3f8fc;--s360-border:#536b80}
+html[data-s360-palette="SKYFY_BLUE"],html[data-s360-palette="SKYFY_NEXUS"]{--s360-primary:#2583ff;--s360-secondary:#091b3b;--s360-accent:#39d8ff;--s360-bg:#071326;--s360-surface:#102441;--s360-text:#eff7ff;--s360-border:#294a70}
+html[data-s360-theme="skyfy-nexus"] body{color:var(--s360-text)!important;background:radial-gradient(ellipse at 10% 0%,var(--s360-glow),transparent 38%),var(--s360-gradient)!important;background-attachment:fixed!important;transition:background .42s,color .32s}
+html[data-s360-theme="skyfy-nexus"] :is(.topbar,.top,.topline,.header,.app-header,.dash-toolbar,.account-toolbar){background:linear-gradient(115deg,var(--s360-secondary),var(--s360-surface))!important;border-color:var(--s360-border)!important;color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.sidebar,.side-nav,.sidenav,.navigation,.nav-menu,.nav-preferences){background:linear-gradient(180deg,var(--s360-secondary),var(--s360-bg))!important;border-color:var(--s360-border)!important;color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.nav a:hover,.sidebar a:hover,.side-nav a:hover,.nav-menu a:hover,.menu-item:hover){background:color-mix(in srgb,var(--s360-primary) 18%,transparent)!important;color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.active,.active-menu,.menu-item.active,.nav a.active){color:var(--s360-text)!important;background:linear-gradient(100deg,color-mix(in srgb,var(--s360-primary) 30%,transparent),color-mix(in srgb,var(--s360-accent) 12%,transparent))!important;box-shadow:inset 3px 0 0 var(--s360-accent),0 8px 22px #0003!important}
+html[data-s360-theme="skyfy-nexus"] :is(.card,.panel,.stat-card,.metric-card,.kpi-card,.widget,.section-card,.form-card,.table-card,.content-card,.workspace-card,.summary-card){color:var(--s360-text)!important;background:linear-gradient(145deg,color-mix(in srgb,var(--s360-surface) 92%,transparent),color-mix(in srgb,var(--s360-bg) 94%,transparent))!important;border:1px solid var(--s360-border)!important;box-shadow:0 16px 44px #0004,0 0 22px color-mix(in srgb,var(--s360-accent) 5%,transparent)!important;transition:background .35s,border-color .35s,box-shadow .35s,color .35s}
+html[data-s360-theme="skyfy-nexus"] :is(button.primary,.btn-primary,.button-primary,.btn,.save,.s360-preference-done){background:linear-gradient(120deg,var(--s360-primary),var(--s360-accent))!important;border-color:var(--s360-primary)!important;color:#fff!important}
+html[data-s360-theme="skyfy-nexus"] :is(input:not([type=checkbox]):not([type=radio]),select,textarea,.tabulator .tabulator-header,.tabulator .tabulator-col){background:var(--s360-surface)!important;color:var(--s360-text)!important;border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"] .tabulator{background:var(--s360-bg)!important;border-color:var(--s360-border)!important;color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"] .tabulator .tabulator-row{background:var(--s360-surface)!important;color:var(--s360-text)!important;border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"] .tabulator .tabulator-row:nth-child(even){background:color-mix(in srgb,var(--s360-surface) 72%,var(--s360-bg))!important}
+html[data-s360-theme="skyfy-nexus"] .tabulator .tabulator-footer{background:var(--s360-secondary)!important;color:var(--s360-text)!important;border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"] :is(a,.link,.icon-active,.text-primary,.s360-nexus-dashboard-visual__kicker){color:var(--s360-accent)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.s360-nexus-dashboard-visual,.s360-nexus-dashboard-visual__scene){background:radial-gradient(ellipse at 50% 70%,color-mix(in srgb,var(--s360-accent) 16%,transparent),transparent 58%),var(--s360-gradient)!important;border-color:var(--s360-border)!important;color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-halo{background:radial-gradient(circle,color-mix(in srgb,var(--s360-accent) 32%,transparent),transparent 72%)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-plinth{background:linear-gradient(135deg,color-mix(in srgb,var(--s360-primary) 25%,transparent),color-mix(in srgb,var(--s360-accent) 12%,transparent))!important}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-face{border-color:color-mix(in srgb,var(--s360-accent) 60%,transparent)!important;background:linear-gradient(145deg,color-mix(in srgb,var(--s360-primary) 45%,var(--s360-surface)),var(--s360-secondary))!important;box-shadow:inset 0 0 22px color-mix(in srgb,var(--s360-accent) 16%,transparent),0 0 25px color-mix(in srgb,var(--s360-accent) 12%,transparent)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-building-window{background:color-mix(in srgb,var(--s360-accent) 72%,white)!important;box-shadow:0 0 10px color-mix(in srgb,var(--s360-accent) 55%,transparent)!important}
+html[data-s360-theme="skyfy-nexus"] .dash-orb{background:radial-gradient(circle at 32% 24%,var(--s360-accent),var(--s360-primary) 62%,var(--s360-secondary))!important;box-shadow:0 0 55px color-mix(in srgb,var(--s360-accent) 30%,transparent)!important}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"]{color-scheme:light;--s360-bg:#f4f7fb!important;--s360-surface:#fff!important;--s360-text:#182334!important;--s360-border:#d5deea!important;--s360-secondary:#e7edf5!important;--s360-gradient:linear-gradient(135deg,#f7f9fc,#e9eff7)}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body{background:radial-gradient(ellipse at 10% 0%,color-mix(in srgb,var(--s360-primary) 12%,transparent),transparent 38%),var(--s360-gradient)!important}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] :is(.card,.panel,.stat-card,.metric-card,.kpi-card,.widget,.section-card,.form-card,.table-card,.content-card,.workspace-card,.summary-card,.tabulator .tabulator-row){background:var(--s360-surface)!important;color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="GLASS"] :is(.card,.panel,.stat-card,.metric-card,.kpi-card,.widget,.section-card,.form-card,.table-card,.content-card,.workspace-card,.summary-card){background:color-mix(in srgb,var(--s360-surface) 68%,transparent)!important;backdrop-filter:blur(22px) saturate(135%);border-color:color-mix(in srgb,var(--s360-accent) 30%,transparent)!important}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="GRADIENT"] body{background:radial-gradient(ellipse at 8% 10%,color-mix(in srgb,var(--s360-primary) 30%,transparent),transparent 35%),radial-gradient(ellipse at 92% 88%,color-mix(in srgb,var(--s360-accent) 22%,transparent),transparent 36%),linear-gradient(135deg,var(--s360-bg),var(--s360-secondary),var(--s360-surface))!important;background-size:160% 160%!important;animation:s360-gradient-drift 24s ease-in-out infinite alternate}
+@keyframes s360-gradient-drift{from{background-position:0% 0%}to{background-position:100% 100%}}
+html[data-s360-theme="skyfy-nexus"] :is(.modal,.modal-content,.dropdown-menu,.popover,.tooltip){background:var(--s360-surface)!important;color:var(--s360-text)!important;border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.s360-nexus-elevator,.s360-elevator-cabin){border-color:var(--s360-accent)!important;background:linear-gradient(145deg,var(--s360-surface),var(--s360-secondary))!important;box-shadow:0 0 24px color-mix(in srgb,var(--s360-accent) 28%,transparent)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.s360-nexus-elevator-light,.s360-elevator-light,.s360-floor-indicator,.s360-selected-floor){color:var(--s360-accent)!important;background:color-mix(in srgb,var(--s360-accent) 18%,var(--s360-surface))!important;border-color:var(--s360-accent)!important}
+html[data-s360-theme="skyfy-nexus"] :focus-visible{outline:2px solid var(--s360-accent)!important;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){html[data-s360-theme="skyfy-nexus"] *,html[data-s360-theme="skyfy-nexus"] *::before,html[data-s360-theme="skyfy-nexus"] *::after{animation:none!important;transition:none!important}}
+
+.s360-color-dialog{width:min(920px,100%)!important}.s360-color-modes{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}.s360-mode-option{border:1px solid #d9e1ec;border-radius:999px;background:#f5f7fb;color:#34445a;padding:9px 14px;font-size:11px;font-weight:750;cursor:pointer}.s360-mode-option[aria-pressed=true]{background:#182b48;color:#fff;border-color:#182b48}.s360-color-gallery{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}.s360-color-card{padding:8px!important;min-width:0}.s360-color-preview{position:relative;display:flex;align-items:center;justify-content:center;gap:7px;height:92px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,var(--pv2),var(--pvbg));border:1px solid color-mix(in srgb,var(--pv3) 35%,transparent)}.s360-color-preview i{width:17%;height:48%;border-radius:5px;background:linear-gradient(180deg,var(--pv3),var(--pv1));box-shadow:0 0 14px color-mix(in srgb,var(--pv3) 32%,transparent)}.s360-color-preview i:nth-child(2){height:68%}.s360-color-preview i:nth-child(3){height:37%}.s360-color-preview b{position:absolute;right:8px;bottom:7px;color:white;font-size:11px}.s360-color-preview em{position:absolute;left:8px;top:7px;padding:3px 6px;border-radius:5px;background:var(--pvsurface);color:var(--pv3);font-size:8px;font-style:normal;font-weight:800}.s360-color-card strong{font-size:12px!important}.s360-color-card small{font-size:9px!important}.s360-color-custom{margin-top:18px;padding:15px;border:1px solid #e0e6ef;border-radius:14px;background:#f8fafc}.s360-color-custom__head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.s360-color-custom__head strong{display:block;font-size:13px;color:#1d2a40}.s360-color-custom__head small{display:block;margin-top:4px;color:#6c7b90;font-size:10px}.s360-color-reset,.s360-color-org{border:1px solid #d9e1ec;border-radius:8px;padding:7px 10px;background:#fff;color:#45546a;font-size:10px;cursor:pointer}.s360-color-fields{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}.s360-color-field{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 4px;border:1px solid #e1e7ef;border-radius:9px;background:#fff;color:#506078;font-size:9px;font-weight:700}.s360-color-field input{width:32px;height:30px;padding:0;border:0;background:transparent;cursor:pointer}.s360-color-contrast{margin-top:10px;color:#52657b;font-size:10px}.s360-color-contrast[data-valid=false]{color:#b63b49}.s360-color-actions{display:flex;gap:8px;align-items:center}.s360-color-save{border:0;border-radius:9px;background:#1e3a60;color:white;padding:10px 14px;font-size:11px;font-weight:750;cursor:pointer}html[data-s360-theme="skyfy-nexus"] .s360-color-dialog{background:var(--s360-surface);color:var(--s360-text);border-color:var(--s360-border)}html[data-s360-theme="skyfy-nexus"] .s360-color-custom{background:color-mix(in srgb,var(--s360-bg) 75%,transparent);border-color:var(--s360-border)}html[data-s360-theme="skyfy-nexus"] .s360-color-custom__head strong{color:var(--s360-text)}html[data-s360-theme="skyfy-nexus"] .s360-color-field{background:var(--s360-surface);color:var(--s360-text);border-color:var(--s360-border)}html[data-s360-theme="skyfy-nexus"] .s360-mode-option{background:var(--s360-bg);color:var(--s360-text);border-color:var(--s360-border)}html[data-s360-theme="skyfy-nexus"] .s360-mode-option[aria-pressed=true]{background:var(--s360-primary);color:#fff}@media(max-width:760px){.s360-color-gallery{grid-template-columns:repeat(2,minmax(0,1fr))!important}.s360-color-fields{grid-template-columns:repeat(4,minmax(0,1fr))}.s360-color-dialog{padding:16px!important}.s360-color-actions{flex-wrap:wrap}.s360-color-org,.s360-color-save{flex:1}}
+.s360-color-preview-standard{background:linear-gradient(135deg,#edf2ff,#dce8f8)!important}.s360-color-preview-standard i{background:linear-gradient(180deg,#8e9ee7,#5368b7)!important}.s360-color-preview-standard b{color:#4b5b9e!important}
+
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-elevator-shaft{position:absolute;z-index:4;left:50%;top:8%;width:23px;height:78%;transform:translateX(-50%);border:1px solid var(--s360-accent);border-radius:4px;background:color-mix(in srgb,var(--s360-bg) 70%,transparent);box-shadow:0 0 12px color-mix(in srgb,var(--s360-accent) 20%,transparent);overflow:hidden}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-elevator-cabin{position:absolute;left:2px;right:2px;top:4px;height:24%;border:1px solid var(--s360-accent);border-radius:2px;background:linear-gradient(135deg,var(--s360-primary),var(--s360-secondary));box-shadow:inset 0 0 8px color-mix(in srgb,var(--s360-accent) 55%,transparent),0 0 12px color-mix(in srgb,var(--s360-accent) 45%,transparent);animation:s360-elevator-travel 9s ease-in-out infinite alternate}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-elevator-light{position:absolute;left:3px;right:3px;top:3px;bottom:3px;border:1px solid var(--s360-accent);background:color-mix(in srgb,var(--s360-accent) 48%,transparent);box-shadow:0 0 8px var(--s360-accent)}
+html[data-s360-theme="skyfy-nexus"] .s360-nexus-floor-indicator{position:absolute;right:-24px;top:5px;color:var(--s360-accent);font:700 6px/1 system-ui;letter-spacing:.08em;writing-mode:vertical-rl}
+@keyframes s360-elevator-travel{0%{top:4%}45%{top:65%}70%{top:32%}100%{top:4%}}
+
+/* Cross-role and dashboard component coverage */
+html[data-s360-theme="skyfy-nexus"] :is(.side,.sidebar,.side-nav,.sidenav,.navigation,.nav-menu,.nav-preferences){background:linear-gradient(180deg,var(--s360-secondary),var(--s360-bg))!important;border-color:var(--s360-border)!important;color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.side nav button,.nav button,.tabs button,.requested-tab,.ca-tabs button){background:color-mix(in srgb,var(--s360-surface) 88%,transparent)!important;color:var(--s360-text)!important;border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.side nav button:hover,.nav button:hover,.tabs button:hover,.requested-tab:hover,.ca-tabs button:hover){background:color-mix(in srgb,var(--s360-primary) 22%,var(--s360-surface))!important;color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.hero,.selected,.workspace,.view,.login-card,.login-panel,.auth-card,.auth-panel,.dash-panel,.dash-trend-chart,.dash-donut-wrap,.dash-breakdown,.theme,.notice){background:linear-gradient(145deg,var(--s360-surface),var(--s360-bg))!important;color:var(--s360-text)!important;border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.dash-panel,.dash-trend-chart,.dash-donut-wrap,.dash-breakdown){box-shadow:0 14px 40px color-mix(in srgb,var(--s360-bg) 50%,transparent)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.dash-panel-head h3,.dash-panel-head p,.dash-section-kicker,.dash-chart-badge,.dash-empty){color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.s360-preference-dialog,.s360-theme-card){background:var(--s360-surface)!important;color:var(--s360-text)!important;border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-preference-dialog :is(h2,p,small,label){color:var(--s360-text)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-theme-card[aria-pressed=true]{border-color:var(--s360-accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--s360-accent) 18%,transparent)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.tabulator .tabulator-header,.tabulator .tabulator-footer,.tabulator .tabulator-col,.tabulator .tabulator-row,.tabulator .tabulator-cell){border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.form-label,.field-label,label,.muted,.subtitle,.help-text,.hint){color:var(--s360-muted)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.pagination button,.tabulator-page,.pager button,.ca-pager button){background:var(--s360-surface)!important;color:var(--s360-text)!important;border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.chart-legend,.chart-label,.chart-tooltip,.dash-tooltip){color:var(--s360-text)!important;background:var(--s360-surface)!important;border-color:var(--s360-border)!important}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] :is(.side,.sidebar,.side-nav,.sidenav,.navigation,.nav-menu,.nav-preferences){background:linear-gradient(180deg,#fff,#edf2f8)!important;color:#182334!important}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] :is(.side nav button,.nav button,.tabs button,.requested-tab,.ca-tabs button){background:#fff!important;color:#24354a!important;border-color:#d5deea!important}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] :is(.dash-panel,.dash-trend-chart,.dash-donut-wrap,.dash-breakdown,.theme,.notice,.s360-preference-dialog,.s360-theme-card){background:#fff!important;color:#182334!important;border-color:#d5deea!important}
+
+/* Central semantic contrast layer – SKYFY NEXUS only. */
+html[data-s360-theme="skyfy-nexus"]{
+  --s360-page-background:var(--s360-bg);
+  --s360-surface-background:var(--s360-surface);
+  --s360-surface-secondary:var(--s360-secondary);
+  --s360-text-primary:var(--s360-text);
+  --s360-text-secondary:var(--s360-text);
+  --s360-text-muted:var(--s360-text);
+  --s360-text-on-primary:#111827;
+  --s360-text-on-accent:#111827;
+  --s360-menu-background:var(--s360-secondary);
+  --s360-menu-text:var(--s360-text);
+  --s360-menu-active-background:var(--s360-primary);
+  --s360-menu-active-text:var(--s360-text-on-primary);
+  --s360-input-background:var(--s360-surface);
+  --s360-input-text:var(--s360-text);
+  --s360-input-placeholder:var(--s360-text-secondary);
+  --s360-table-header-background:var(--s360-secondary);
+  --s360-table-header-text:var(--s360-text);
+  --s360-border-color:var(--s360-border);
+  --s360-focus-color:var(--s360-accent);
+  --s360-link-color:var(--s360-accent);
+}
+html[data-s360-theme="skyfy-nexus"] :is(a,.link,.icon-active,.text-primary){color:var(--s360-link-color)!important}
+html[data-s360-theme="skyfy-nexus"] :is(input:not([type=checkbox]):not([type=radio]),select,textarea,.tabulator .tabulator-header-filter input,.tabulator .tabulator-header-filter select){background:var(--s360-input-background)!important;color:var(--s360-input-text)!important;border-color:var(--s360-border-color)!important;caret-color:var(--s360-input-text)}
+html[data-s360-theme="skyfy-nexus"] :is(input,textarea,select)::placeholder{color:var(--s360-input-placeholder)!important;opacity:1!important}
+html[data-s360-theme="skyfy-nexus"] select option{background:var(--s360-surface-background)!important;color:var(--s360-text-primary)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.s360-preference-dialog,.s360-color-dialog,.s360-theme-card,.s360-color-custom,.s360-color-field,.s360-mode-option){background:var(--s360-surface-background)!important;color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.s360-preference-dialog h2,.s360-preference-dialog p,.s360-preference-dialog small,.s360-preference-dialog label,.s360-theme-card strong,.s360-theme-card small,.s360-theme-card__meta,.s360-color-custom__head strong,.s360-color-custom__head small,.s360-color-contrast,.s360-preference-kicker){color:var(--s360-text-secondary)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-mode-option[aria-pressed="true"]{background:var(--s360-primary)!important;color:var(--s360-text-on-primary)!important;border-color:var(--s360-primary)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.s360-preference-done,.s360-color-save,.s360-color-org,.s360-color-reset,.s360-theme-trigger){background:var(--s360-primary)!important;color:var(--s360-text-on-primary)!important;border-color:var(--s360-primary)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.s360-theme-trigger,.s360-preference-close,.s360-color-org,.s360-color-reset){background:var(--s360-surface-secondary)!important;color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.tabulator .tabulator-header,.tabulator .tabulator-footer){background:var(--s360-table-header-background)!important;color:var(--s360-table-header-text)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.tabulator .tabulator-col,.tabulator .tabulator-page,.tabulator .tabulator-page-size,.tabulator .tabulator-footer .tabulator-paginator){background:var(--s360-table-header-background)!important;color:var(--s360-table-header-text)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.tabulator .tabulator-col-title,.tabulator .tabulator-footer,.tabulator .tabulator-page){color:var(--s360-table-header-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.sidebar,.side,.side-nav,.sidenav,.navigation,.nav-menu,.nav-preferences){background:linear-gradient(180deg,var(--s360-menu-background),var(--s360-bg))!important;color:var(--s360-menu-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.sidebar a,.side a,.side-nav a,.sidenav a,.navigation a,.nav-menu a,.sidebar button,.side button,.side-nav button){color:var(--s360-menu-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.sidebar .active,.side .active,.side-nav .active,.sidenav .active,.navigation .active,.nav-menu .active,.menu-item.active){background:var(--s360-menu-active-background)!important;color:var(--s360-menu-active-text)!important}
+html[data-s360-theme="skyfy-nexus"] :focus-visible{outline-color:var(--s360-focus-color)!important}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"]{--s360-bg:#f4f7fb!important;--s360-surface:#fff!important;--s360-text:#182334!important;--s360-border:#d5deea!important;--s360-secondary:#e7edf5!important;--s360-gradient:linear-gradient(135deg,#f7f9fc,#e9eff7)!important;--s360-muted:#536176!important;--s360-text-primary:#182334!important;--s360-text-secondary:#3e4b60!important;--s360-text-muted:#536176!important;--s360-menu-background:#e7edf5!important;--s360-menu-text:#182334!important;--s360-input-background:#fff!important;--s360-input-text:#182334!important;--s360-input-placeholder:#536176!important;--s360-table-header-background:#e7edf5!important;--s360-table-header-text:#182334!important}
+
+/* Login and signup surfaces are real theme surfaces, not white defaults. */
+html[data-s360-theme="skyfy-nexus"] .shell,
+html[data-s360-theme="skyfy-nexus"] .signup-card,
+html[data-s360-theme="skyfy-nexus"] .plan{background:var(--s360-surface-background)!important;color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] .form{background:var(--s360-surface-background)!important;color:var(--s360-text-primary)!important}
+html[data-s360-theme="skyfy-nexus"] .form :is(h2,h3,label),
+html[data-s360-theme="skyfy-nexus"] .signup-card :is(h2,h3,label,.plan b,.plan strong,.plan li){color:var(--s360-text-primary)!important}
+html[data-s360-theme="skyfy-nexus"] .form :is(p,.hint,.security),
+html[data-s360-theme="skyfy-nexus"] .signup-card :is(p,small,.plan small){color:var(--s360-text-secondary)!important}
+html[data-s360-theme="skyfy-nexus"] .signup-card .plan{background:var(--s360-surface-secondary)!important}
+html[data-s360-theme="skyfy-nexus"] .form input,
+html[data-s360-theme="skyfy-nexus"] .signup-card input,
+html[data-s360-theme="skyfy-nexus"] .signup-card select,
+html[data-s360-theme="skyfy-nexus"] .signup-card textarea{background:var(--s360-input-background)!important;color:var(--s360-input-text)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] .form :is(button,.signup-link),
+html[data-s360-theme="skyfy-nexus"] .signup-card .signup-submit{background:linear-gradient(110deg,var(--s360-primary),var(--s360-accent))!important;color:var(--s360-text-on-primary)!important}
+html[data-s360-theme="skyfy-nexus"] .mark{background:linear-gradient(145deg,#6253c7,#5140c7)!important;color:#fff!important}
+html[data-s360-theme="skyfy-nexus"] .s360-color-preview-standard em{color:#5368b7!important}
+html[data-s360-theme="skyfy-nexus"] #society360-support .support-panel{background:var(--s360-surface-background)!important;color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] #society360-support .support-launch{background:linear-gradient(145deg,var(--s360-primary),var(--s360-secondary))!important;color:var(--s360-text-on-primary)!important}
+/* Contrast-safe action surfaces and utility controls. */
+html[data-s360-theme="skyfy-nexus"] :is(button.primary,.btn-primary,.button-primary,.btn,.save,.s360-preference-done,.s360-color-save,.form button:not(#s360-theme-trigger),.signup-card .signup-submit){background:linear-gradient(110deg,var(--s360-button-primary),var(--s360-button-accent))!important;color:var(--s360-text-on-primary)!important;border-color:var(--s360-button-primary)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-mode-option[aria-pressed="true"]{background:var(--s360-button-primary)!important;color:var(--s360-text-on-primary)!important;border-color:var(--s360-button-primary)!important}
+html[data-s360-theme="skyfy-nexus"] #s360-theme-trigger{background:var(--s360-surface-secondary)!important;color:var(--s360-menu-text)!important;border-color:var(--s360-border-color)!important;box-shadow:none!important}
+html[data-s360-theme="skyfy-nexus"] .form .signup-link{background:transparent!important;color:var(--s360-link-color)!important;box-shadow:none!important}
+html[data-s360-theme="skyfy-nexus"] #society360-support .support-launch{background:var(--s360-secondary)!important;color:var(--s360-menu-text)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-color-preview-standard em{color:#3f519c!important}
+
+html[data-s360-theme="skyfy-nexus"] .s360-theme-card small{background:transparent!important}
+html[data-s360-theme="skyfy-nexus"] .s360-navigation-collapse{background:var(--s360-surface-secondary)!important;color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-navigation-collapse small{background:transparent!important;color:var(--s360-text-secondary)!important}
+html[data-s360-theme="skyfy-nexus"] .s360-preference-foot #s360-theme-status{color:var(--s360-text-secondary)!important}
+
+/* Authenticated workspace visibility corrections – scoped to SKYFY NEXUS. */
+html[data-s360-theme="skyfy-nexus"] :is(.nav-group > summary,.nav-group > summary *,button.nav-item,.nav-item,button.nav-item *, .nav-item *){
+  color:var(--s360-menu-text)!important;
+}
+html[data-s360-theme="skyfy-nexus"] :is(button.nav-item,.nav-item){
+  background:var(--s360-menu-background)!important;
+  border:1px solid var(--s360-border-color)!important;
+  box-shadow:none!important;
+}
+html[data-s360-theme="skyfy-nexus"] :is(button.nav-item:hover,.nav-item:hover,.nav-group > summary:hover){
+  background:color-mix(in srgb,var(--s360-primary) 24%,var(--s360-menu-background))!important;
+  color:var(--s360-menu-text)!important;
+}
+html[data-s360-theme="skyfy-nexus"] :is(button.nav-item[aria-current="page"],button.nav-item.active,button.nav-item[aria-pressed="true"],.nav-group[open] > summary){
+  background:var(--s360-menu-active-background)!important;
+  color:var(--s360-menu-active-text)!important;
+  border-color:var(--s360-accent)!important;
+}
+html[data-s360-theme="skyfy-nexus"] :is(button.nav-item:focus-visible,.nav-group > summary:focus-visible){
+  outline:2px solid var(--s360-focus-color)!important;outline-offset:2px;
+}
+html[data-s360-theme="skyfy-nexus"] :is(button.nav-item:disabled,.nav-item[aria-disabled="true"]){
+  opacity:1!important;color:var(--s360-text-secondary)!important;background:var(--s360-surface-secondary)!important;filter:saturate(.55);
+}
+html[data-s360-theme="skyfy-nexus"] :is(.requested-panel,#module-workspace,.requested-form,.requested-form fieldset,.requested-card,.requested-section,.collection-search-results,.collection-search-result,.rw-select,.collection-payment-card,.collection-summary,.collection-history-card){
+  color:var(--s360-text-primary)!important;
+  background:color-mix(in srgb,var(--s360-surface-background) 94%,transparent)!important;
+  border-color:var(--s360-border-color)!important;
+}
+html[data-s360-theme="skyfy-nexus"] :is(.requested-panel,.requested-form,.requested-card,.requested-section,.collection-payment-card,.collection-summary,.collection-history-card){
+  border:1px solid var(--s360-border-color)!important;border-radius:14px;
+}
+html[data-s360-theme="skyfy-nexus"] :is(.requested-panel h1,.requested-panel h2,.requested-panel h3,.requested-panel h4,.requested-panel p,.requested-panel small,.requested-panel strong,.requested-form label,.requested-form label span,.requested-form legend,.requested-form small,.requested-form p,.collection-search-result span,.collection-search-result strong,.collection-search-result small){
+  color:var(--s360-text-primary)!important;
+}
+html[data-s360-theme="skyfy-nexus"] :is(.requested-form input:not([type=checkbox]):not([type=radio]),.requested-form select,.requested-form textarea,.requested-panel input:not([type=checkbox]):not([type=radio]),.requested-panel select,.requested-panel textarea,.requested-form select option,.requested-panel select option){
+  color:var(--s360-input-text)!important;background:var(--s360-input-background)!important;border-color:var(--s360-border-color)!important;
+}
+html[data-s360-theme="skyfy-nexus"] :is(.requested-form input::placeholder,.requested-panel input::placeholder,.requested-form textarea::placeholder,.requested-panel textarea::placeholder){color:var(--s360-input-placeholder)!important;opacity:1!important}
+html[data-s360-theme="skyfy-nexus"] :is(.requested-panel button:not(.nav-item),.requested-form button,.collection-search-result,.rw-select,.requested-tab,.ca-tabs button){
+  color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important;
+}
+html[data-s360-theme="skyfy-nexus"] :is(.requested-panel button:not(.nav-item):hover,.requested-form button:hover,.collection-search-result:hover,.rw-select:hover,.requested-tab:hover,.ca-tabs button:hover){
+  background:color-mix(in srgb,var(--s360-primary) 18%,var(--s360-surface-background))!important;color:var(--s360-text-primary)!important;
+}
+html[data-s360-theme="skyfy-nexus"] :is(.tabulator,.tabulator .tabulator-header,.tabulator .tabulator-footer,.tabulator .tabulator-col,.tabulator .tabulator-col-content,.tabulator .tabulator-cell,.tabulator .tabulator-row,.tabulator .tabulator-page,.tabulator .tabulator-page-size,.tabulator .tabulator-header-filter input,.tabulator .tabulator-header-filter select){
+  color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important;
+}
+html[data-s360-theme="skyfy-nexus"] .tabulator{background:var(--s360-page-background)!important}
+html[data-s360-theme="skyfy-nexus"] .tabulator .tabulator-header,html[data-s360-theme="skyfy-nexus"] .tabulator .tabulator-footer,html[data-s360-theme="skyfy-nexus"] .tabulator .tabulator-col{background:var(--s360-table-header-background)!important;color:var(--s360-table-header-text)!important}
+html[data-s360-theme="skyfy-nexus"] .tabulator .tabulator-row{background:var(--s360-surface-background)!important;color:var(--s360-text-primary)!important}
+html[data-s360-theme="skyfy-nexus"] .tabulator .tabulator-row:nth-child(even){background:color-mix(in srgb,var(--s360-surface-background) 78%,var(--s360-page-background))!important}
+html[data-s360-theme="skyfy-nexus"] .tabulator .tabulator-row.tabulator-selected{background:var(--s360-menu-active-background)!important;color:var(--s360-menu-active-text)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.tabulator .tabulator-page:disabled,.tabulator .tabulator-page-size:disabled){opacity:1!important;color:var(--s360-text-secondary)!important}
+html[data-s360-theme="skyfy-nexus"] :is(.requested-panel button:focus-visible,.requested-form :focus-visible,.tabulator :focus-visible){outline:2px solid var(--s360-focus-color)!important;outline-offset:2px}
+/* Resolve the higher-specificity legacy LIGHT button rules for the real sidebar. */
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .side nav button.nav-item,
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .sidebar nav button.nav-item{
+  background:var(--s360-menu-background)!important;color:var(--s360-menu-text)!important;border-color:var(--s360-border-color)!important;
+}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .side nav button.nav-item:hover,
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .sidebar nav button.nav-item:hover{
+  background:color-mix(in srgb,var(--s360-primary) 16%,#ffffff)!important;color:var(--s360-menu-text)!important;
+}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .side nav button.nav-item[aria-current="page"],
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .sidebar nav button.nav-item[aria-current="page"],
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .side nav button.nav-item.active{
+  background:var(--s360-menu-active-background)!important;color:var(--s360-menu-active-text)!important;
+}
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .tabulator .tabulator-header,
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .tabulator .tabulator-footer,
+html[data-s360-theme="skyfy-nexus"][data-s360-mode="LIGHT"] body .tabulator .tabulator-col{
+  background:var(--s360-table-header-background)!important;color:var(--s360-table-header-text)!important;
+}
+/* Full authenticated view surfaces and form controls (all SKYFY workspaces). */
+html[data-s360-theme="skyfy-nexus"] body .view :is(.panel,.card,.form-card,.form-panel,.account-form-panel,.rights-card,.permission-card,.section-card,.module-card,.workspace-card){
+  background:var(--s360-surface-background)!important;color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important;
+}
+html[data-s360-theme="skyfy-nexus"] body .view :is(.section-head h1,.section-head h2,.section-head h3,.section-head h4,.account-toolbar h2,.account-toolbar h3,.account-form-header h2,.account-form-header h3,.panel h1,.panel h2,.panel h3,.panel h4,.card h1,.card h2,.card h3,.card h4){
+  color:var(--s360-text-primary)!important;
+}
+html[data-s360-theme="skyfy-nexus"] body .view :is(.eyebrow,.field label,.form-field label,.field-label,.form-label,.panel small,.card small,.help-text,.field-hint){
+  color:var(--s360-text-secondary)!important;
+}
+html[data-s360-theme="skyfy-nexus"] body .view :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea){
+  color:var(--s360-input-text)!important;background:var(--s360-input-background)!important;border-color:var(--s360-border-color)!important;
+}
+html[data-s360-theme="skyfy-nexus"] body .view :is(input::placeholder,textarea::placeholder){color:var(--s360-input-placeholder)!important;opacity:1!important}
+html[data-s360-theme="skyfy-nexus"] body .view select option{color:var(--s360-input-text)!important;background:var(--s360-input-background)!important}
+html[data-s360-theme="skyfy-nexus"] body .view button:not(.primary):not(.danger):not(.success):not(.btn-primary):not(.btn-danger):not(.btn-success):not(.nav-item):not([data-variant="primary"]):not([data-variant="danger"]){
+  color:var(--s360-text-primary)!important;background:var(--s360-surface-secondary)!important;border:1px solid var(--s360-border-color)!important;box-shadow:none;
+}
+html[data-s360-theme="skyfy-nexus"] body .view button.admin-tab.active,
+html[data-s360-theme="skyfy-nexus"] body .view button[aria-selected="true"],
+html[data-s360-theme="skyfy-nexus"] body .view button[aria-pressed="true"]{
+  color:var(--s360-menu-active-text)!important;background:var(--s360-menu-active-background)!important;border-color:var(--s360-accent)!important;
+}
+html[data-s360-theme="skyfy-nexus"] body .view :is(button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible){outline:2px solid var(--s360-focus-color)!important;outline-offset:2px}
+html[data-s360-theme="skyfy-nexus"] body .view :is(input:disabled,select:disabled,textarea:disabled,button:disabled){opacity:1!important;color:var(--s360-text-secondary)!important;background:var(--s360-surface-secondary)!important;border-color:var(--s360-border-color)!important;cursor:not-allowed}
+/* Sidebar identity, profile metadata, selected navigation and preferences dialog. */
+html[data-s360-theme="skyfy-nexus"] body .side .logo span{color:var(--s360-text-primary)!important}
+html[data-s360-theme="skyfy-nexus"] body .side .society small,
+html[data-s360-theme="skyfy-nexus"] body .side .user small,
+html[data-s360-theme="skyfy-nexus"] body #activeSocietyLabel,
+html[data-s360-theme="skyfy-nexus"] body #userRoleLabel{color:var(--s360-text-secondary)!important}
+html[data-s360-theme="skyfy-nexus"] body .side #avatar{background:var(--s360-button-primary)!important;color:var(--s360-text-on-primary)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] body .side button.nav-item:is(.active,[aria-current],[aria-pressed="true"]) .menu-label,
+html[data-s360-theme="skyfy-nexus"] body .side button.nav-item:is(.active,[aria-current],[aria-pressed="true"]) .menu-icon{color:var(--s360-menu-active-text)!important}
+html[data-s360-theme="skyfy-nexus"] body .view p{color:var(--s360-text-secondary)!important}
+html[data-s360-theme="skyfy-nexus"] body #s360-navigation-modal .s360-navigation-dialog{background:var(--s360-surface-background)!important;color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] body #s360-navigation-modal .s360-navigation-dialog :is(h1,h2,h3,h4,p,label,strong){color:var(--s360-text-primary)!important}
+html[data-s360-theme="skyfy-nexus"] body #s360-navigation-modal .s360-navigation-choice{color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] body #s360-navigation-modal .s360-navigation-choice small{color:inherit!important}
+html[data-s360-theme="skyfy-nexus"] body #s360-navigation-modal .s360-navigation-choice.is-selected{background:var(--s360-menu-active-background)!important;color:var(--s360-menu-active-text)!important}
+html[data-s360-theme="skyfy-nexus"] body #s360-navigation-modal .s360-navigation-choice__tick{color:var(--s360-menu-active-text)!important}
+html[data-s360-theme="skyfy-nexus"] body #s360-navigation-modal .s360-navigation-collapse{background:var(--s360-surface-secondary)!important;color:var(--s360-text-primary)!important;border-color:var(--s360-border-color)!important}
+html[data-s360-theme="skyfy-nexus"] body #s360-navigation-modal .s360-navigation-collapse strong{color:inherit!important}
+/* Remaining authenticated shell and heading text; keep foreground aligned with each mode. */
+html[data-s360-theme="skyfy-nexus"] body .view :is(h1,h2,h3,h4){color:var(--s360-text-primary)!important}
+html[data-s360-theme="skyfy-nexus"] body .view small{color:var(--s360-text-secondary)!important}
+html[data-s360-theme="skyfy-nexus"] body :is(.crumb,.breadcrumb,.app-footer,.app-footer span,.app-footer small,footer,footer span,footer small){color:var(--s360-text-secondary)!important}
+html[data-s360-theme="skyfy-nexus"] body .side button.nav-item:hover,
+html[data-s360-theme="skyfy-nexus"] body .side .nav-group > summary:hover{background:var(--s360-menu-active-background)!important;color:var(--s360-menu-active-text)!important}
+html[data-s360-theme="skyfy-nexus"] body .side button.nav-item:hover :is(.menu-label,.menu-icon),
+html[data-s360-theme="skyfy-nexus"] body .side .nav-group > summary:hover :is(.menu-label,.menu-icon){color:var(--s360-menu-active-text)!important}
