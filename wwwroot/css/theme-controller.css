@@ -141,3 +141,25 @@ html[data-s360-theme="skyfy-nexus"] .s360-theme-card small,html[data-s360-theme=
 .s360-preference-backdrop,.s360-preference-backdrop *{box-sizing:border-box}
 .s360-preference-dialog{width:min(680px,100%);min-width:0}
 .s360-navigation-dialog{width:min(720px,100%)}
+
+.s360-theme-trigger__icon{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;flex:0 0 17px;color:currentColor}
+.s360-theme-trigger__icon svg{display:block;width:17px;height:17px;stroke:currentColor;stroke-width:1.9}
+html[data-s360-theme-pending="true"]{background:#071326!important}html[data-s360-theme-pending="true"] body{visibility:hidden!important}
+
+/* Shared, reusable page header for submenu workspaces across all roles. */
+.section-head.s360-page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin:0 0 22px;padding:22px 26px;min-width:0;border:1px solid var(--s360-border-color,var(--l,#dbe3ef));border-radius:16px;background:var(--s360-surface-background,var(--p,#fff));color:var(--s360-text-primary,var(--t,inherit));box-shadow:0 8px 24px rgba(22,39,69,.06)}
+.section-head.s360-page-header>div{min-width:0;max-width:100%;padding:0}
+.s360-page-header__category{display:block;margin:0 0 8px;font-size:10px;line-height:1.4;letter-spacing:.12em;font-weight:800;text-transform:uppercase}
+.s360-page-header__title{margin:0 0 7px!important;padding:0;font-size:clamp(20px,2vw,26px);line-height:1.25;font-weight:800;overflow-wrap:anywhere}
+.s360-page-header__description{margin:0!important;max-width:880px;font-size:13px;line-height:1.65;opacity:.82}
+html[data-s360-theme="skyfy-nexus"] .section-head.s360-page-header{background:var(--s360-surface-background);border-color:var(--s360-border-color);color:var(--s360-text-primary)}
+@media(max-width:700px){.section-head.s360-page-header{padding:18px;margin-bottom:16px;gap:12px}.s360-page-header__title{font-size:20px}.s360-page-header__description{font-size:12px}}
+
+/* Theme gallery previews must remain visible while Standard Theme is active. */
+.s360-color-gallery{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}
+.s360-color-preview{position:relative;display:flex;align-items:center;justify-content:center;gap:7px;height:92px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,var(--pv2),var(--pvbg));border:1px solid color-mix(in srgb,var(--pv3) 35%,transparent)}
+.s360-color-preview i{width:17%;height:48%;border-radius:5px;background:linear-gradient(180deg,var(--pv3),var(--pv1));box-shadow:0 0 14px color-mix(in srgb,var(--pv3) 32%,transparent)}
+.s360-color-preview i:nth-child(2){height:68%}.s360-color-preview i:nth-child(3){height:37%}
+.s360-color-preview b{position:absolute;right:8px;bottom:7px;color:white;font-size:11px}.s360-color-preview em{position:absolute;left:8px;top:7px;padding:3px 6px;border-radius:5px;background:var(--pvsurface);color:var(--pv3);font-size:8px;font-style:normal;font-weight:800}
+.s360-color-preview-standard{background:linear-gradient(135deg,#edf2ff,#dce8f8)!important}.s360-color-preview-standard i{background:linear-gradient(180deg,#8e9ee7,#5368b7)!important}.s360-color-preview-standard b{color:#4b5b9e!important}
+@media(max-width:760px){.s360-color-gallery{grid-template-columns:repeat(2,minmax(0,1fr))!important}}

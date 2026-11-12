@@ -1,7 +1,9 @@
 (() => {
 'use strict';
+if(window.__s360ThemeControllerLoaded)return;
+window.__s360ThemeControllerLoaded=true;
 const STYLE_ID='s360-skyfy-theme-style',ENGINE_ID='s360-dynamic-color-engine';
-const STYLE_URL='/css/skyfy-nexus.css?v=20261109.06',ENGINE_URL='/css/dynamic-color-engine.css?v=20261109.16';
+const STYLE_URL='/css/skyfy-nexus.css?v=20261112.01',ENGINE_URL='/css/dynamic-color-engine.css?v=20261112.02';
 const GUEST_KEY='society360-guest-theme';
 const PALETTES=[
  ['SKYFY_BLUE','SKYFY BLUE','#2583ff','#091b3b','#39d8ff','#071326','#102441','#eff7ff','#294a70'],
@@ -14,7 +16,7 @@ const PALETTES=[
  ['ARCTIC_SILVER','ARCTIC SILVER','#8da9c2','#34485d','#c6e7ff','#101923','#202d3a','#f3f8fc','#536b80']
 ];
 const MODES=[['DARK','Dark mode'],['LIGHT','Light mode'],['GLASS','Premium glass'],['GRADIENT','Dynamic gradient']];
-let currentTheme='STANDARD',currentMode='DARK',themes=[],authenticated=false,canChange=false,canCustomize=false,canOrg=false,modal=null,trigger=null,busy=false,customColors={};
+let currentTheme='STANDARD',currentMode='DARK',themes=[],authenticated=false,canChange=false,canCustomize=false,canOrg=false,modal=null,trigger=null,busy=false,customColors={},themeInitComplete=false,pendingThemeOpen=false;
 const t=s=>window.Society360I18n?.translateText?.(s)||s;
 const norm=v=>String(v||'STANDARD').trim().toUpperCase();
 const palette=code=>{
@@ -24,6 +26,7 @@ const palette=code=>{
  return [norm(code),item?.themeName||fallback[1],db.primary||fallback[2],db.secondary||fallback[3],db.accent||fallback[4],db.background||fallback[5],db.surface||fallback[6],db.text||fallback[7],db.border||fallback[8]];
 };
 const paletteObject=code=>{const p=palette(code);return {primary:p[2],secondary:p[3],accent:p[4],background:p[5],surface:p[6],text:p[7],border:p[8]};};
+const effectiveColor=key=>{const p=palette(currentTheme),defaults={primary:p[2],secondary:currentMode==='LIGHT'?'#e7edf5':p[3],accent:p[4],background:currentMode==='LIGHT'?'#f4f7fb':p[5],surface:currentMode==='LIGHT'?'#ffffff':p[6],text:currentMode==='LIGHT'?'#182334':p[7],border:currentMode==='LIGHT'?'#d5deea':p[8]};return customColors[key]||defaults[key];};
 const emit=()=>window.dispatchEvent(new CustomEvent('s360:theme-applied',{detail:{themeCode:currentTheme,mode:currentMode,palette:palette(currentTheme)}}));
 const guestPage=()=>!!document.querySelector('#login-form');
 const colorMix=(a,b,t)=>{const x=a.match(/^#([0-9a-f]{6})$/i),y=b.match(/^#([0-9a-f]{6})$/i);if(!x||!y)return a;const A=x[1],B=y[1];return '#'+[0,2,4].map(i=>Math.round(parseInt(A.slice(i,i+2),16)*(1-t)+parseInt(B.slice(i,i+2),16)*t).toString(16).padStart(2,'0')).join('');};
@@ -33,20 +36,30 @@ const ensureContrast=(foreground,background,minimum=4.5)=>{if(contrast(foregroun
 function setColors(colors){
  const root=document.documentElement,mode=root.dataset.s360Mode||'DARK',light=mode==='LIGHT';
  const valid=(v,fallback)=>/^#[0-9a-f]{6}$/i.test(v||'')?v:fallback;
- const primary=valid(colors?.primary,'#2583ff'),secondary=light?'#e7edf5':valid(colors?.secondary,'#091b3b'),accent=valid(colors?.accent,'#39d8ff'),background=light?'#f4f7fb':valid(colors?.background,'#071326'),surface=light?'#ffffff':valid(colors?.surface,'#102441'),border=light?'#d5deea':valid(colors?.border,'#294a70');
- const requested=light?'#182334':valid(colors?.text,'#eff7ff'),safeText=contrast(requested,surface)>=4.5&&contrast(requested,background)>=4.5?requested:bestInk([surface,background,secondary]);
+ const primary=valid(colors?.primary,'#2583ff'),secondary=valid(colors?.secondary,light?'#e7edf5':'#091b3b'),accent=valid(colors?.accent,'#39d8ff'),background=valid(colors?.background,light?'#f4f7fb':'#071326'),surface=valid(colors?.surface,light?'#ffffff':'#102441'),border=valid(colors?.border,light?'#d5deea':'#294a70');
+ const requested=valid(colors?.text,light?'#182334':'#eff7ff'),safeText=contrast(requested,surface)>=4.5&&contrast(requested,background)>=4.5?requested:bestInk([surface,background,secondary]);
  const buttonPair=safeButtonPair([primary,accent]),onPrimary=buttonPair.ink,onAccent=bestInk([accent]),onSecondary=bestInk([secondary]);
- const link=ensureContrast(accent,surface,4.5),focus=ensureContrast(accent,surface,3);
+ const link=ensureContrast(accent,light?secondary:surface,4.5),focus=ensureContrast(accent,surface,3);
  const vars={primary,secondary,accent,bg:background,surface,text:safeText,border,muted:safeText,'page-background':background,'surface-background':surface,'surface-secondary':secondary,'text-primary':safeText,'text-secondary':safeText,'text-muted':safeText,'text-on-primary':onPrimary,'text-on-accent':onAccent,'button-primary':buttonPair.adjusted[0],'button-accent':buttonPair.adjusted[1],'menu-background':secondary,'menu-text':onSecondary,'menu-active-background':buttonPair.adjusted[0],'menu-active-text':onPrimary,'input-background':surface,'input-text':safeText,'input-placeholder':safeText,'table-header-background':secondary,'table-header-text':onSecondary,'border-color':border,'focus-color':focus,'link-color':link};
  Object.entries(vars).forEach(([key,value])=>root.style.setProperty('--s360-'+key,value));
  root.style.setProperty('--s360-glow','color-mix(in srgb,'+accent+' 28%,transparent)');
  root.style.setProperty('--s360-gradient','linear-gradient(135deg,'+secondary+','+background+' 55%,'+surface+')');
 }
 function ensureStyles(){
- return new Promise(resolve=>{
-  const add=(id,href)=>new Promise(done=>{if(document.getElementById(id)){done(true);return;}const l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href=href;l.onload=()=>done(true);l.onerror=()=>{l.remove();done(false);};document.head.append(l);});
-  Promise.all([add(STYLE_ID,STYLE_URL),add(ENGINE_ID,ENGINE_URL)]).then(x=>resolve(x.every(Boolean)));
+ const add=(id,href)=>new Promise(resolve=>{
+  let link=document.getElementById(id);
+  if(link&&link.href===new URL(href,location.href).href&&link.dataset.s360Loaded==='true'){resolve(true);return;}
+  if(link&&link.href!==new URL(href,location.href).href){link.remove();link=null;}
+  if(!link){link=document.createElement('link');link.id=id;link.rel='stylesheet';link.href=href;}
+  let settled=false;
+  const finish=ok=>{if(settled)return;settled=true;clearTimeout(timer);link.removeEventListener('load',loaded);link.removeEventListener('error',failed);if(ok)link.dataset.s360Loaded='true';else if(link.isConnected)link.remove();resolve(ok);};
+  const loaded=()=>finish(true),failed=()=>finish(false),timer=setTimeout(()=>{let ready=false;try{ready=!!link.sheet&&link.sheet.cssRules.length>0}catch{}finish(ready)},15000);
+  link.addEventListener('load',loaded,{once:true});link.addEventListener('error',failed,{once:true});
+  if(!link.isConnected)document.head.append(link);
+  if(link.dataset.s360Loaded==='true')finish(true);
+  else {try{if(link.sheet&&link.sheet.cssRules.length>0)finish(true)}catch{}}
  });
+ return Promise.all([add(STYLE_ID,STYLE_URL),add(ENGINE_ID,ENGINE_URL)]).then(x=>x.every(Boolean)).catch(()=>false);
 }
 async function applyTheme(code,mode=currentMode,colors=customColors){
  const next=norm(code);
@@ -108,8 +121,8 @@ function render(){
 }
 function contrastStatus(){
  const el=modal?.querySelector('.s360-color-contrast');if(!el)return;
- const fg=customColors.text||palette(currentTheme)[7],bg=customColors.background||palette(currentTheme)[5];
- const ratio=contrast(fg,bg);el.textContent=t('Text contrast:')+' '+ratio.toFixed(2)+':1 '+(ratio>=4.5?' - '+t('WCAG AA passed'):' - '+t('Select a higher-contrast text/background pair'));
+ const fg=effectiveColor('text'),backgrounds=['background','surface','secondary'].map(effectiveColor);
+ const ratio=Math.min(...backgrounds.map(bg=>contrast(fg,bg)));el.textContent=t('Text contrast:')+' '+ratio.toFixed(2)+':1 '+(ratio>=4.5?' - '+t('WCAG AA passed'):' - '+t('Select a higher-contrast text/background pair'));
  el.dataset.valid=String(ratio>=4.5);
 }
 function contrast(fg,bg){
@@ -129,8 +142,8 @@ async function changeMode(mode){
 }
 async function save(org=false){
  if(busy)return;
- const fg=customColors.text||palette(currentTheme)[7],bg=customColors.background||palette(currentTheme)[5];
- if(contrast(fg,bg)<4.5){toast('Improve text contrast to at least 4.5:1 before saving.',true);return;}
+ const fg=effectiveColor('text'),backgrounds=['background','surface','secondary'].map(effectiveColor);
+ if(Math.min(...backgrounds.map(bg=>contrast(fg,bg)))<4.5){toast('Improve text contrast to at least 4.5:1 on every surface before saving.',true);return;}
  busy=true;
  try{await persist(currentTheme,currentMode,customColors,org);busy=false;toast(org?'Society default theme saved.':'Custom colors saved.');}
  catch(e){busy=false;toast(e.message,true);}
@@ -138,7 +151,7 @@ async function save(org=false){
 function openModal(source){trigger=source||trigger;render();modal.hidden=false;modal.querySelector('.s360-preference-close').focus();}
 function addTrigger(){
  const language=document.querySelector('#language-select');if(!language||document.getElementById('s360-theme-trigger'))return;
- const host=language.closest('.language-wrap,.lang')||language;const b=document.createElement('button');b.type='button';b.id='s360-theme-trigger';b.className='s360-theme-trigger';b.innerHTML='<span aria-hidden="true">Aa</span><span class="s360-theme-trigger__text"></span>';b.querySelector('.s360-theme-trigger__text').textContent=t('Themes');b.setAttribute('aria-haspopup','dialog');b.onclick=()=>openModal(b);
+ const host=language.closest('.language-wrap,.lang')||language;const b=document.createElement('button');b.type='button';b.id='s360-theme-trigger';b.className='s360-theme-trigger';b.innerHTML='<span class="s360-theme-trigger__icon" aria-hidden="true"></span><span class="s360-theme-trigger__text"></span>';const icon=b.querySelector('.s360-theme-trigger__icon');icon.appendChild(window.Society360Icons?.create('palette')||document.createTextNode('\u{1F3A8}'));b.querySelector('.s360-theme-trigger__text').textContent=t('Themes');b.setAttribute('aria-haspopup','dialog');b.onclick=()=>openModal(b);
  if(host.parentElement)host.insertAdjacentElement('afterend',b);else document.body.append(b);trigger=b;
 }
 async function loadGuest(){
@@ -157,7 +170,7 @@ async function loadAuthenticated(){
  if(guest&&guest!==saved){try{if(currentTheme===guest)await persist(currentTheme,currentMode,customColors);}catch{currentTheme=saved;await applyTheme(saved,currentMode,{});}localStorage.removeItem(GUEST_KEY);}
 }
 window.addEventListener('society360-language-changed',()=>{const b=document.querySelector('#s360-theme-trigger .s360-theme-trigger__text');if(b)b.textContent=t('Themes');if(modal&&!modal.hidden)render();});
-window.addEventListener('s360:open-themes',()=>openModal(document.getElementById('s360-theme-trigger')));
-async function init(){document.documentElement.dataset.s360Theme='standard';try{if(guestPage())await loadGuest();else await loadAuthenticated();}catch{document.documentElement.dataset.s360Theme='standard';if(guestPage())addTrigger();}}
+window.addEventListener('s360:open-themes',()=>{if(!themeInitComplete){pendingThemeOpen=true;return;}openModal(document.getElementById('s360-theme-trigger')||document.querySelector('[data-s360-pref-action="themes"]'));});
+async function init(){const root=document.documentElement;root.dataset.s360ThemePending='true';root.dataset.s360Theme=root.dataset.s360Theme||'standard';try{if(guestPage())await loadGuest();else await loadAuthenticated();}catch{root.dataset.s360Theme='standard';delete root.dataset.s360Palette;delete root.dataset.s360Mode;if(guestPage())addTrigger();}finally{delete root.dataset.s360ThemePending;themeInitComplete=true;if(pendingThemeOpen){pendingThemeOpen=false;openModal(document.getElementById('s360-theme-trigger')||document.querySelector('[data-s360-pref-action="themes"]'));}}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
